@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FE6C7F5B-EC55-4BFA-990E-F95D35D1A206}</ProjectGuid>
+    <RootNamespace>Project1</RootNamespace>
+    <ProjectName>Millipede</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Source\3DDeformable.cpp" />
+    <ClCompile Include="..\..\..\Source\Ball.cpp" />
+    <ClCompile Include="..\..\..\Source\BallAux.cpp" />
+    <ClCompile Include="..\..\..\Source\BallMath.cpp" />
+    <ClCompile Include="..\..\..\Source\Camera.cpp" />
+    <ClCompile Include="..\..\..\Source\Cone.cpp" />
+    <ClCompile Include="..\..\..\Source\Cube.cpp" />
+    <ClCompile Include="..\..\..\Source\Cylinder.cpp" />
+    <ClCompile Include="..\..\..\Source\Drawer.cpp" />
+    <ClCompile Include="..\..\..\Source\main.cpp" />
+    <ClCompile Include="..\..\..\Source\Millipede.cpp" />
+    <ClCompile Include="..\..\..\Source\Object.cpp" />
+    <ClCompile Include="..\..\..\Source\RigidCube.cpp" />
+    <ClCompile Include="..\..\..\Source\Sphere.cpp" />
+    <ClCompile Include="..\..\..\Source\Timer.cpp" />
+    <ClCompile Include="..\..\..\Source\Utility.cpp" />
+    <ClCompile Include="..\..\..\Source\World.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Source\3DDeformable.h" />
+    <ClInclude Include="..\..\..\Source\Ball.h" />
+    <ClInclude Include="..\..\..\Source\BallAux.h" />
+    <ClInclude Include="..\..\..\Source\BallMath.h" />
+    <ClInclude Include="..\..\..\Source\Camera.h" />
+    <ClInclude Include="..\..\..\Source\Cone.h" />
+    <ClInclude Include="..\..\..\Source\Cube.h" />
+    <ClInclude Include="..\..\..\Source\Cylinder.h" />
+    <ClInclude Include="..\..\..\Source\Drawer.h" />
+    <ClInclude Include="..\..\..\Source\Light.h" />
+    <ClInclude Include="..\..\..\Source\main.h" />
+    <ClInclude Include="..\..\..\Source\Millipede.h" />
+    <ClInclude Include="..\..\..\Source\Object.h" />
+    <ClInclude Include="..\..\..\Source\RigidCube.h" />
+    <ClInclude Include="..\..\..\Source\Sphere.h" />
+    <ClInclude Include="..\..\..\Source\Timer.h" />
+    <ClInclude Include="..\..\..\Source\Utility.h" />
+    <ClInclude Include="..\..\..\Source\World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Source\fPhong.glsl" />
+    <None Include="..\..\..\Source\fSmoothPhong.glsl" />
+    <None Include="..\..\..\Source\vPhong.glsl" />
+    <None Include="..\..\..\Source\vSmoothPhong.glsl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
