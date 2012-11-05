@@ -1,0 +1,531 @@
+\documentclass[conference]{IEEEtran}%
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}%
+\usepackage{hyperref}
+
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=latex2.dll}
+%TCIDATA{Version=5.50.0.2953}
+%TCIDATA{CSTFile=IEEEtran.cst}
+%TCIDATA{Created=Monday, March 14, 2011 23:40:29}
+%TCIDATA{LastRevised=Tuesday, March 15, 2011 16:30:53}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Articles\SW\IEEE Transactions for Conferences">}
+%BeginMSIPreambleData
+\providecommand{\U}[1]{\protect\rule{.1in}{.1in}}
+%EndMSIPreambleData
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\begin{document}
+
+\title{Artificial Centipede:\\
+Physics, Locomotion, Perception, Behavior}
+\pubid{0000--0000/00\$00.00~\copyright ~2002 IEEE}
+\specialpapernotice{(2012 Spring Written Qualify Paper)}
+
+\setlength{\columnsep}{30pt}
+
+\author{\authorblockN{Author: Jingyi Fang, Mentor: Demetri Terzopoulos}
+\authorblockA{\\Computer Science Department\\
+University of California, Los Angeles}
+\authorblockA{All works are done by Jingyi Fang, with innovation in the following:\\
+A. Application of Finite Volume Method for
+bio-mechanics in the field of artificial life;\\
+B. A new rigid and deformable object two-way coupling scheme; \\
+C. A novel theory of myriapoda creatures' locomotion control system; \\
+D. Designed and tested A robust local leg controller network following the theory in C.;\\
+E. A small library for simulation and rendering of rigid body, 2D, 3D FVM based deformable objects\\
+ }
+}%
+
+%EndExpansion
+%
+
+%TCIMACRO{\TeXButton{Make Title}{\maketitle}}%
+%BeginExpansion
+\maketitle
+%EndExpansion
+%
+
+%TCIMACRO{\TeXButton{Begin abstract}{\begin{abstract}}}%
+%BeginExpansion
+\begin{abstract}%
+%EndExpansion
+
+This paper describes design of a virtual centipede in terms of its bio-mechanics, locomotion
+control and some high level adaptive behaviors. Inexpensive Finite Volume Method(FVM) is applied for the first time in the field of artificial life to simulate the centipede's deformable body, substituting the traditional inaccurate mass-spring-damper method.  Also, a novel method is invented to achieve two-way coupling of rigid body dynamics and FVM backed soft body dynamics in a very simple and fast way. Instead of designing or training an expensive complex global controller network for the coordination of hundreds of legs, the locomotion of the virtual centipede is achieved through the dedicate design of a robust local controller network that can predict optimal future leg configuration and achieve the configuration through inverse kinematics. A theory is constructed about how myriapoda creatures' locomotion system work robustly well in a decentralized way. The locomotion of the centipede as a whole emerges from the independent procedural behavior of each leg. This decentralized design is cheap in computation and very robust to disturbances, it might as well reflect the mechanism of real centipede locomotion in nature. The wave-like patterns in the centipede's hundreds of legs emerged during locomotion simulation, as a result of each leg independently sensing and reacting in the physical environment\\
+\\
+
+\emph{keywords: Autonomous agent, artificial life, behavioral animation, legged locomotion control, decentralized, physics based modeling, Finite Volume Method}
+%TCIMACRO{\TeXButton{End abstract}{\end{abstract}}}%
+%BeginExpansion
+\end{abstract}%
+%EndExpansion
+%
+
+%TCIMACRO{\TeXButton{Table of Contents}{\tableofcontents}}%
+%BeginExpansion
+\tableofcontents
+%EndExpansion
+
+
+\section{Introduction}
+
+In 1986, Christopher Langton gave the birth
+to Artificial Life\cite{wikiALife}. With this new emerging field, computer
+scientists could build simulated life forms with a couple of silicon slices
+and codes, and discover something so close to real life patterns that one usually
+find it hard to tell the difference. As V. Breitenberg pointed
+out in his famous monograph\cite{vehicle}, a lot of structures within animal
+brains have been proved interpretable as pieces of computing machinery because
+of their simplicity and regularity.  From a philosophical point of view, John Von Neumann even stated that the stronger definition of
+ life is just a logical process
+ that can be abstracted away from any particular medium, including physics\cite{von}. However, as life forms live and evolve in
+ a Newton Physics dominated environment, it is still of particular interest to put our artificial creatures in a physics environment.
+We hope wisdoms of mother nature can be partially discovered during this artificial life research process and benefit human design and engineering process.
+ \\
+
+ In \cite{vehicle}, Breitenberg has demonstrated quite complex behaviors such
+as avoiding obstacles, attacking enemies, logic thinking, memory, and
+evolution through generations of car-like robots with several simple rules.
+While he was building the Alife theories with real world robots, doing artificial life research
+in a computer simulated virtual environment is much more convenient.
+During the past decades, many very important and interesting works have been done by computer scientists on simulating
+different creatures in virtual physical environments. In the cornerstone work\cite{fish} by Tu and Demetri on artificial fish,
+a framework using mass-spring-damper for bio-mechanics simulation is developed to represent the deformable fish body. At
+this stage, bio-mechanics are limited to footless animals such as fish and snakes. Later work on salamander\cite{salamander}
+added rigid body dynamics for the simulation of rigid legs. For four legs with 8 degrees of freedom involved, the leg controller in \cite{salamander}is a global one trained through an artificial neural network.
+The resulting global controller, also called a central pattern generator (CPG) are frequently used in robotic design of hexapods\cite{hexapod} and quadrupeds\cite{quadruped}.
+A well trained CPG works well and is robust against disturbances such that the hexapods can walk on
+very irregular terrains\cite{bigdog}. But the training time for a centralized CPG can grow exponentially as the number of degrees of freedom to be trained grows.
+\\
+
+The myriapoda is a group containing 13000 species \cite{myriapoda} including
+the well-known millipedes and centipedes. The biggest characteristic of this group of species is that they all have tens or even hundreds of legs spread on a linear segmented body structure and an antenna for sensing.
+The wave pattern of the centipedes' legs during its locomotion can steadily move the whole body, even over very irregular terrains.
+If we compare four legged animals to cars, centipedes are like
+trains. What's more, centipedes can walk over very rough terrains while a train can only ride on a straight flat track.
+The unusual structure of the centipede makes it a very interesting subject to research on, especially its locomotion system.
+In this paper, I applied the finest physics to simulate the centipede and designed a robust decentralized local leg controller to achieve the global locomotion as well as
+observing the beautiful wave pattern during simulation.
+%
+
+\section{Overview of the Virtual Centipede}
+\subsection{Functional Overview}
+\begin{figure}
+[ptb]
+\begin{center}
+\includegraphics[
+width=3.5in
+]%
+{./images/overview.jpg}%
+\caption{Overview of the virtual Centipede: the green arrow shows the flow of information in the controller network; the blue arrow shows the feedback of physics into the neural network through the centipede's sensor neurons. Higher order behaviors are built upon basic networks such as locomotion and sensor networks. The brain have two repertoire of behaviors, one contains hard coded instincts that comes with the centipede's genes, these instincts are evolved through generations of natural selection, thus are key to the survival of centipede; the other type have learnt adaptive behaviors that improves the centipede's chance of survival throughout its lifetime.}%
+\label{overview}%
+\end{center}
+\end{figure}
+
+Figure \ref{overview} shows how the virtual centipede is constructed. Here I pursued a bottom-up, compositional approach in which I modeled not only the form and superficial appearance, but also the fundamental physics of the centipede and its environment. In this work, the traditional mass-spring-damper system for simulating deformable body is replaced with Finite Volume Method\cite{fvm1}\cite{fvm2} to achieve more accurate simulation of physics. Based on the accurate physics model, networks of network controllers are learnt as well as designed to enable the centipede to be completely autonomous. The virtual centipede, like real ones in nature, has been given virtual sensor neurons to sense contacts, molecules of food, hormone of another sex, deformation of body, etc. It also has motor neurons to actuate the legs, internal neurons to pass and synthesize information, etc. The type of neural net used here is named inhomogeneous neural network\cite{randall}, and is more suitable for the purpose of design rather than evolve. Nevertheless, it can still incorporate traditional artificial neural networks\cite{ann} that can be trained of its weights to optimize the performance.
+\\
+
+The locomotion network is the foundation for higher level networks, yet it is the most challenging part. Considering a moderate centipede with 20 pairs of legs and each leg 3 degrees of freedom, 120 degrees of freedom is a very high dimensional space for a global controlling algorithm to locate an optimized solution, let alone the correct behavior of those 40 legs is a real time task. To make it even worse, unlike the Artificial Fish \cite{fish} living in a aquarium environment, failure can easily occur in locomotion when a couple of legs cooperate incorrectly. Training a central pattern generator\cite{japan2} is an option worth trying, however, lack of deep human thinking is always a drawback in such generalized learning approaches. Researchers in biology\cite{walknet1}\cite{walknet2} as well as robotics\cite{japan}\cite{japan2}\cite{fcp} all discovered the feasibility of a decentralized controlling system in legged insects or robots. However, these works lack a supporting theory to link the control system with the underlying physics as well as the immanent properties of neural networks. In this paper, I will explain how localized leg controllers can work perfectly well for a centipede and defend the theory by experimenting my simple leg controller network on my virtual centipede.
+\\
+
+After a robust locomotion system is built up, higher level behaviors such as obstacle avoidance, foraging, predating, etc can be achieved either explicitly through simple symbolic rules or through a learnt implicit neural network. The antenna of myriapoda insects play a vital role for sensing useful information in the world.  Information from antenna as well as other sensors around the body can be synthesized by the brain to make a high level decision in locomotion, carried out through the locomotion system.
+
+
+\subsection{Simulation Framework}
+\begin{figure}
+[ptb]
+\begin{center}
+\includegraphics[
+width=3.5in
+]%
+{./images/threeTypes.png}%
+\caption{Different types of virtual myriapoda insects simulated using the current system}%
+\label{types}%
+\end{center}
+\end{figure}
+
+During the process of this project, I independently developed a small library for simulation and simple rendering of rigid body as well as deformable objects. Rigid body dynamics is implemented referring to \cite{rigid1} with impulse collision resolution described in \cite{rigid2}. Deformable objects' meshes can be constructed and have physics simulated either through mass-spring-damper system or FVM\cite{fvm1}. Rigid-deformable Collisions are handled using penalty force for penetration\cite{collision}\cite{collision2}. For the rendering, GLSL\cite{glsl} based shaders are used to optimize the performance of GPU drawing such that the graphics does not act as the bottleneck for real time simulation. OpenGL\cite{opengl} is used for graphics and Eigen\cite{eigen} is used for all the linear algebra workload, both are popular open source libraries.
+\\
+
+This small library is then used for the realtime simulation and rendering of virtual centipede. Due to the highly parameterized programming practice, it is actually naturally extensible to construct and render numerous types of virtual creatures. Simply by adjusting some geometric parameters defining the body structure, different types (Figure \ref{types}) of myriapoda insects can be simulated and they all working pretty well using the current locomotion design.
+
+
+\section{3D Bio-Mechanical Model}
+
+\subsection{Overview}
+\begin{figure}
+[ptb]
+\begin{center}
+\includegraphics[
+width=3.5in
+]%
+{./images/structure.png}%
+\caption{Biomechanics of the virtual Centipede}%
+\label{structure}%
+\end{center}
+\end{figure}
+
+Tu and Demetri in their 1994 paper\cite{fish} applied mass-spring-damper system for simulation
+of deformable fish body, and successfully applied learning algorithms to enable the fish move freely underwater. The method
+is easy to understand and implement, so it soon become the standard in
+artificial life research. However, simplicity comes with prices.
+Although springs works quite well for
+2D cloth simulation\cite{spring1}\cite{spring2},
+the behavior of a mass-spring object can not capture the volumetric effects such as volume conversation and prevention of volume inversions. The reason is that
+the energy of a spring system is defined over finite number of strings rather than the whole volumetric body. Also because of that, the behavior of the object always
+depends on how the spring network is set up and tuning the parameter of strings can be very difficult.
+\\
+
+Creatures in nature have rigid skeletons and volumetric muscles rapping around them. Although applying learning algorithms on
+mass-spring-damper systems can result in desired locomotions \cite{fish}\cite{salamander}. It does not capture the realism in bio-mechanics, thus the learning result might not well reflect the
+real control mechanics evolved by nature. People have successfully tried more physically accurate models  in continuum mechanics and solving the PEDs using Finite Element Methods on human skin\cite{skinfem}, flesh\cite{fleshfem}, bone\cite{bonefem} and muscle \cite{musclefem} simulations. However, the complex functional analyze theory in FEM made it unwelcomed in the Artificial Life research community. Also, Finite Element Method is criticized for  low efficiency in real time simulations\cite{nofem1}\cite{nofem2}.
+\\
+
+Despite the difficulties FEM face due to its complexity and efficiency, Finite Volume Method is as simple to understand and implement as mass-spring-damper systems. Finite Volume Method is also continuum mechanics based so high physical realism is preserved. Although the order of accuracy is lower\cite{fvm1} compared to FEM, two aspects makes FVM very attractive in computer graphics simulations. First, it has a firm basis in geometry as opposed to the FEM variational setting. According to \cite{fvm1}, this not only increases the level of intuition and simplicity of implementation, but also increases the likelihood of aggressive (but robust) optimization and control. Second, there is a large community of researchers using these methods to model solid materials subject to very high deformations\cite{fvm3}. In this paper, I will show how simply and intuitive it is to apply FVM in the real time simulation of deformable centipede body parts.
+\\
+
+
+Like all other myriopoda species, centipede has an exoskeleton, the exoskeleton is rigid and wraps around its soft body tissues. Here I modeled the centipede body as two types of sections interconnecting each other (Figure \ref{structure}). One type of body section is called rigid body sections, this part of body section simulates the exoskeleton of centipede. A pair of leg is attached to this rigid section, the pose of the pair of leg will directly determine the position and orientation of the rigid body section. Another type of body section is called soft body sections that connects the rigid sections together. The deformability nature of the deformable section allows the turning and locomotion across irregular terrains. Also, deformation forces can be sensed by the rigid section and used as an input into the leg controller, which is a target to minimize in planning future leg movements. Legs are simulated as three rigid links that are jointed together by motors, each leg has three degrees of freedom, enable the positioning of leg tip or root to a targeted position in 3 dimensional space. Inverse kinematics is used to resolve the relative leg segment angels.
+\subsection{Rigid Section}
+At first, I have only deformable sections in the bio-mechanical mode. However, coupling the legs with the deformable section increase the difficulty of control since the leg only have a point force effect
+on the body. Making the leg connecting to a rigid section simulates the natural exoskeleton of centipede and enables the leg to directly control the whole sections' orientation and position. Rigid body dynamics has been achieved in computer graphics long time ago\cite{rigid}, here I used the notes\cite{rigid1}\cite{rigid2} and implemented my own for the rigid section of the centipede. Impulsion based edge-face, edge-edge collision detection/resolution are also implemented such that even the legs failed, the body of the millipede will be supported by the ground in a physically correct way.
+\subsection{Deformable Section}
+
+\begin{figure}
+[ptb]
+\begin{center}
+\includegraphics[
+width=3.5in
+]%
+{./images/mapping.png}%
+\caption{Continuum Mechanics: mapping from material space to world space}%
+\label{continuum}%
+\end{center}
+\end{figure}
+
+\begin{figure}
+[ptb]
+\begin{center}
+\includegraphics[
+width=3.5in
+]%
+{./images/FVM.png}%
+\caption{Gelatin Strip simulated using Finite Volume Method with collision resolution}%
+\label{fvm}%
+\end{center}
+\end{figure}
+
+Rigorous description of Finite Volume Method and its application in computer graphics can be found from work \cite{fvm1}. Here I take an practical approach to explain FVM in 3D. Figure \ref{continuum} shows the continuum mechanics view of materials in 3D. $\mathbf{X}$ represents the material in its rest state (minimized energy, zero elastic force). $\mathbf{x(t) = \phi(\mathbf{X},t)}$ is the coordinate of material point $\mathbf{X}$ at time $t$ with $\phi(\mathbf{X},t)$ being the mapping function. Strain on a material point is defined as $F = \frac{\partial \phi}{\partial \mathbf{x}}$. A constitutive model relates strain with an elastic energy density function. Equation(\ref{eq_neo}) is energy density definition from the famous Neo-Hookean model\cite{nonlinear}, which is nonlinear and supports large deformations. In the Equation, $\lambda$ and $\mu$ are Lam\'e parameters that relate to Youngs modules $K$ and Poisson ratio $\nu$ by Equation (\ref{lame}). I used this constitutive model to model the millipede's soft body section.
+\begin{equation}\label{eq_neo}
+    \Psi(\mathbf{F}) = \frac{\mu}{2}(tr(\mathbf{F}^T\mathbf{F}) - 2\mathbf(I))^2 - \mu ln(J) + \frac{\lambda}{2}ln(J)^2
+\end{equation}
+\begin{equation}\label{eq_neo2}
+    J = det(\mathbf{F})
+\end{equation}
+\begin{equation}\label{lame}
+    \lambda = \frac{K*\nu}{(1+\nu)*(1-2\nu)};\ \  \mu = \frac{K}{2*(1+\nu)}
+\end{equation}
+In FVM, same as in FEM, the material space is partitioned into finite number of elements, usually tetrahedrons. There are numerous methods to do the meshing\cite{mesh1}\cite{mesh2}, but the result will not be affected by the way the mesh is constructed. In FVM, strain as well as elastic energy can be computed individually over the tetrahedrons as shown in Equation (\ref{eq_map}) to (\ref{eq_energy})and Figure \ref{continuum}. Since tetrahedra is the 3$-$simplex, transformation matrix $\mathbf{F}$ is exactly the strain $\frac{\partial \phi}{\partial \mathbf{x}}$. $\mathbf{F}$ describes the rotation, especially the scaling of the tetrahedra, through Equation (\ref{eq_energy}), energy arises from its scaling (the first $\mu$ term) and resist against change in volume (the $ln(J)$ parts).
+\begin{equation}\label{eq_map}
+\phi(\mathbf{X}) = \mathbf{F}\mathbf{X} + \mathbf{b}
+\end{equation}
+\begin{equation}\label{eq_map2}
+\mathbf{F} = \mathbf{D_s}\mathbf{D^{-1}_t}
+\end{equation}
+\begin{equation}\label{eq_map3}
+\mathbf{D_s} = (\mathbf{x_4} - \mathbf{x_1},\mathbf{x_3} - \mathbf{x_1},\mathbf{x_2} - \mathbf{x_1})
+\end{equation}
+\begin{equation}\label{eq_map4}
+\mathbf{D_t} = (\mathbf{X_4} - \mathbf{X_1},\mathbf{X_3} - \mathbf{X_1},\mathbf{X_2} - \mathbf{X_1})
+\end{equation}
+\begin{equation}\label{eq_energy}
+e(\mathbf{x_1},\mathbf{x_2},\mathbf{x_3},\mathbf{x_4}) = V_0*\Psi(\mathbf{F})
+\end{equation}
+
+With Equation(\ref{eq_energy}), force can be derived as shown in Equation(\ref{eq_force})
+\begin{equation}\label{eq_force}
+\mathbf{f_i} = -\frac{\partial e}{\partial x_i} = -V_0\frac{\partial \Psi}{\partial \mathbf{F}}\frac{\partial \mathbf{F}}{\partial \mathbf{x_i}}
+\end{equation}
+with:
+\begin{equation}\label{eq_force2}
+\frac{\partial \Psi}{\partial \mathbf{F}} = \mathbf{P} =  \mu(\mathbf{F} - \mathbf{F^{-T}}) + \lambda ln(J)\mathbf{F^{-T}}
+\end{equation}
+Further derivations would give the direct relationship between force $\mathbf{f_i}$ and current geometry in Equation (\ref{eq_holly}) and (\ref{eq_holly2}).
+\begin{equation}\label{eq_holly}
+(\mathbf{f_2}, \mathbf{f_3}, \mathbf{f_4}) = -V_0\mathbf{P}\mathbf{D_m^{-1}}
+\end{equation}
+\begin{equation}\label{eq_holly2}
+\mathbf{f_1} = - (\mathbf{f_2} + \mathbf{f_3} + \mathbf{f_4})
+\end{equation}
+
+Each frame, force can be calculated over elements then summed for each node over neighboring elements(Equation \ref{eq_f}).
+\begin{equation}\label{eq_f}
+\mathbf{f_i} = \sum_{e_j = e_1}^{e_t}f_i^{e_j}
+\end{equation}
+Mass of each node is calculated by averaging the mass over connected tetrahedrons as in Equation(\ref{eq_mass}).
+\begin{equation}\label{eq_mass}
+\mathbf{m_i} = \frac{1}{3}\sum_{e_j = e_1}^{e_t}m_{e_j};
+\end{equation}
+Damping force is defined in Equation(\ref{eq_damp}), large damping coefficient is used to avoid oscillations in the centipede's body.
+\begin{equation}\label{eq_damp}
+\mathbf{f_i^d} = -\gamma V_0(\mathbf{v_i} - \mathbf{v_c})\  with\ \mathbf{v_c} = \frac{1}{3}\sum_{i = 1}^{4} \mathbf{v_i}
+\end{equation}
+Semi-Implicit method\cite{semi} can be applied at each time step described by Equation(\ref{eq_semi}) and (\ref{eq_semi2}). Due to the nonlinear part in $\mathbf{P}$, implicit solution in position can not be achieved in real time.
+\begin{equation}\label{eq_semi}
+(\mathbf{I} + \Delta t\gamma V_0\mathbf{M}^{-1}\mathbf{K})\mathbf{v}^{n+1} = \mathbf{v}^n + \Delta t\mathbf{M}^{-1}(\mathbf{f}^e + \mathbf{g} + \mathbf{f_{ext}})
+\end{equation}
+\begin{equation}\label{eq_semi2}
+\mathbf{x}^{n+1} = \mathbf{x}^{n} + \Delta t\mathbf{v}^{n+1}
+\end{equation}
+Eventually, the implementation of this scheme can be as simple as mass-spring-damper system, but with the energy defined over a volume, physical realism and easiness in control are both improved. Figure \ref{fvm} shows an experimentation result of FVM.
+\\
+
+Unlike fish, the deformable part of centipede does not act as muscles, but  just soft body tissues that glue the rigid sections together. However, muscle effects can be easily realized through variation of the material's Lam\'e parameters in time. J.Teran's work\cite{fvm1} talks more about building muscles using FVM.
+
+\subsection{Rigid and Deformable Coupling}
+\begin{figure}
+[ptb]
+\begin{center}
+
+\includegraphics[
+width=3.5in
+]%
+{./images/ride1.png}%
+
+\includegraphics[
+width=3.5in
+]%
+{./images/ride2.png}%
+
+\caption{Two way coupling of Rigid and FVM based deformable bodies}%
+\label{ride}%
+\end{center}
+\end{figure}
+
+Two way Coupling of Rigid body and deformable body is trivial in mass-spring-damper system. Two way coupling of rigid body and FEM based deformable bodies are also developed\cite{coupling} but with big complexity in its implementation scheme. The coupling method invented in this paper supports FVM based deformable body and is as simple to understand and implement as the mass-spring-damper system. 
+\\
+
+To begin with, nodes on the coupling face of the deformable object need to be fixed to the rigid body's coupling face. Then within each frame, there are two phases for physics. In phase one, FVM is applied on the deformable mesh to calculate force and update the positions of nodes(except for the fixed nodes). In phase two, the elastic forces from the fixed nodes are applied to the rigid bodies as an external force and affect the rigid body's position and orientation through rigid body dynamics. Then the fixed nodes' positions are updated according to the new rigid body's position and orientation. This method is implemented and tested to be a two way coupling method. The deformable part apply its influence through the attached nodes and the rigid part apply its influence on the deformable part through rigid body dynamics. Figure \ref{ride} shows experimentation results on the coupling method.
+
+\subsection{Leg}
+\begin{figure}
+[ptb]
+\begin{center}
+\includegraphics[
+width=3.5in
+]%
+{./images/leg.png}%
+\caption{Gelatin Strip simulated using Finite Volume Method with collision resolution}%
+\label{leg}%
+\end{center}
+\end{figure}
+Arthropod legs are rigid exoskeletons connected to body skeleton, thus the legs of the virtual centipede are simulated as rigid links and directly attached to the rigid sections of the centipede.
+
+\section{Locomotion}
+\subsection{Theory}
+Robotic
+researchers have already proposed some decentralized structure for building multi-leg robots
+\cite{japan}\cite{japan2}\cite{fcp}.
+its many legs to achieve
+
+compare global to local
+
+core: objective net: maintain balance, more to certain target.
+Objective net project desired body configuration
+Legs achieve this objective net output
+For head, move the head segment to desired positions
+for other segments, minimize the deformation
+
+Also, balance net maintain the height and balance of body section.
+
+\subsection{Head segment control turning and speed}
+\subsection{Local Leg Controller}
+\subsection{Three leg gates}
+\subsubsection{Stance Net}
+\subsubsection{Swing Forward Net}
+\subsubsection{Swing Backward Net}
+\subsection{Balance Net}
+\subsection{Switch Net}
+\subsection{Target Net}
+\subsection{Inverse Kinematics}
+\subsection{Experimentation of the Leg controller design}
+\section{High level behaviors}
+\subsection{Overview}
+\subsection{The Antenna}
+\subsection{Obstacle Avoidance}
+\subsection{Foraging and Predating}
+
+
+\section{Summary}
+
+\section{Acknowledgements}
+\emph{
+Professor Demetri Terzopoulos is my mentor in the Computer Science department. He is kind, modest and knowledgeable. His course Artificial Life
+irritated my interests to code an artificial living thing by myself and his encouragement supported me throughout this project.
+ I also learnt a lot about AI in
+autonomous agent modeling from Professor Michael Dyer during his very exciting
+Animat Modeling class, I come up with the prototype of this centipede model during the class project.
+I want to thank Professor Joseph Teran for teaching me everything
+I need to know about the Finite Volume Method in his Numerical Method class. }
+
+\begin{thebibliography}{9}
+
+\bibitem{opengl} D Shreiner, OpenGL programming guide: the official guide to learning OpenGL, versions 3.0 (2010)
+
+\bibitem{glsl}RJ Rost, OpenGL (R) shading language (2005)
+
+\bibitem{eigen}Guennebaud and Benot Jacob and others, Eigen v3, \href{http://eigen.tuxfamily.org}{http://eigen.tuxfamily.org}
+
+
+\bibitem {vehicle}Braitenberg, V. Vehicles: Experiments in synthetic
+psychology. Cambridge, MA: MIT Press. (1984)
+
+\bibitem {sixLeg}Grieco, J.C.; Prieto, M.; Armada, M.; Gonzalez de Santos, P.;
+, "A six-legged climbing robot for high payloads," Control Applications, 1998.
+Proceedings of the 1998 IEEE International Conference on , vol.1, no.,
+pp.446-450 vol.1, 1-4 Sep (1998)
+
+\bibitem{randall}Randall D.Beer, Intelligence as Adaptive Behavior: an experiment in computational
+neuroethology, Perspecitves in Artificial Intelligence, vol.6 (1990)
+
+\bibitem {ant}Dorigo, M.; Maniezzo, V.; Colorni, A.; , "Ant system:
+optimization by a colony of cooperating agents," Systems, Man, and
+Cybernetics, Part B: Cybernetics, IEEE Transactions on , vol.26, no.1,
+pp.29-41, Feb (1996)
+
+\bibitem {walknet1} H.Cruse, et al. A Biologically Inspired Controller for Hexapod
+Walking: Simple Solutions by Exploiting Physical Properties. Biol. Bull. 200: 195–200. (April 2001)
+
+\bibitem {walknet2} H.Cruse, et al. Walknet—a biologically inspired network to control six-legged walking.
+Neural Networks 11 (1998)
+
+\bibitem {karl} Karl Sims, Evolving 3D Morphology and Behavior by Competition.  Artificial life. (1994)
+
+\bibitem {fish}Xiaoyuan Tu "Artificial Animals for Computer Animation:
+Biomechanics, Locomotion, Perception, and Behavior" Ph.D Dissertation ,
+Department of Computer Science, University of Toronto, January (1996)
+
+\bibitem {salamander}Auke Jan Ijspeert, Alessandro Crespi, Dimitri Ryczko, and
+Jean-Marie Cabelguen "From Swimming to Walking with a Salamander Robot Driven
+by a Spinal Cord Model", Science 9 March 2007: 315 (5817), 1416-1420. (2007)
+
+\bibitem {eyepaper}Salomon, R.; Lichtensteiger, L.; , "Exploring different
+coding schemes for the evolution of an artificial insect eye," Combinations of
+Evolutionary Computation and Neural Networks, 2000 IEEE Symposium on , vol.,
+no., pp.10-16, (2000)
+
+\bibitem {rigid} James K. Hahn, Realistic animation of rigid bodies, SIGGRAPH (1988)
+
+\bibitem {rigid1}David Baraff,  An Introduction to Physically Based Modeling, rigid body simulation - unconstrained rigid body dynamics. SIGGRAPH Course Notes. (1997)
+
+\bibitem {rigid2}David Baraff,  An Introduction to Physically Based Modeling, rigid body simulation - Nonpenetration Constraints. SIGGRAPH Course Notes. (1997)
+
+\bibitem{coupling} Tamar Shinar, Craig Schroeder, Ronald Fedkiw, Two-way Coupling of Rigid and Deformable Bodies, Eurographics/ACM SIGGRAPH. (2008)
+
+\bibitem{fvm1} Joseph Teran, R.Fedkiw, et al. Finite Volume Methods for the Simulation of Skeletal Muscle, Eurographics/ACM SIGGRAPH. (2003)
+
+\bibitem{fvm2} J. Teran, R.Fedkiw, et al. Creating and Simulating Skeletal Muscle from the Visible Human Data Set. IEEE Transactions on Visualization and Computer Graphics, 11, pp. 317-328, (2005)
+
+\bibitem{fvm3} E. Caramana and M. Shashkov. Elimination of artificial grid distortion and hourglass-type motions by means of lagrangian subzonal masses and pressures. J. Comput. Phys., (142):521Ð561, (1998)
+
+\bibitem{fleshfem} J.P.Gourret, N.Magnenat-Thalmann, D.Thalmann, Simulation of Object and Human Skin Deformations in a Grasping Task, Proc.SIGGRAPH (1989)
+
+\bibitem{skinfem} E. Sifakis, J. Hellrung, J. Teran, A. Oliker, C. Cutting. Local Flaps: A Real-Time Finite Element Based Solution to the Plastic Surgery Defect Puzzle, Studies in Health and Technology Informatics, 142, pp. 313-138, (2009)
+
+\bibitem{bonefem} J.H. Keyak, J.M. Meagher, H.B. Skinner,  C.D. Mote Jr. Automated three-dimensional finite element modelling of bone: a new method. Journal of Biomedical Engineering, (1990)
+
+\bibitem{musclefem} David T. Chen, David Zeltzer,
+Pump it up: computer animation of a biomechanically based model of muscle using the finite element method. SIGGRAPH (1992)
+
+\bibitem{collision} Teschner, M., Kimmerle, S., Zachmann, G., Heidelberger,
+B., Raghupathi, L., Fuhrmann, A., Cani, M.P., Faure, F., Magnetat-Thalmann, N., And Strasser,
+W., 2004. Collision detection for deformable objects.
+
+\bibitem{collision2}Robert Bridson, Ronald Fedkiw, Robust treatment of collisions, contact and friction for cloth animation, SIGGRAPH (2002)
+
+\bibitem{spring1} Terzopoulos, D., Platt, J., Barr, A., And Fleischer, K.
+1987. Elastically deformable models. In Proceedings of the 14th
+annual conference on Computer graphics and interactive techniques,
+ACM, New York, NY, USA, SIGGRAPH , 205–214, (19787).
+
+\bibitem{spring2} Terzopoulos, D., And Fleischer, K. Modeling inelastic
+deformation: viscolelasticity, plasticity, fracture. In Proceedings
+of the 15th annual conference on Computer graphics and
+interactive techniques, ACM, New York, NY, USA, SIGGRAPH.(1988)
+
+\bibitem{nonlinear} Bonet, J., And Wood, R. D. Nonlinear continuum mechanics
+for finite element analysis. Communications in Numerical
+Methods in Engineering 24, 11, 1567–1568. (2008)
+
+\bibitem{numerics} Uri M. Ascher, Computer Methods for Ordinary Differential Equations and Differential-Algebraic Equations
+
+\bibitem{semi}David Baraff, Andrew Witkin, Large Steps in Cloth Simulation. SIGGRAPH (1998)
+
+\bibitem{leg} MH Raibert, Legged robots that balance, MIT Press(1996)
+
+\bibitem{centralized}Martin Golubitsky, Ian Stewart, Pietro-Luciano Buono, J.J. Collins, A modular network for leggedlocomotion, Physica D: Nonlinear Phenomena (1998)
+
+\bibitem{quadruped} Yasuhiro Fukuoka, et al. Adaptive Dynamic Walking of a Quadruped Robot on Irregular Terrain Based on Biological Concepts, Journal of Robotics Research. (2003)
+
+\bibitem{hexapod} Uluc Saranli, et al. RHex: A Simple and Highly Mobile Hexapod Robot. Journal of Robotics Research. (2001)
+
+\bibitem{kinematics}Marc H. Raiber, Animation of dynamic legged locomotion, MIT Leg Laboratory, SIGGRAPH (1991)
+
+\bibitem{bigdog}M Raibert, K Blankespoor, et al. Bigdog, the rough-terrain quadruped robot, Proceedings of the 17th World Congress
+The International Federation of Automatic Control
+Seoul, Korea (2008)
+
+\bibitem{japan}T.Odashima, H.Yuasa, M.Ito. The autonomous
+decentralized myriapod locomotion robot which is
+consist of homogeneous subsystems,JRSJ, Vol.16 (1998)
+
+\bibitem{japan2}Shinkichi Inagaki, Hideo Yuasa, Tamio Arai.
+CPG model for autonomous decentralized multi-legged
+robot system.generation and transition of oscillation
+patterns and dynamics of oscillators, Robotics and Autonomous Systems 44 (2003)
+
+\bibitem{fcp}Tomoya Niwa, Shinkichi Inagaki and Tatsuya Suzuki, Locomotion Control of Multi-Legged Robot based on
+Follow-the-Contact-Point Gait.ICROS-SICE International Joint Conference (2009)
+
+\bibitem{ann}B.Yegnanarayana, Book, Artificial Neural Networks. Prentice-Hall of Inida (2006)
+
+\bibitem{nofem1}Advances in Artificial Life: 10th European Conference, Ecal , Part 1, page 100 (2009)
+
+\bibitem{mesh1}K Ho-Le, Finite element mesh generation methods: a review and classification, Computer Aided Design (1984)
+
+\bibitem{mesh2}JC Caendish, DA Field, et al. An apporach to automatic three dimensional finite element mesh generation, International Journal for Numerical Methods in Engineering. (2005)
+
+
+\bibitem{nofem2} \href{http://geb.uma.es/living-matter/spring-mass-systems-in-artificial-life}{$http://geb.uma.es/living-matter/spring-mass-systems-in-artificial-life$}
+\bibitem{wikiALife} \href{http://en.wikipedia.org/wiki/Artificial_life}{$http://en.wikipedia.org/wiki/Artificial_life$}
+\bibitem{von}\href{http://www.crystalinks.com/alife.html}{$http://www.crystalinks.com/alife.html$}
+\bibitem{myriapoda}\href{http://en.wikipedia.org/wiki/Myriapoda}{$http://en.wikipedia.org/wiki/Myriapoda$}
+\end{thebibliography}
+
+
+\end{document} 
