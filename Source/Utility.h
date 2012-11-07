@@ -9,9 +9,9 @@
 #  include <OpenGL/glu.h>
 #else // windows
 #  include <windows.h> 
-#  include <GL/glew.h>
-#  include <GL/glu.h>
-#  include <GL/glut.h>
+#  include "GL/glew.h"
+#  include "GL/glu.h"
+#  include "GL/glut.h"
 #endif
 
 #include <iostream>

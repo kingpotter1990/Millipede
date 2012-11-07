@@ -198,8 +198,8 @@ void idleCallback(){
 	TIME_LAST = TIME;
 	FRAME_TIME += DTIME;
 
-	if(DTIME > 1/20000.0)
-		DTIME = 1/20000.0;
+	if(DTIME > 1/2000.0)
+		DTIME = 1/2000.0;
 	if(STOP == -1){
 	//only update physics
 		myWorld->Update(DTIME);

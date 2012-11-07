@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9 64-bit) (preloaded format=latex 2012.11.4)  4 NOV 2012 20:12
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2012.11.5)  6 NOV 2012 08:59
 entering extended mode
-**IEEE.tex
-(F:\Dropbox\Project\Graphics\Millpede\Paper\IEEE.tex
+**F:/Dropbox/Project/Graphics/Millipede/Paper/IEEE.tex
+(F:/Dropbox/Project/Graphics/Millipede/Paper/IEEE.tex
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -13,7 +13,7 @@ german-x-2012-05-30, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
 ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
 an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
 ishmax, welsh, loaded.
-(F:\Dropbox\Project\Graphics\Millpede\Paper\IEEEtran.cls
+(F:\Dropbox\Project\Graphics\Millipede\Paper\IEEEtran.cls
 Document Class: IEEEtran 2007/03/05 V1.7a by Michael Shell
 -- See the "IEEEtran_HOWTO" manual for usage information.
 -- http://www.michaelshell.org/tex/ieeetran/
@@ -28,7 +28,7 @@ LaTeX Font Info:    Try loading font information for OT1+ptm on input line 366.
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 -- Using 8.5in x 11in (letter) paper.
--- Using DVI output.
+-- Using PDF output.
 \@IEEEnormalsizeunitybaselineskip=\dimen104
 -- This is a 10 point document.
 \CLASSINFOnormalsizebaselineskip=\dimen105
@@ -182,10 +182,18 @@ Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 ("D:\Program Files\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
 File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
-Package graphics Info: Driver file: dvips.def on input line 91.
+Package graphics Info: Driver file: pdftex.def on input line 91.
 
-("D:\Program Files\MiKTeX 2.9\tex\latex\graphics\dvips.def"
-File: dvips.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
+("D:\Program Files\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+("D:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+("D:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count103
 ))
 \Gin@req@height=\dimen126
 \Gin@req@width=\dimen127
@@ -196,11 +204,8 @@ Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
 ("D:\Program Files\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
 File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
-Package color Info: Driver file: dvips.def on input line 130.
-
-("D:\Program Files\MiKTeX 2.9\tex\latex\graphics\dvipsnam.def"
-File: dvipsnam.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
-))
+Package color Info: Driver file: pdftex.def on input line 130.
+)
 ("D:\Program Files\MiKTeX 2.9\tex\latex\hyperref\hyperref.sty"
 Package: hyperref 2012/10/31 v6.83l Hypertext links for LaTeX
 
@@ -211,15 +216,15 @@ Package: hobsub-hyperref 2012/04/25 v1.12 Bundle oberdiek, subset hyperref (HO)
 ("D:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\hobsub-generic.sty"
 Package: hobsub-generic 2012/04/25 v1.12 Bundle oberdiek, subset generic (HO)
 Package: hobsub 2012/04/25 v1.12 Construct package bundles (HO)
-Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
-Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+Package hobsub Info: Skipping package `infwarerr' (already loaded).
+Package hobsub Info: Skipping package `ltxcmds' (already loaded).
 Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
 Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
 Package ifvtex Info: VTeX not detected.
 Package: intcalc 2007/09/27 v1.1 Expandable calculations with integers (HO)
 Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
-Package ifpdf Info: pdfTeX in PDF mode is not detected.
+Package ifpdf Info: pdfTeX in PDF mode is detected.
 Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
 Package etexcmds Info: Could not find \expanded.
 (etexcmds)             That can mean that you are not using pdfTeX 1.50 or
@@ -232,7 +237,7 @@ Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode is ignored in DVI mode.
+Package pdftexcmds Info: \pdfdraftmode found.
 Package: pdfescape 2011/11/25 v1.13 Implements pdfTeX's escape features (HO)
 Package: bigintcalc 2012/04/08 v1.3 Expandable calculations on big integers (HO
 )
@@ -259,30 +264,17 @@ Package: auxhook 2011/03/04 v1.3 Hooks for auxiliary files (HO)
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 )
 \@linkdim=\dimen128
-\Hy@linkcounter=\count103
-\Hy@pagecounter=\count104
+\Hy@linkcounter=\count104
+\Hy@pagecounter=\count105
 
 ("D:\Program Files\MiKTeX 2.9\tex\latex\hyperref\pd1enc.def"
 File: pd1enc.def 2012/10/31 v6.83l Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count105
+\Hy@SavedSpaceFactor=\count106
 
 ("D:\Program Files\MiKTeX 2.9\tex\latex\00miktex\hyperref.cfg"
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
 )
-
-! Package hyperref Error: Wrong driver option `pdftex',
-(hyperref)                because pdfTeX in PDF mode is not detected.
-
-See the hyperref package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.4204 \ProcessKeyvalOptions{Hyp}
-                                 
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
 Package hyperref Info: Option `pdfpagelabels' set `true' on input line 4204.
 Package hyperref Info: Option `hypertexnames' set `true' on input line 4204.
 Package hyperref Info: Option `plainpages' set `false' on input line 4204.
@@ -294,6 +286,7 @@ Package hyperref Info: Plain pages OFF on input line 4343.
 Package hyperref Info: Backreferencing ON on input line 4346.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4573.
+
 ("D:\Program Files\MiKTeX 2.9\tex\latex\hyperref\backref.sty"
 Package: backref 2012/07/25 v1.38 Bibliographical back referencing
 
@@ -302,7 +295,7 @@ Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 82.
 ))
-\c@Hy@tempcnt=\count106
+\c@Hy@tempcnt=\count107
 
 ("D:\Program Files\MiKTeX 2.9\tex\latex\ltxmisc\url.sty"
 \Urlmuskip=\muskip11
@@ -310,7 +303,7 @@ Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 4926.
 \XeTeXLinkMargin=\dimen129
-\Fld@menulength=\count107
+\Fld@menulength=\count108
 \Field@Width=\dimen130
 \Fld@charsize=\dimen131
 Package hyperref Info: Hyper figures OFF on input line 6180.
@@ -322,33 +315,25 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6205.
 Package hyperref Info: PDF/A mode OFF on input line 6210.
 LaTeX Info: Redefining \ref on input line 6250.
 LaTeX Info: Redefining \pageref on input line 6254.
-\Hy@abspage=\count108
-\c@Item=\count109
-\c@Hfootnote=\count110
+\Hy@abspage=\count109
+\c@Item=\count110
+\c@Hfootnote=\count111
 )
 
-Package hyperref Message: Driver (default): hdvips.
+Package hyperref Message: Driver: hpdftex.
 
-("D:\Program Files\MiKTeX 2.9\tex\latex\hyperref\hdvips.def"
-File: hdvips.def 2012/10/31 v6.83l Hyperref driver for dvips
-
-("D:\Program Files\MiKTeX 2.9\tex\latex\hyperref\pdfmark.def"
-File: pdfmark.def 2012/10/31 v6.83l Hyperref definitions for pdfmark specials
-\pdf@docset=\toks22
-\pdf@box=\box29
-\pdf@toks=\toks23
-\pdf@defaulttoks=\toks24
-\HyField@AnnotCount=\count111
+("D:\Program Files\MiKTeX 2.9\tex\latex\hyperref\hpdftex.def"
+File: hpdftex.def 2012/10/31 v6.83l Hyperref driver for pdfTeX
 \Fld@listcount=\count112
 \c@bookmark@seq@number=\count113
 \Hy@SectionHShift=\skip47
-))
+)
 Package hyperref Info: Option `bookmarksnumbered' set `true' on input line 33.
 Package hyperref Info: Option `colorlinks' set `true' on input line 33.
 Package hyperref Info: Option `breaklinks' set `true' on input line 33.
 \c@theorem=\count114
 
-(F:\Dropbox\Project\Graphics\Millpede\Paper\IEEE.aux)
+(F:\Dropbox\Project\Graphics\Millipede\Paper\IEEE.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 72.
 LaTeX Font Info:    ... okay on input line 72.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 72.
@@ -363,27 +348,38 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 72.
 LaTeX Font Info:    ... okay on input line 72.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 72.
 LaTeX Font Info:    ... okay on input line 72.
+
+("D:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count115
+\scratchdimen=\dimen132
+\scratchbox=\box29
+\nofMPsegments=\count116
+\nofMParguments=\count117
+\everyMPshowfont=\toks22
+\MPscratchCnt=\count118
+\MPscratchDim=\dimen133
+\MPnumerator=\count119
+\makeMPintoPDFobject=\count120
+\everyMPtoPDFconversion=\toks23
+)
 \AtBeginShipoutBox=\box30
 Package hyperref Info: Link coloring ON on input line 72.
-
-("D:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
+ ("D:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
 ("D:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count115
+\c@section@level=\count121
 )
 LaTeX Info: Redefining \ref on input line 72.
 LaTeX Info: Redefining \pageref on input line 72.
 LaTeX Info: Redefining \nameref on input line 72.
 
-(F:\Dropbox\Project\Graphics\Millpede\Paper\IEEE.out)
-(F:\Dropbox\Project\Graphics\Millpede\Paper\IEEE.out)
+(F:\Dropbox\Project\Graphics\Millipede\Paper\IEEE.out)
+(F:\Dropbox\Project\Graphics\Millipede\Paper\IEEE.out)
 \@outlinefile=\write3
-
-
-Package hyperref Warning: Rerun to get /PageLabels entry.
 
 ** ATTENTION: \pubid is deprecated (line 76). Use \IEEEpubid instead.
 ** WARNING: \IEEEpubid is locked out when in conference mode (line 76).
@@ -412,103 +408,63 @@ Underfull \hbox (badness 10000) in paragraph at lines 128--151
 
  []
 
-[1
+[1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
 ]
+<./images/overview.jpg, id=132, 696.46336pt x 1038.01663pt>
+File: ./images/overview.jpg Graphic file (type jpg)
 
-! LaTeX Error: Cannot determine size of graphic in ./images/overview.jpg (no Bo
-undingBox).
+<use ./images/overview.jpg>
+Package pdftex.def Info: ./images/overview.jpg used on input line 236.
+(pdftex.def)             Requested size: 252.94499pt x 376.99602pt.
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.236 ...phics[width=3.5in]{./images/overview.jpg}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-File: ./images/overview.jpg Graphic file (type eps)
-<./images/overview.jpg>
 Overfull \hbox (9.94499pt too wide) in paragraph at lines 236--246
  [][] 
  []
 
-[2]
+[2 <F:/Dropbox/Project/Graphics/Millipede/Paper/images/overview.jpg>]
+<./images/threeTypes.png, id=158, 974.6814pt x 321.3606pt>
+File: ./images/threeTypes.png Graphic file (type png)
 
-! LaTeX Error: Cannot determine size of graphic in ./images/threeTypes.png (no 
-BoundingBox).
+<use ./images/threeTypes.png>
+Package pdftex.def Info: ./images/threeTypes.png used on input line 302.
+(pdftex.def)             Requested size: 252.94499pt x 83.39487pt.
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.302 ...cs[width=3.5in] {./images/threeTypes.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-File: ./images/threeTypes.png Graphic file (type eps)
-<./images/threeTypes.png>
 Overfull \hbox (9.94499pt too wide) in paragraph at lines 302--303
  [][] 
  []
 
+<./images/structure.png, id=169, 1193.9004pt x 590.205pt>
+File: ./images/structure.png Graphic file (type png)
 
-! LaTeX Error: Cannot determine size of graphic in ./images/structure.png (no B
-oundingBox).
+<use ./images/structure.png>
+Package pdftex.def Info: ./images/structure.png used on input line 333.
+(pdftex.def)             Requested size: 252.94499pt x 125.0364pt.
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.333 ...hics[width=3.5in]{./images/structure.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-File: ./images/structure.png Graphic file (type eps)
-<./images/structure.png>
 Overfull \hbox (9.94499pt too wide) in paragraph at lines 333--334
  [][] 
  []
 
-[3]
+[3 <F:/Dropbox/Project/Graphics/Millipede/Paper/images/threeTypes.png> <F:/Drop
+box/Project/Graphics/Millipede/Paper/images/structure.png>]
+<./images/mapping.png, id=210, 633.0852pt x 316.5426pt>
+File: ./images/mapping.png Graphic file (type png)
 
-! LaTeX Error: Cannot determine size of graphic in ./images/mapping.png (no Bou
-ndingBox).
+<use ./images/mapping.png>
+Package pdftex.def Info: ./images/mapping.png used on input line 418.
+(pdftex.def)             Requested size: 252.94499pt x 126.4699pt.
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.418 ...phics[width=3.5in] {./images/mapping.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-File: ./images/mapping.png Graphic file (type eps)
-<./images/mapping.png>
 Overfull \hbox (9.94499pt too wide) in paragraph at lines 418--419
  [][] 
  []
 
+<./images/FVM.png, id=211, 1370.2392pt x 1114.8852pt>
+File: ./images/FVM.png Graphic file (type png)
+ <use ./images/FVM.png>
+Package pdftex.def Info: ./images/FVM.png used on input line 425.
+(pdftex.def)             Requested size: 252.94499pt x 205.79121pt.
 
-! LaTeX Error: Cannot determine size of graphic in ./images/FVM.png (no Boundin
-gBox).
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.425 ...degraphics[width=3.5in]{./images/FVM.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-File: ./images/FVM.png Graphic file (type eps)
-<./images/FVM.png>
 Overfull \hbox (9.94499pt too wide) in paragraph at lines 425--426
  [][] 
  []
@@ -521,37 +477,21 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 434.
 
 ("D:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
-) [4]
+) [4 <F:/Dropbox/Project/Graphics/Millipede/Paper/images/mapping.png> <F:/Dropb
+ox/Project/Graphics/Millipede/Paper/images/FVM.png>]
+<./images/ride1.png, id=248, 723.1818pt x 275.1078pt>
+File: ./images/ride1.png Graphic file (type png)
+ <use ./images/ride1.png>
+Package pdftex.def Info: ./images/ride1.png used on input line 552.
+(pdftex.def)             Requested size: 252.94499pt x 96.222pt.
 
-! LaTeX Error: Cannot determine size of graphic in ./images/ride1.png (no Bound
-ingBox).
+<./images/ride2.png, id=249, 1162.5834pt x 406.1574pt>
+File: ./images/ride2.png Graphic file (type png)
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.552 ...graphics[width=3.5in]{./images/ride1.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+<use ./images/ride2.png>
+Package pdftex.def Info: ./images/ride2.png used on input line 553.
+(pdftex.def)             Requested size: 252.94499pt x 88.3633pt.
 
-File: ./images/ride1.png Graphic file (type eps)
-<./images/ride1.png>
-
-! LaTeX Error: Cannot determine size of graphic in ./images/ride2.png (no Bound
-ingBox).
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.553 ...graphics[width=3.5in]{./images/ride2.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-File: ./images/ride2.png Graphic file (type eps)
-<./images/ride2.png>
 Overfull \hbox (9.94499pt too wide) in paragraph at lines 552--554
  [][] 
  []
@@ -561,47 +501,34 @@ Overfull \hbox (9.94499pt too wide) in paragraph at lines 552--554
  [] 
  []
 
-[5]
+<./images/leg.png, id=252, 499.6266pt x 960.2274pt>
+File: ./images/leg.png Graphic file (type png)
+ <use ./images/leg.png>
+Package pdftex.def Info: ./images/leg.png used on input line 584.
+(pdftex.def)             Requested size: 252.94499pt x 486.1198pt.
 
-! LaTeX Error: Cannot determine size of graphic in ./images/leg.png (no Boundin
-gBox).
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.584 ...degraphics[width=3.5in]{./images/leg.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-File: ./images/leg.png Graphic file (type eps)
-<./images/leg.png>
 Overfull \hbox (9.94499pt too wide) in paragraph at lines 584--585
  [][] 
  []
 
-[6]
+[5 <F:/Dropbox/Project/Graphics/Millipede/Paper/images/ride1.png> <F:/Dropbox/P
+roject/Graphics/Millipede/Paper/images/ride2.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-! LaTeX Error: Cannot determine size of graphic in ./images/targetnet.png (no B
-oundingBox).
+ [6 <F:/Dropbox/Project/Graphics/Millipede/Paper/images/leg.png>]
+<./images/targetnet.png, id=304, 658.6206pt x 504.4446pt>
+File: ./images/targetnet.png Graphic file (type png)
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.694 ...ics[width=3.5in] {./images/targetnet.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+<use ./images/targetnet.png>
+Package pdftex.def Info: ./images/targetnet.png used on input line 694.
+(pdftex.def)             Requested size: 252.94499pt x 193.73068pt.
 
-File: ./images/targetnet.png Graphic file (type eps)
-<./images/targetnet.png>
 Overfull \hbox (9.94499pt too wide) in paragraph at lines 694--700
  [][] 
  []
 
-[7] [8] (F:\Dropbox\Project\Graphics\Millpede\Paper\IEEE.brf)
+[7 <F:/Dropbox/Project/Graphics/Millipede/Paper/images/targetnet.png>] [8]
+(F:\Dropbox\Project\Graphics\Millipede\Paper\IEEE.brf)
 \tf@brf=\write4
 
 Underfull \hbox (badness 10000) in paragraph at lines 922--922
@@ -616,7 +543,6 @@ Underfull \hbox (badness 1748) in paragraph at lines 960--960
 cod-ing
  []
 
-[9]
 Missing character: There is no Ð in font ptmr7t!
 
 Underfull \hbox (badness 3078) in paragraph at lines 976--976
@@ -631,15 +557,7 @@ Underfull \hbox (badness 4899) in paragraph at lines 976--976
 
 Missing character: There is no – in font ptmr7t!
 Missing character: There is no – in font ptmr7t!
-
-Overfull \hbox (78.36794pt too wide) in paragraph at lines 1045--1045
-[][][][]$\OML/cmm/m/it/8 http \OT1/cmr/m/n/8 : \OML/cmm/m/it/8 ==geb:uma:es=liv
-ing \OMS/cmsy/m/n/8   \OML/cmm/m/it/8 matter=spring \OMS/cmsy/m/n/8   \OML/cmm/
-m/it/8 mass \OMS/cmsy/m/n/8   \OML/cmm/m/it/8 systems \OMS/cmsy/m/n/8   \OML/cm
-m/m/it/8 in \OMS/cmsy/m/n/8   \OML/cmm/m/it/8 artificial \OMS/cmsy/m/n/8   \OML
-/cmm/m/it/8 life$[][][][]
- []
-
+[9]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -652,34 +570,49 @@ Before submitting the final camera ready copy, remember to:
  process uses the appropriate paper size.
 
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1054.
-[10]
+[10
+
+]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 1054.
- (F:\Dropbox\Project\Graphics\Millpede\Paper\IEEE.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1054.
+ (F:\Dropbox\Project\Graphics\Millipede\Paper\IEEE.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1054.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1054.
 
 Package rerunfilecheck Info: File `IEEE.out' has not changed.
 (rerunfilecheck)             Checksum: 52B326F496BCCF598C2DBCFF38973E63;1836.
-
-
-Package rerunfilecheck Warning: File `IEEE.brf' has changed.
-(rerunfilecheck)                Rerun to get bibliographical references right.
-
-Package rerunfilecheck Info: Checksums for `IEEE.brf':
-(rerunfilecheck)             Before: 8C230748B21E7916D563E39D488AC8EF;3458
-(rerunfilecheck)             After:  1B391F7FFA79D868143EAD997D10AACA;3458.
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
+Package rerunfilecheck Info: File `IEEE.brf' has not changed.
+(rerunfilecheck)             Checksum: 8C230748B21E7916D563E39D488AC8EF;3458.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1054.
  ) 
 Here is how much of TeX's memory you used:
- 6797 strings out of 493922
- 100538 string characters out of 3147290
- 198877 words of memory out of 3000000
- 10029 multiletter control sequences out of 15000+200000
- 31703 words of font info for 80 fonts, out of 3000000 for 9000
+ 7183 strings out of 493921
+ 105505 string characters out of 3147267
+ 196283 words of memory out of 3000000
+ 10289 multiletter control sequences out of 15000+200000
+ 40490 words of font info for 88 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 32i,9n,33p,17126b,440s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 32i,9n,29p,812b,444s stack positions out of 5000i,500n,10000p,200000b,50000s
+{D:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<D:/Program File
+s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><D:/Program Files/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmbx7.pfb><D:/Program Files/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmex10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmmi10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/a
+msfonts/cm/cmmi5.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
+m/cmmi6.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.p
+fb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><D:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><D:/Program Fil
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><D:/Program Files/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><D:/Program Files/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmr8.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/cm/cmsy10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
+nts/cm/cmsy7.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+sy8.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><D:/Progr
+am Files/MiKTeX 2.9/fonts/type1/urw/times/utmbi8a.pfb><D:/Program Files/MiKTeX 
+2.9/fonts/type1/urw/times/utmr8a.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/u
+rw/times/utmri8a.pfb>
+Output written on IEEE.pdf (10 pages, 6275968 bytes).
+PDF statistics:
+ 497 PDF objects out of 1000 (max. 8388607)
+ 111 named destinations out of 1000 (max. 500000)
+ 254 words of extra memory for PDF output out of 10000 (max. 10000000)
 
-Output written on IEEE.dvi (10 pages, 127616 bytes).

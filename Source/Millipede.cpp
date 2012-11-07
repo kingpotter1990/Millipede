@@ -918,7 +918,7 @@ void Millipede::Draw(int type, const Camera& camera, const Light& light){
 
 void Millipede::UpdateAll(double dt){
 
-	//UpdateNeuroNet(dt);
+	UpdateNeuroNet(dt);
 
 	MillipedeRigidSection *temp_rigid_section;
 	MillipedeSoftSection *temp_soft_section;
