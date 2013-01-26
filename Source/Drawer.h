@@ -54,7 +54,6 @@ public:
 	void DrawSphere(int type, const Camera& camera,const Light& light);
 	void DrawCone(int type, const Camera& camera,const Light& light);
 	void DrawCylinder(int type, const Camera& camera,const Light& light);
-
 public:
 	MatrixStack m_transformation_stack;
 	Eigen::Affine3f m_transformation;

@@ -1,5 +1,6 @@
 
 #include "RigidCube.h"
+#include "Terrain.h"
 #include "Eigen/Dense"
 #include "World.h"
 
@@ -109,6 +110,9 @@ void RigidCube::UpdatePhysics(double dt){
 						-m_avelocity[1],m_avelocity[0],0;
 		m_rotation += avelocity_star*m_rotation*dt;
 		m_avelocity += dt*(m_rotation*m_inertia_inverse*m_rotation.transpose())*m_torque;
+	}else{
+		m_velocity *= 0;
+		m_avelocity *= 0;
 	}
 
 	//now update the matrixes
@@ -193,7 +197,7 @@ void RigidCube::HandleCollision(){
 	
 bool RigidCube::CheckCollision(const Eigen::Vector3f& a_point, Eigen::Vector3f& a_normal){
 	
-	Cube * temp_cube;
+	Cube * temp_cube;Terrain* temp_terrain;
 	Eigen::Vector4f temp_point;
 	Eigen::Vector4f temp_dist;
 	double tempx, tempy, tempz;
@@ -201,8 +205,22 @@ bool RigidCube::CheckCollision(const Eigen::Vector3f& a_point, Eigen::Vector3f& 
 
 	for (unsigned int i = 0; i< m_world->List_of_Object.size(); i++) {
     //find the first intersection and calculate the force, return the force
+		if(m_world->List_of_Object[i] == this)
+			continue;//this one is itself, no self-collision
+
 		switch (m_world->List_of_Object[i]->GetType()) {
+			case TypeTerrain://Terrain
+			{
+				temp_terrain = dynamic_cast<Terrain*>(m_world->List_of_Object[i]);
+				double dist_y = a_point.y() - temp_terrain->GetHeight(Eigen::Vector2f(a_point.x(),a_point.z()));
+				if(dist_y < 0){
+					a_normal = temp_terrain->GetNormal(Eigen::Vector2f(a_point.x(),a_point.z()));
+					return true;
+				}
+			}
+			break;
 			case TypeCube://cube
+			case TypeRigidCube://rigidcube
 			{
 				temp_cube = dynamic_cast<Cube*>(m_world->List_of_Object[i]);
 				//first transform the position of the point to the cordinate system relative to the cube axis
@@ -226,27 +244,27 @@ bool RigidCube::CheckCollision(const Eigen::Vector3f& a_point, Eigen::Vector3f& 
                     
 					//different collision cases
 					if(dis_up < dis_down && dis_up < dis_back && dis_up < dis_left && dis_up < dis_right && dis_up < dis_front){
-							a_normal = Eigen::Vector3f(0,1,0);
+							a_normal = temp_cube->m_Trans*Eigen::Vector3f(0,1,0);
 							return true;
 					}
 					if(dis_down < dis_up && dis_down < dis_back && dis_down < dis_left && dis_down < dis_right && dis_down < dis_front){
-							a_normal = Eigen::Vector3f(0,-1,0);
+							a_normal = temp_cube->m_Trans*Eigen::Vector3f(0,-1,0);
 							return true;
 					}
 					if(dis_left < dis_down && dis_left < dis_back && dis_left < dis_right && dis_left < dis_up && dis_left < dis_front){
-							a_normal = Eigen::Vector3f(-1,0,0);
+							a_normal = temp_cube->m_Trans*Eigen::Vector3f(-1,0,0);
 							return true;
 					}
 					if(dis_right < dis_down && dis_right < dis_back && dis_right < dis_left && dis_right < dis_up && dis_right < dis_front){
-							a_normal = Eigen::Vector3f(1,0,0);
+							a_normal = temp_cube->m_Trans*Eigen::Vector3f(1,0,0);
 							return true;
 					}
 					if(dis_front < dis_down && dis_front < dis_back && dis_front < dis_left && dis_front < dis_right && dis_front < dis_up){
-							a_normal = Eigen::Vector3f(0,0,1);
+							a_normal = temp_cube->m_Trans*Eigen::Vector3f(0,0,1);
 							return true;
 					}
 					if(dis_back < dis_down && dis_back < dis_up && dis_back < dis_left && dis_back < dis_right && dis_back < dis_front){
-							a_normal = Eigen::Vector3f(0,0,-1);
+							a_normal = temp_cube->m_Trans*Eigen::Vector3f(0,0,-1);
 							return true;
 					}
 				}//end if

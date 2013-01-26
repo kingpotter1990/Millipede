@@ -22,24 +22,8 @@
 # define DegreesToRadians 0.01745329251994329576922222222222
 #endif
 
-
-//list of types of objects
-#ifndef Object_Types_
-
-#define NoType 0
-#define TypeCube 1
-#define TypeSphere 2
-#define TypeCloth 3
-#define TypeDeformable3D 4
-#define TypeRide 5
-#define TypeRigidCube 6
-#define TypeCone 7
-#define TypeCylinder 8
-#define TypeMixed 9
-
-#endif
-
-typedef int ObjectType;
+enum ObjectType{NoType, TypeCube, TypeSphere, TypeCone, TypeCylinder, TypeCloth, TypeDeformable3D,
+				TypeRide, TypeRigidCube, TypeMixed, TypeTerrain };
 
 class Node{
     //the Node class contains the mass, position, velocity and neighbor of the node
@@ -152,7 +136,8 @@ public:
 	virtual void Draw(int type, const Camera& camera, const Light& light) = 0;
 	virtual void UpdateAll(double dt) = 0;
     World* m_world;
-protected:
+
+public:
     std::string m_name;
     ObjectType m_type;
 };

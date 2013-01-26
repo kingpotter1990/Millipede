@@ -61,7 +61,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glut32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -76,9 +77,13 @@
     <ClCompile Include="..\..\..\Source\Drawer.cpp" />
     <ClCompile Include="..\..\..\Source\main.cpp" />
     <ClCompile Include="..\..\..\Source\Millipede.cpp" />
+    <ClCompile Include="..\..\..\Source\MillipedeHead.cpp" />
+    <ClCompile Include="..\..\..\Source\MillipedeLeg.cpp" />
+    <ClCompile Include="..\..\..\Source\MillipedeSection.cpp" />
     <ClCompile Include="..\..\..\Source\Object.cpp" />
     <ClCompile Include="..\..\..\Source\RigidCube.cpp" />
     <ClCompile Include="..\..\..\Source\Sphere.cpp" />
+    <ClCompile Include="..\..\..\Source\Terrain.cpp" />
     <ClCompile Include="..\..\..\Source\Timer.cpp" />
     <ClCompile Include="..\..\..\Source\Utility.cpp" />
     <ClCompile Include="..\..\..\Source\World.cpp" />
@@ -96,9 +101,13 @@
     <ClInclude Include="..\..\..\Source\Light.h" />
     <ClInclude Include="..\..\..\Source\main.h" />
     <ClInclude Include="..\..\..\Source\Millipede.h" />
+    <ClInclude Include="..\..\..\Source\MillipedeHead.h" />
+    <ClInclude Include="..\..\..\Source\MillipedeLeg.h" />
+    <ClInclude Include="..\..\..\Source\MillipedeSection.h" />
     <ClInclude Include="..\..\..\Source\Object.h" />
     <ClInclude Include="..\..\..\Source\RigidCube.h" />
     <ClInclude Include="..\..\..\Source\Sphere.h" />
+    <ClInclude Include="..\..\..\Source\Terrain.h" />
     <ClInclude Include="..\..\..\Source\Timer.h" />
     <ClInclude Include="..\..\..\Source\Utility.h" />
     <ClInclude Include="..\..\..\Source\World.h" />
@@ -108,6 +117,9 @@
     <None Include="..\..\..\Source\fSmoothPhong.glsl" />
     <None Include="..\..\..\Source\vPhong.glsl" />
     <None Include="..\..\..\Source\vSmoothPhong.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\TODOLIST.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

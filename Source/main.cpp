@@ -1,15 +1,11 @@
 //
 //  main.cpp
-//  FEMCloth2D
+//  Millipede
 //
 //  Created by Jingyi Fang on 2/10/11.
 //  Copyright 2011 Jingyi Fang. All rights reserved.
 //
 
-//TODO:
-//1. make FEM Cloth 3D
-//4. Collision detection and resolution for self-collision 
-//5. Rapture of FEMCloth
 
 #include "main.h"
 
@@ -19,7 +15,7 @@ void initScene(){
 
 	std::cout<<"Setting up Light, Camera and Clock...."<<std::endl;
     //set up the camera
-    Pentax.Init(Eigen::Vector4f(0,0,25.0,1.0),Eigen::Vector4f(0,0,0.0,1.0), Eigen::Vector4f(0,1.0,0,0), 
+    Pentax.Init(Eigen::Vector4f(0,250,250.0,1.0),Eigen::Vector4f(0,0,0.0,1.0), Eigen::Vector4f(0,1.0,0,0), 
 		60, Window_Width/Window_Height , 1.0, 1000);
     
     //set up the light
@@ -28,37 +24,39 @@ void initScene(){
 
 	//set up the world
 	myWorld = new World(50000);
-	myWorld->Clear();
 
 	//set up the drawer
 	myDrawer = new Drawer;
 	myDrawer->PushMatrix();
+
+    std::cout<<"Setting up the World..."<<std::endl;
+
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 15, RANDOM, OBSTACLE_OFF, FOOD_ON);
+
+	reinitScene();
+
+	std::cout<<"Starting Animation..."<<std::endl;
+}
+
+void reinitScene(){
+
+	myWorld->Clear();
+	
+	myWorld->Add_Object(myTerrain);
+	
+	myMillipede = new Millipede;
+	myMillipede->Init(Eigen::Vector3f(-10,15,0),16,Eigen::Vector3f(1,1,2),1, myTerrain);
+	
+	//myMillipede->FixHead();
+	//myMillipede->FixTail();
+
+	myWorld->Add_Object(myMillipede);
+
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime() ;
 	DTIME = 0.0;
 	FRAME_TIME = 0.0;
 
-    std::cout<<"Setting up the World..."<<std::endl;
-
-	Millipede* myMillipede = new Millipede;
-	myMillipede->Init(Eigen::Vector3f(-10,6,0),10,Eigen::Vector3f(1,1,2),1);
-	
-	RigidCube* myRigidCube = new RigidCube;
-	myRigidCube->Init(1.0,Eigen::Vector3f(0,5,0),Eigen::Vector3f(5,5,5),Eigen::Vector3f(1,0,0));;
-
-	Cube* myGround = new Cube;
-	myGround->Init(Eigen::Vector3f(0,-5,0),Eigen::Vector3f(100,10,100), Eigen::Vector3f(0.5,0.5,0.5));
-
-	//myMillipede->m_head->m_fixed = true;
-	//myMillipede->m_tail->m_fixed = true;
-
-//TODO: millipede sense ground not by y = 0, but from map
-    
-	myWorld->Add_Object(myMillipede);
-	//myWorld->Add_Object(myRigidCube);
-	myWorld->Add_Object(myGround);
-
-	std::cout<<"Starting Animation..."<<std::endl;
 }
 
 void drawScene(){
@@ -70,14 +68,52 @@ void drawScene(){
 
     Lumia.m_position = Pentax.m_position;//the light is attached to the camera
 	
-	myWorld->Update(DTIME);
 	myWorld->Draw(DRAW_TYPE, Pentax, Lumia);
 
 }
 
+void specialCallback(int key, int x, int y){
+
+	if(CONTROL == -1)
+		return;
+
+	switch(key)
+	{
+		case GLUT_KEY_UP:
+		myMillipede->ReceiveControllKey(0);
+		break;	
+		case GLUT_KEY_DOWN:
+		myMillipede->ReceiveControllKey(1);
+		break;
+		case GLUT_KEY_LEFT:
+		myMillipede->ReceiveControllKey(2);
+		break;
+		case GLUT_KEY_RIGHT:
+		myMillipede->ReceiveControllKey(3);
+		break;
+	}
+	
+		
+}
+
 void keyboardCallback(unsigned char key, int x, int y){
+
+	if(CONTROL == 1){
+		switch(key)
+		{
+			case '7'://down
+			myMillipede->ReceiveControllKey(1);
+			break;
+			case '8'://left
+			myMillipede->ReceiveControllKey(2);
+			break;
+			case '9'://right
+			myMillipede->ReceiveControllKey(3);
+			break;
+		}
+	}
     
-    if ( key == EscKey || key == 'q' || key == 'Q' ) 
+	if ( key == EscKey || key == 'q' || key == 'Q' ) 
     {
         exit(0);
     }
@@ -85,6 +121,11 @@ void keyboardCallback(unsigned char key, int x, int y){
     {
         STOP *= -1; 
     }
+	if( key == 'c'|| key == 'C')
+	{
+		CONTROL *= -1;
+		myMillipede->SetControl(CONTROL == 1?true:false);
+	}
 	if( key == 'p'|| key == 'P' )
 	{
 		PICK *= -1;
@@ -104,7 +145,7 @@ void keyboardCallback(unsigned char key, int x, int y){
         
     //reset the scene and camera
     if ( key == SpaceKey) {
-        initScene();
+        reinitScene();
         glutSwapBuffers();
     }
 }
@@ -198,8 +239,8 @@ void idleCallback(){
 	TIME_LAST = TIME;
 	FRAME_TIME += DTIME;
 
-	if(DTIME > 1/2000.0)
-		DTIME = 1/2000.0;
+	if(DTIME > 1/1000.0)
+		DTIME = 1/1000.0;
 	if(STOP == -1){
 	//only update physics
 		myWorld->Update(DTIME);
@@ -225,6 +266,7 @@ int main (int argc, char ** argv){
     glutIdleFunc(idleCallback);
 	glutReshapeFunc (reshapeCallback);
     glutKeyboardFunc(keyboardCallback);
+	glutSpecialFunc(specialCallback);
     glutMouseFunc(mouseCallback) ;
     glutMotionFunc(motionCallback);
 	glutPassiveMotionFunc(cursorCallback);

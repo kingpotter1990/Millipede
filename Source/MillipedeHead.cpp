@@ -1,0 +1,265 @@
+#include "MillipedeHead.h"
+#include "Millipede.h"
+#include "MillipedeLeg.h"
+#include "Drawer.h"
+#include "Terrain.h"
+
+extern Drawer* myDrawer;
+
+void MillipedeAntenna::InitNeuroNet(MillipedeHead* a_head, double a_length, int a_l_r){
+	m_l_r = a_l_r;
+	m_head = a_head;
+	m_length = a_length;
+	m_phi = 30;
+	m_alpha = 0;
+	
+	UpdateTipRootPosition();
+}
+
+void MillipedeAntenna::UpdateTipRootPosition(){
+	
+	myDrawer->SetIdentity();
+	myDrawer->Translate(m_head->m_Center);
+	myDrawer->Rotate(m_head->m_rotation);
+	myDrawer->Translate(Eigen::Vector3f(-0.5*m_head->m_Size[0], 0.5*m_head->m_Size[1], 0.5*m_l_r*m_head->m_Size[2]));
+	myDrawer->RotateY(m_l_r*m_phi);
+	myDrawer->RotateZ(-m_alpha);
+
+	m_root_position = myDrawer->CurrentOrigin(); //update root position
+	myDrawer->Translate(Eigen::Vector3f(-m_length,0,0));
+	m_tip_position = myDrawer->CurrentOrigin();//update tip position
+
+}
+
+
+bool MillipedeAntenna::SenseObstacle(){
+
+	//test anttena line intersection with terrain;
+	return m_head->m_terrain->TestIntersection(m_root_position, m_tip_position);
+
+}
+
+void MillipedeAntenna::Draw(int type, const Camera& camera, const Light& light){
+		
+	myDrawer->SetIdentity();
+	myDrawer->Translate(m_head->m_Center);
+	myDrawer->Rotate(m_head->m_rotation);
+	myDrawer->Translate(Eigen::Vector3f(-0.5*m_head->m_Size[0], 0.5*m_head->m_Size[1], 0.5*m_l_r*m_head->m_Size[2]));
+	myDrawer->RotateY(m_l_r*m_phi);
+	myDrawer->RotateZ(-m_alpha);
+
+	myDrawer->PushMatrix();
+	myDrawer->Scale(Eigen::Vector3f(0.2,0.2,0.2));
+	myDrawer->SetColor(Eigen::Vector3f(1,1,1));
+	myDrawer->DrawSphere(type,camera,light);
+	myDrawer->PopMatrix();
+
+	myDrawer->PushMatrix();
+	myDrawer->Translate(Eigen::Vector3f(-0.5*m_length,0,0));
+	myDrawer->RotateY(90);
+	myDrawer->Scale(Eigen::Vector3f(0.2,0.2,m_length));
+	myDrawer->DrawCylinder(type, camera, light);
+	myDrawer->PopMatrix();
+
+	myDrawer->Translate(Eigen::Vector3f(-m_length,0,0));
+
+	myDrawer->Scale(Eigen::Vector3f(0.3,0.3,0.3));
+	myDrawer->SetColor(Eigen::Vector3f(1,0,0));
+	myDrawer->DrawSphere(type,camera,light);
+
+}
+
+void MillipedeAntenna::UpdateAll(double a_dt){
+	
+	UpdateTipRootPosition();
+	
+}
+
+void MillipedeHead::InitNeuroNet(Millipede* a_root){
+	MillipedeRigidSection::InitNeuroNet(a_root,0);
+	m_left_antenna = new MillipedeAntenna();
+	m_right_antenna = new MillipedeAntenna();
+	m_left_antenna->InitNeuroNet(this, 5,1);
+	m_right_antenna->InitNeuroNet(this, 5,-1);
+
+	EnterMode(ADJUSTING);
+}
+
+void MillipedeHead::KeepHeadBalance(double dt){
+	
+	double turn_angle;
+	//the head's height need to be balanced
+	m_Center[1] += 10*dt*(m_height_obj - (m_Center[1] - m_terrain->GetHeight(m_Center[0], m_Center[2])));
+
+	//keep the balance of lean in x rotation
+	double zaxisdify = (m_rotation*Eigen::Vector3f(0,0,1)).dot(m_terrain->GetNormal(m_Center[0], m_Center[2]));
+	turn_angle = (zaxisdify > 0? 1:-1)*60*dt;
+	Eigen::AngleAxis<float> turnx(DegreesToRadians*turn_angle, Eigen::Vector3f(1,0,0));
+	m_rotation = m_rotation*turnx.toRotationMatrix();
+
+	//keep the balance of lean in z rotation
+	double xaxisdify = (m_rotation*Eigen::Vector3f(-1,0,0)).dot(m_terrain->GetNormal(m_Center[0], m_Center[2]));
+	turn_angle = (xaxisdify > 0? 1:-1)*60*dt;
+	Eigen::AngleAxis<float> turnz(DegreesToRadians*turn_angle,Eigen::Vector3f(0,0,1));
+	m_rotation = m_rotation*turnz.toRotationMatrix();
+
+	//now update the matrixes and fixed points for soft part update
+	m_Trans.setIdentity();
+	m_Trans.translate(m_Center);
+	m_Trans.rotate(m_rotation);
+	m_Trans.scale(m_Size);
+	m_TransBack = m_Trans.inverse();
+	UpdateFixed();
+}
+
+void MillipedeHead::EnterMode(MILLIPEDE_STATUS a_mode){
+
+	m_prev_mode = m_mode;
+	m_mode = a_mode;
+	switch (a_mode)
+	{
+	case CONTROLLED:
+		m_linear_speed = 10.0;
+		m_turning_speed = 0.0;
+		m_turning_obj = 0.0;
+		m_current_turning_accum = 0;
+		m_turning_direction = GO_STRAIGHT;
+		break;
+	case AVOID_OBSTACLE_LEFT:
+		m_linear_speed = 5;
+		m_turning_speed = 30;
+		m_turning_obj = 10;
+		m_current_turning_accum = 0;
+		m_turning_direction = TURN_RIGHT;
+		break;
+	case AVOID_OBSTACLE_RIGHT:
+		m_linear_speed = 5;
+		m_turning_speed = 30;
+		m_turning_obj = 10;
+		m_current_turning_accum = 0;
+		m_turning_direction = TURN_LEFT;
+		break;
+	case ADJUSTING:
+		m_linear_speed = 10.0;
+		m_turning_speed = 0.0;
+		m_turning_obj = 0.0;
+		m_current_turning_accum = 0;
+		m_turning_direction = GO_STRAIGHT;
+		break;
+	case PREDATING_FOOD:
+		break;
+	case RANDOM_WALK:
+		m_linear_speed = 10;
+		m_turning_speed = 40;
+		m_current_turning_accum = 0;
+		m_turning_direction = (Util::getRand() > 0.5 ? TURN_LEFT:TURN_RIGHT); //set a new turning direction
+		m_current_turning_accum = 0.0; //clear to 0
+		m_turning_obj = Util::getRand()*180; //set a new turning angle
+		//m_turning_direction = GO_STRAIGHT;//for testing
+		break;
+	default:
+		break;
+	}
+
+}
+
+
+void MillipedeHead::UpdateNeuroNet(double dt){
+	//sense the environment and update the turning direction, speed, etc
+	//ACTION SELECTION: food?escape?follow
+
+	//left antenna has a higher priority when both are hit
+	if(m_left_antenna->SenseObstacle()){
+		EnterMode(AVOID_OBSTACLE_LEFT);
+	}
+	else if(m_right_antenna->SenseObstacle()){
+		EnterMode(AVOID_OBSTACLE_RIGHT);	
+	}
+		
+	if(m_mode == ADJUSTING){
+		MillipedeRigidSection *temp_rigid_section;
+		MillipedeSoftSection *temp_soft_section;
+		temp_rigid_section = m_master->m_head->m_next->m_next;//skip the head since it is controlled by the mind directly
+
+		//In adjusting mode only when all sections get supported will it start walking
+		while(1){
+			if(temp_rigid_section->m_body_state != LEG_SUPPORTED){
+				break;
+			}
+			temp_soft_section = temp_rigid_section->m_next;
+			if(temp_soft_section){
+				temp_rigid_section = temp_soft_section->m_next;
+			}
+			else{
+				EnterMode(RANDOM_WALK);//All sections are in Leg_supported mode now
+				break;
+			}
+		}
+	}
+
+	if(m_mode == RANDOM_WALK || m_mode == AVOID_OBSTACLE_LEFT || m_mode == AVOID_OBSTACLE_RIGHT){
+		m_current_turning_accum += m_turning_speed*dt;
+		if(m_current_turning_accum >= m_turning_obj)
+			EnterMode(RANDOM_WALK);
+	}
+	
+}
+
+void MillipedeHead::UpdatePhysics(double dt){
+
+	if(m_mode == ADJUSTING){
+		//Head in free fall state
+		MillipedeRigidSection::UpdatePhysics(dt);
+		return;
+	}
+
+	//Head Balance Net: balance of height, orientation in x and z axis, flat to the ground.
+	KeepHeadBalance(dt);
+
+	if(m_mode == CONTROLLED)
+		return;
+
+	Eigen::Vector3f front_vector; double turn_angle;
+	front_vector = m_rotation*Eigen::Vector3f(-1,0,0);
+	//turn to the desired direction
+	if(m_turning_direction != GO_STRAIGHT){
+		turn_angle =  (m_turning_direction == TURN_LEFT ? 1:-1)*m_turning_speed*dt;//y axis anti clockwise
+		Eigen::AngleAxis<float> turny(DegreesToRadians*turn_angle, Eigen::Vector3f(0,1,0));
+		m_rotation = m_rotation*turny.toRotationMatrix();
+	}
+	//go straight in the front vector direction
+	m_Center += m_linear_speed*dt*front_vector;
+
+	//now update the matrixes and fixed points for soft part update
+	m_Trans.setIdentity();
+	m_Trans.translate(m_Center);
+	m_Trans.rotate(m_rotation);
+	m_Trans.scale(m_Size);
+	m_TransBack = m_Trans.inverse();
+	UpdateFixed();
+
+}
+
+void MillipedeHead::UpdateAll(double dt){
+
+		//central controller for the head movement, which determine the movement of the entire millipede
+	
+		m_left_antenna->UpdateAll(dt);
+		m_right_antenna->UpdateAll(dt);
+
+		//Head Target Net: sense/think then set all the parameters:
+		//turning direction, turning speed and linear speed, etc;
+		UpdateNeuroNet(dt);
+
+		//Apply the Turning
+		UpdatePhysics(dt);
+		
+	
+}
+
+void MillipedeHead::Draw(int type, const Camera& camera, const Light& light){
+	 Cube::Draw(type, camera, light);
+	 m_left_antenna->Draw(type, camera, light);
+	 m_right_antenna->Draw(type, camera, light);
+}
+

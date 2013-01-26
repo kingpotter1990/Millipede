@@ -12,6 +12,7 @@
 #include "3DDeformable.h"
 #include "Cube.h"
 #include "Sphere.h"
+#include "Terrain.h"
 
 typedef std::queue<Node*> NodeQueue;
 
@@ -270,17 +271,35 @@ void Deformable3D::UpdateForce(){
 Eigen::Vector3f Deformable3D::CollisionForce(const Node& a_node){
 
 	Eigen::Vector3f point = a_node.m_Position;
+	Eigen::Vector3f surface_normal,gliding_Velocity,support_force,friction_force;
 	Eigen::Vector4f force(0,0,0,0);
 	Eigen::Vector4f friction_froce(0,0,0,0);
     Cube * temp_cube;
 	Sphere * temp_sphere;
+	Terrain* temp_terrain;
 	Eigen::Vector4f temp_point;
 	Eigen::Vector4f temp_dist;
     double tempx, tempy, tempz;
     double dis_up, dis_down, dis_left, dis_right, dis_front, dis_back, dis_center;
     for (unsigned int i = 0; i< m_world->List_of_Object.size(); i++) {
+		if(m_world->List_of_Object[i] == this)
+			continue;//this one is itself, no self-collision
         //find the first intersection and calculate the force, return the force
         switch (m_world->List_of_Object[i]->GetType()) {
+			case TypeTerrain:
+			{
+				temp_terrain = dynamic_cast<Terrain*>(m_world->List_of_Object[i]);
+				double dist_y = point[1] - temp_terrain->GetHeight(Eigen::Vector2f(point[0],point[2]));
+				if(dist_y < 0){
+					//add friction
+					surface_normal = temp_terrain->GetNormal(Eigen::Vector2f(point[0],point[2]));
+					gliding_Velocity = a_node.m_Velocity - surface_normal*a_node.m_Velocity.dot(surface_normal);
+					support_force =  fabs(dist_y)*m_world->m_hardness*surface_normal;
+					friction_force = -gliding_Velocity*temp_terrain->m_frictness;//friction force
+					return  support_force + friction_force;
+				}
+			}
+			break;
 			case TypeRigidCube:
             case TypeCube://cube
             {

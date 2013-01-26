@@ -1,0 +1,41 @@
+Things to work on
+
+1. Invertible Implict Elasticity (not likely)
+2. Turning (Done)
+3. Terrain (Done)
+4. Antenna (In Progress)
+- Obstacle
+- Food
+1.22 - 1.30
+
+5. Construct different Terrains, experiment
+- cylinders paved road
+- spheres paved road
+- Cubes paved road
+- Closed Room
+- Maze for Food
+2.1 - 2.30
+
+6. Build different Body Types, experiment
+- Multipede Robot
+- Millipede
+- Centipede
+3.1 - 3.30
+
+7. Try Let the millipede walk on walls, from ground to wall
+optional
+
+8. Rendering
+4.1 - 4.30
+
+9. Polishing of Paper
+4.1 - 4.30
+
+
+Current Issues:
+1. Body not serpentine enough, body line not smooth enough, section bumping all time [Solved By letting body section in supported
+mode when one leg is in stance mode, also by updating the keep section balanced code]
+2. Legs not in wave pattern, no consideration for collision of legs, etc
+[Plan to solve by applying leg relative rotation diff constraint]
+[Partially Solved]
+3. Terrain GetNormal FUnction seems wrong, generate Normal Function most likely wrong
