@@ -159,7 +159,15 @@ void Cube::Draw(int type, const Camera& camera,const Light& light){
 
 }
 
+void Cube::Output2File(std::ofstream* filestream){
+	
+	(*filestream)<<"//BEGIN CUBE"<<std::endl;
+	Eigen::Vector4f current_vertex;
+	for(int i =0 ; i < 8; i++){
+		current_vertex = m_Trans*m_Points[i];
+		(*filestream)<<current_vertex[0]<<" "<<current_vertex[1]<<" "<<current_vertex[2]<<std::endl;
+	}
 
-
-
+	(*filestream)<<"//END CUBE"<<std::endl;
+}
 

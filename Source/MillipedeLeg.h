@@ -25,6 +25,8 @@ public:
 	void UpdateTipPosition();//the root is fixed
 	void UpdateRootPosition();//the tip is fixed
 	double GetBalanceHeight();
+	void Output2File(std::ofstream *filestream);
+
 protected:
 	
 	void UpdateSwitchNet(double dt);

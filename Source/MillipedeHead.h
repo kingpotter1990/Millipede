@@ -20,6 +20,7 @@ public:
 	void UpdateAll(double dt);
 	bool SenseObstacle();
 	void Draw(int type, const Camera& camera, const Light& light);
+	void Output2File(std::ofstream* filestream);
 private:
 	MillipedeHead* m_head;
 	double m_length;
@@ -44,6 +45,7 @@ public:
 	void EnterMode(MILLIPEDE_STATUS a_mode);
 	void ExitControl(){EnterMode(m_prev_mode);};//exit current mode
 	double GetLinearSpeed(){return m_linear_speed;};
+	void Output2File(std::ofstream* filestream);
 protected:
 	void KeepHeadBalance(double a_dt);
 	void UpdateNeuroNet(double a_dt);

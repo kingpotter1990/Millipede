@@ -27,6 +27,7 @@ public:
 	virtual void UpdateNeuronNet(double dt);
 	virtual void UpdatePBD(double dt);
 	virtual void UpdateAll(double dt);
+	virtual void Output2File(std::ofstream* filestream);
 public:
 	MillipedeLeg* m_left_leg;
 	MillipedeLeg* m_right_leg;
@@ -52,7 +53,6 @@ class MillipedeSoftSection:public Deformable3D{
 public:
 	MillipedeSoftSection(){}
 	~MillipedeSoftSection(){}
-    
 public:
 
 	MillipedeRigidSection* m_next;

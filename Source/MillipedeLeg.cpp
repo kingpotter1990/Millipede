@@ -453,7 +453,6 @@ void MillipedeLeg::EnterSwayForward2(){
 	UpdateSpeedNet();
 } 
 
-
 bool MillipedeLeg::InverseKinematics(Eigen::Vector3f a_tip, Eigen::Vector3f a_root, Eigen::Vector3f& a_result){
 	//based on current rigid section configuration, get the rotations
 	double phi;
@@ -566,3 +565,92 @@ bool MillipedeLeg::InverseKinematics(Eigen::Vector3f a_tip, Eigen::Vector3f a_ro
 
 }
 
+void MillipedeLeg::Output2File(std::ofstream* filestream){
+
+
+	Eigen::Vector3f point_a, point_b, center; double radius;
+	(*filestream)<<"//BEGIN LEG "<<m_l_r<<std::endl;
+
+	myDrawer->SetIdentity();
+	myDrawer->Translate(m_root_position);
+	myDrawer->Rotate(m_root->m_rotation);
+
+	//segment 0
+	center = m_root_position;
+	radius = m_segment_0_size[0]*0.6;
+	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
+	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END SPHERE "<<std::endl;
+
+	myDrawer->Translate(Eigen::Vector3f(0.0,m_segment_0_size[2],0.0));
+
+	point_a = m_root_position;
+	point_b = myDrawer->CurrentOrigin();
+	radius = m_segment_0_size[0]*0.5;
+	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
+	(*filestream)<<point_a[0]<<" "<<point_a[1]<<" "<<point_a[2]<<"//POINT A "<<std::endl;
+	(*filestream)<<point_b[0]<<" "<<point_b[1]<<" "<<point_b[2]<<"//POINT B "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END CYLINDER "<<std::endl;
+
+	//segment 1
+	center = point_b;
+	radius = m_segment_0_size[0]*0.5;
+	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
+	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END SPHERE "<<std::endl;
+	
+	myDrawer->RotateY(-m_l_r*m_phi);
+	myDrawer->RotateX(-m_l_r*m_alpha);
+	myDrawer->Translate(Eigen::Vector3f(0.0,0.0,m_l_r*m_segment_1_size[2]));
+	point_a = point_b;
+	point_b = myDrawer->CurrentOrigin();
+	radius = m_segment_1_size[0]*0.5;
+	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
+	(*filestream)<<point_a[0]<<" "<<point_a[1]<<" "<<point_a[2]<<"//POINT A "<<std::endl;
+	(*filestream)<<point_b[0]<<" "<<point_b[1]<<" "<<point_b[2]<<"//POINT B "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END CYLINDER "<<std::endl;
+	
+	//segment 2
+	center = point_b;
+	radius = m_segment_1_size[0]*0.5;
+	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
+	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END SPHERE "<<std::endl;
+
+	myDrawer->RotateX(m_l_r*m_beta);
+	myDrawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_2_size[2]));
+	point_a = point_b;
+	point_b = myDrawer->CurrentOrigin();
+	radius = m_segment_2_size[0]*0.5;
+	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
+	(*filestream)<<point_a[0]<<" "<<point_a[1]<<" "<<point_a[2]<<"//POINT A "<<std::endl;
+	(*filestream)<<point_b[0]<<" "<<point_b[1]<<" "<<point_b[2]<<"//POINT B "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END CYLINDER "<<std::endl;
+
+	//segment 3
+	center = point_b;
+	radius = m_segment_2_size[0]*0.5;
+	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
+	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END SPHERE "<<std::endl;
+
+	myDrawer->RotateX(m_l_r*m_gamma);
+	myDrawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_3_size[2]));
+	point_a = point_b;
+	point_b = myDrawer->CurrentOrigin();
+	radius = m_segment_3_size[0]*0.5;
+	(*filestream)<<"//BEGIN CONE "<<std::endl;
+	(*filestream)<<point_a[0]<<" "<<point_a[1]<<" "<<point_a[2]<<"//POINT A "<<std::endl;
+	(*filestream)<<point_b[0]<<" "<<point_b[1]<<" "<<point_b[2]<<"//POINT B "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END CONE "<<std::endl;
+
+	(*filestream)<<"//END LEG "<<m_l_r<<std::endl;
+}

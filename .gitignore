@@ -41,6 +41,10 @@ local.properties
 *.user
 *.sln.docstates
 
+# Output results
+Output/
+*.txt
+
 # Build results
 [Dd]ebug/
 [Rr]elease/

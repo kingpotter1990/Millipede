@@ -44,7 +44,7 @@ public:
     virtual void InitDraw();//Init the vertexs and color data on GPU, Init the shader program, link the shader program with the buffer data
     virtual void Draw(int type, const Camera& camera, const Light& light);//Update data on GPU's buffer and draw the vertexs, rotate clockwise around z with speed
 	virtual void UpdateAll(double dt){};
-
+	virtual void Output2File(std::ofstream* filestream);
 	void SetColor(const Eigen::Vector3f& a_color){m_Color = a_color;}
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

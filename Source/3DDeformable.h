@@ -62,6 +62,7 @@ public:
      void MouseRight(float cursorX, float cursorY, const Camera& camera);//react to right mouse click
 	 void MouseMove(const Camera& camera, double cursor_x, double cursor_y);
 
+	 void Output2File(std::ofstream* filestream);
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
 private:

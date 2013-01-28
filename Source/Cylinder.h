@@ -36,7 +36,7 @@ protected:
 	int m_Index;
 
 	void makeCircle();
-	void makeConeWall(float z1, float z2, int dir);
+	void makeConeWall(double z1, double z2, int dir);
     void GenerateCylinder();
     
 public:

@@ -25,7 +25,7 @@ void Cylinder::makeCircle()
 }
 
 
-void Cylinder::makeConeWall(float z1, float z2, int dir)
+void Cylinder::makeConeWall(double z1, double z2, int dir)
 {
 	Eigen::Vector3f n;
     for (int i = 0; i < 64; i++)

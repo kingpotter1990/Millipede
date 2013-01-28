@@ -586,10 +586,27 @@ void Deformable3D::MouseLeft(float x, float y, const Camera& camera){
 
 }
 
-void Deformable3D ::MouseRight(float x, float y, const Camera& camera){
+void Deformable3D::MouseRight(float x, float y, const Camera& camera){
     if(this->m_Manipulated){
         this->Deanchor();
         this->Deselect();
     }
 }
 
+void Deformable3D::Output2File(std::ofstream* filestream){
+
+	(*filestream)<<"//BEGIN DEFORMABLE"<<std::endl;
+	std::vector<Node*> nodes;
+	std::vector<int> faces;
+
+	m_Mesh->GetSurface(nodes, faces);
+	for(int i = 0; i < nodes.size(); i++){
+		(*filestream)<<"v "<<nodes[i]->m_Position[0]<<" "<<nodes[i]->m_Position[1]<<" "<<nodes[i]->m_Position[2]<<std::endl;
+		(*filestream)<<"n "<<nodes[i]->m_Normal[0]<<" "<<nodes[i]->m_Normal[1]<<" "<<nodes[i]->m_Normal[2]<<std::endl;
+	}
+
+	for(int i = 0; i < faces.size()/3; i++)
+		(*filestream)<<"f "<<faces[3*i]<<" "<<faces[3*i + 1]<<" "<<faces[3*i + 2]<<std::endl;
+
+	(*filestream)<<"//END DEFORMABLE"<<std::endl<<std::endl;
+}

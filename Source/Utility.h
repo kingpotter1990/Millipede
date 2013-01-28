@@ -13,6 +13,7 @@
 #endif
 
 #include <iostream>
+#include <fstream>
 #include "Eigen/Dense"
 
 #ifndef DegreesToRadians

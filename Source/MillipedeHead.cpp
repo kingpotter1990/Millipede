@@ -31,7 +31,6 @@ void MillipedeAntenna::UpdateTipRootPosition(){
 
 }
 
-
 bool MillipedeAntenna::SenseObstacle(){
 
 	//test anttena line intersection with terrain;
@@ -73,6 +72,45 @@ void MillipedeAntenna::UpdateAll(double a_dt){
 	
 	UpdateTipRootPosition();
 	
+}
+
+void MillipedeAntenna::Output2File(std::ofstream* filestream){
+	
+	Eigen::Vector3f point_a, point_b, center; double radius;
+
+	(*filestream)<<"//BEGIN ANTENNA "<<m_l_r<<std::endl;
+	myDrawer->SetIdentity();
+	myDrawer->Translate(m_head->m_Center);
+	myDrawer->Rotate(m_head->m_rotation);
+	myDrawer->Translate(Eigen::Vector3f(-0.5*m_head->m_Size[0], 0.5*m_head->m_Size[1], 0.5*m_l_r*m_head->m_Size[2]));
+	myDrawer->RotateY(m_l_r*m_phi);
+	myDrawer->RotateZ(-m_alpha);
+
+	center = myDrawer->CurrentOrigin();
+	radius = 0.2;
+	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
+	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END SPHERE "<<std::endl;
+
+	myDrawer->Translate(Eigen::Vector3f(-m_length,0,0));
+	point_a = center;
+	point_b = myDrawer->CurrentOrigin();
+	radius = 0.2;
+	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
+	(*filestream)<<point_a[0]<<" "<<point_a[1]<<" "<<point_a[2]<<"//POINT A "<<std::endl;
+	(*filestream)<<point_b[0]<<" "<<point_b[1]<<" "<<point_b[2]<<"//POINT B "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END CYLINDER "<<std::endl;
+
+	center = point_b;
+	radius = 0.2;
+	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
+	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
+	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"//END SPHERE "<<std::endl;
+
+	(*filestream)<<"//END ANTENNA "<<m_l_r<<std::endl;
 }
 
 void MillipedeHead::InitNeuroNet(Millipede* a_root){
@@ -263,3 +301,13 @@ void MillipedeHead::Draw(int type, const Camera& camera, const Light& light){
 	 m_right_antenna->Draw(type, camera, light);
 }
 
+void MillipedeHead::Output2File(std::ofstream* filestream){
+	
+	(*filestream)<<"//BEGIN HEAD"<<std::endl;
+	Cube::Output2File(filestream);
+	//no legs
+	//two antenna
+	m_left_antenna->Output2File(filestream);
+	m_right_antenna->Output2File(filestream);
+	(*filestream)<<"//END HEAD"<<std::endl;
+}

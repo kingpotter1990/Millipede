@@ -43,7 +43,7 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 		current_soft_section = new MillipedeSoftSection;
 		temp_position = previous_rigid_section->m_Center 
 			+ Eigen::Vector3f(0.5*a_rigid_size[0], -0.5*a_rigid_size[1], -0.5*a_rigid_size[2]);
-		current_soft_section->Init(Eigen::Vector3i(3,3,3),1.0,2000,0.4,100.0,temp_position,
+		current_soft_section->Init(Eigen::Vector3i(3,3,3),1.0,3000,0.4,100.0,temp_position,
 			Eigen::Vector3f(a_soft_length,a_rigid_size[1],a_rigid_size[2]),Eigen::Vector3f(1,1,1));
 		//hook up with the previous rigid section
 		previous_rigid_section->m_next = current_soft_section;
@@ -245,4 +245,40 @@ void Millipede::FixHead(){
 
 void Millipede::FixTail(){
 	m_tail->m_fixed = true;
+}
+
+void Millipede::Output2File(std::ofstream* filestream){
+	
+	(*filestream)<<"//BEGIN MILLIPEDE \n"<<std::endl;
+	//update head
+	m_head->Output2File(filestream);
+
+	//update each body section
+	MillipedeRigidSection *temp_rigid_section;
+	MillipedeSoftSection *temp_soft_section;
+	temp_rigid_section = m_head->m_next->m_next;
+	//rigid phase
+	while(1){
+		temp_rigid_section->Output2File(filestream);
+		temp_soft_section = temp_rigid_section->m_next;
+		if(temp_soft_section){
+			temp_rigid_section = temp_soft_section->m_next;
+		}
+		else
+			break;
+	}
+	//soft phase
+	temp_rigid_section = m_head;
+	while(1){
+		temp_soft_section = temp_rigid_section->m_next;
+		if(temp_soft_section){
+			temp_soft_section->Output2File(filestream);
+			temp_rigid_section = temp_soft_section->m_next;
+		}
+		else
+			break;
+	}
+
+	(*filestream)<<"//END MILLIPEDE \n"<<std::endl;
+
 }

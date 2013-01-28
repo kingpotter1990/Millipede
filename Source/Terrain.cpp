@@ -210,7 +210,7 @@ void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_
 			if(ix > 0 && iz > 0)
 			{
 				v1.x() = 0;
-				v1.z() = m_dz;
+				v1.z() = -m_dz;
 				v1.y() = m_height_data[ix*(a_res_z+1) + iz - 1] - m_height_data[ix*(a_res_z+1) + iz];
 				v1.normalize();
 
@@ -226,11 +226,11 @@ void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_
 			if(ix < a_res_x  && iz > 0)
 			{
 				v1.x() = 0;
-				v1.z() = m_dz;
+				v1.z() = -m_dz;
 				v1.y() = m_height_data[ix*(a_res_z+1) + iz - 1] - m_height_data[ix*(a_res_z+1) + iz];
 				v1.normalize();
 
-				v2.x() = -m_dx;
+				v2.x() = m_dx;
 				v2.z() = 0;
 				v2.y() = m_height_data[(ix+1)*(a_res_z+1) + iz] - m_height_data[ix*(a_res_z+1) + iz];
 				v2.normalize();

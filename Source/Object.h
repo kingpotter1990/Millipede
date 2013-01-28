@@ -29,7 +29,7 @@ class Node{
     //the Node class contains the mass, position, velocity and neighbor of the node
     //currently one Dimension
 public:
-    float m_Mass;
+    double m_Mass;
     bool m_Fixed;
     int m_Updated; //-1 or 1; alternate
     Eigen::Vector3f m_Velocity;
@@ -107,6 +107,14 @@ public:
     std::vector<Node*> GetLeftNodes();//-x
     std::vector<Node*> GetRightNodes();//+x
     
+	void GetTopSurface(std::vector<Node*>& nodes, std::vector<int>& faces);
+	void GetBottomSurface(std::vector<Node*>& nodes, std::vector<int>& faces);
+	void GetBackSurface(std::vector<Node*>& nodes, std::vector<int>& faces);
+	void GetFrontSurface(std::vector<Node*>& nodes, std::vector<int>& faces);
+	void GetLeftSurface(std::vector<Node*>& nodes, std::vector<int>& faces);
+	void GetRightSurface(std::vector<Node*>& nodes, std::vector<int>& faces);
+	void GetSurface(std::vector<Node*>& nodes, std::vector<int>& faces);
+
     Eigen::Vector3f m_Size;
     Eigen::Vector3i m_Num;
     

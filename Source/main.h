@@ -1,4 +1,3 @@
-
 #include "Utility.h"
 #include "Camera.h"
 #include "Light.h"
@@ -35,6 +34,7 @@ World * myWorld = NULL;
 Terrain* myTerrain = NULL;
 Drawer* myDrawer;
 Millipede* myMillipede;
+std::ofstream*  myOutputFile;
 
 int STOP = -1;//stop the animation
 int CONTROL = -1;//control the millipede
@@ -46,7 +46,7 @@ double TIME;
 double TIME_LAST;
 double DTIME;
 double FRAME_TIME = 0;
-
+int FRAME_COUNT = 0;
 GLfloat CursorX;
 GLfloat CursorY;//Curosr Position
 
@@ -63,3 +63,5 @@ void cursorCallback(int x, int y);
 void cursorCallback(int x, int y);
 void mouseCallback(int button, int state, int x, int y);
 void idleCallback();
+
+void OUTPUT_ONE_FRAME();

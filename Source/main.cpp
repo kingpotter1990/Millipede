@@ -36,6 +36,8 @@ void initScene(){
 	reinitScene();
 
 	std::cout<<"Starting Animation..."<<std::endl;
+
+
 }
 
 void reinitScene(){
@@ -45,9 +47,9 @@ void reinitScene(){
 	myWorld->Add_Object(myTerrain);
 	
 	myMillipede = new Millipede;
-	myMillipede->Init(Eigen::Vector3f(-10,15,0),16,Eigen::Vector3f(1,1,2),1, myTerrain);
+	myMillipede->Init(Eigen::Vector3f(-10,45,0),16,Eigen::Vector3f(1,1,2),1, myTerrain);
 	
-	//myMillipede->FixHead();
+	myMillipede->FixHead();
 	//myMillipede->FixTail();
 
 	myWorld->Add_Object(myMillipede);
@@ -115,6 +117,7 @@ void keyboardCallback(unsigned char key, int x, int y){
     
 	if ( key == EscKey || key == 'q' || key == 'Q' ) 
     {
+		myOutputFile->close();
         exit(0);
     }
     if( key == 's'|| key == 'S')
@@ -241,18 +244,38 @@ void idleCallback(){
 
 	if(DTIME > 1/1000.0)
 		DTIME = 1/1000.0;
+	
+	DTIME = 1/2000.0;//fixed dt
+
 	if(STOP == -1){
 	//only update physics
 		myWorld->Update(DTIME);
 	}
 
-	if(FRAME_TIME > 0.02)//50 frames per second
+	if(FRAME_TIME > 0.03)//33 frames per second
 	{
 		glutPostRedisplay() ; //draw new frame
-		FRAME_TIME = 0;
+		FRAME_TIME = 0;	
+		FRAME_COUNT++;
+		//OUTPUT_ONE_FRAME();
 	}
 	
+
+
 	//printf("Physics Rate %f\r", 1.0/DTIME) ;
+}
+
+void OUTPUT_ONE_FRAME(){
+
+	myOutputFile = new std::ofstream;
+	std::string filename;
+	filename = "Output/FRAME_"+ std::to_string(FRAME_COUNT) + ".txt";
+	myOutputFile->open(filename);
+
+	//millipede
+	myMillipede->Output2File(myOutputFile);
+
+	myOutputFile->close();
 }
 
 int main (int argc, char ** argv){
