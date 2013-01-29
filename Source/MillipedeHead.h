@@ -9,7 +9,7 @@ class MillipedeHead;
 class MillipedeAntenna;
 
 enum MILLIPEDE_STATUS {CONTROLLED, ADJUSTING, RANDOM_WALK, AVOID_OBSTACLE_LEFT,
-						AVOID_OBSTACLE_RIGHT, PREDATING_FOOD, ESCAPING_PREDATOR};
+						AVOID_OBSTACLE_RIGHT, PREDATING_FOOD_LEFT, PREDATING_FOOD_RIGHT,ESCAPING_PREDATOR};
 enum MILLIPEDE_TURNING {TURN_LEFT, TURN_RIGHT, GO_STRAIGHT};
 
 class MillipedeAntenna:public Object{
@@ -19,6 +19,7 @@ public:
 	void InitNeuroNet(MillipedeHead* a_head, double a_length, int a_l_r);
 	void UpdateAll(double dt);
 	bool SenseObstacle();
+	bool SenseFood(double& intensity);
 	void Draw(int type, const Camera& camera, const Light& light);
 	void Output2File(std::ofstream* filestream);
 private:
@@ -29,6 +30,7 @@ private:
 	int m_l_r;//1 left, -1 right
 	Eigen::Vector3f m_root_position;
 	Eigen::Vector3f m_tip_position;
+	double m_food_sense_threshold;
 protected:
 	void UpdateTipRootPosition();
 public:

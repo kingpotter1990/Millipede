@@ -45,6 +45,10 @@ local.properties
 Output/
 *.txt
 
+#pdf files and tex files
+*.tex
+*.pdf
+
 # Build results
 [Dd]ebug/
 [Rr]elease/

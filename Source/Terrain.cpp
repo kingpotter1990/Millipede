@@ -337,6 +337,21 @@ void Terrain::InitFood(){
 	}
 	
 }
+
+bool Terrain::ReachFood(Eigen::Vector3f pos, double tol){
+	
+	for(int i = 0; i < m_foods.size(); i++)
+	{
+		if((m_foods[i]->m_Center - pos).norm() < tol){
+			m_foods.erase(m_foods.begin() + i);
+			return true;
+		}
+	}
+
+	return false;
+
+}
+
 double Terrain::GetHeight(Eigen::Vector2f xy) const{
 	
 	int idx, idz;
@@ -424,6 +439,18 @@ bool Terrain::TestIntersection(Eigen::Vector3f a_o, Eigen::Vector3f a_p){
 	}
 
 	return false;
+}
+
+double Terrain::GetFoodIntensity(Eigen::Vector3f pos){
+	double intensity = 0;
+	double dist;
+	for(int i = 0; i < m_foods.size(); i++)
+	{
+		dist = (m_foods[i]->m_Center - pos).norm();
+		intensity += 100*m_foods[i]->m_Size.norm()/(dist*dist);//1/r*r spherical decay
+	}
+
+	return intensity;
 }
 
 void Terrain::InitDraw(){

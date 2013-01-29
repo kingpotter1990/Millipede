@@ -47,10 +47,10 @@ void reinitScene(){
 	myWorld->Add_Object(myTerrain);
 	
 	myMillipede = new Millipede;
-	myMillipede->Init(Eigen::Vector3f(-10,45,0),16,Eigen::Vector3f(1,1,2),1, myTerrain);
+	myMillipede->Init(Eigen::Vector3f(-10,15,0),6,Eigen::Vector3f(1,1,2),1, myTerrain);
 	
-	myMillipede->FixHead();
-	//myMillipede->FixTail();
+//	myMillipede->FixHead();
+//	myMillipede->FixTail();
 
 	myWorld->Add_Object(myMillipede);
 
@@ -117,7 +117,6 @@ void keyboardCallback(unsigned char key, int x, int y){
     
 	if ( key == EscKey || key == 'q' || key == 'Q' ) 
     {
-		myOutputFile->close();
         exit(0);
     }
     if( key == 's'|| key == 'S')

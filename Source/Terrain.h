@@ -29,6 +29,8 @@ public:
 	void Draw(int type, const Camera& camera, const Light& light);
 	void UpdateAll(double dt){};
 	bool TestIntersection(Eigen::Vector3f a_o, Eigen::Vector3f a_p);
+	double GetFoodIntensity(Eigen::Vector3f a_pos);
+	bool ReachFood(Eigen::Vector3f pos, double tol);
 public:
 	double m_frictness;
 

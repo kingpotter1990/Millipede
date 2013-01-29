@@ -12,7 +12,8 @@ void MillipedeAntenna::InitNeuroNet(MillipedeHead* a_head, double a_length, int 
 	m_length = a_length;
 	m_phi = 30;
 	m_alpha = 0;
-	
+	m_food_sense_threshold = 0.2;
+
 	UpdateTipRootPosition();
 }
 
@@ -36,6 +37,14 @@ bool MillipedeAntenna::SenseObstacle(){
 	//test anttena line intersection with terrain;
 	return m_head->m_terrain->TestIntersection(m_root_position, m_tip_position);
 
+}
+
+bool MillipedeAntenna::SenseFood(double& intensity){
+	
+	intensity = m_head->m_terrain->GetFoodIntensity(m_tip_position);
+	if(intensity > m_food_sense_threshold)
+		return true;
+	return false;
 }
 
 void MillipedeAntenna::Draw(int type, const Camera& camera, const Light& light){
@@ -184,7 +193,19 @@ void MillipedeHead::EnterMode(MILLIPEDE_STATUS a_mode){
 		m_current_turning_accum = 0;
 		m_turning_direction = GO_STRAIGHT;
 		break;
-	case PREDATING_FOOD:
+	case PREDATING_FOOD_LEFT:
+		m_linear_speed = 10;
+		m_turning_speed = 40;
+		m_turning_obj = 10;
+		m_current_turning_accum = 0;
+		m_turning_direction = TURN_LEFT;
+		break;
+	case PREDATING_FOOD_RIGHT:
+		m_linear_speed = 10;
+		m_turning_speed = 40;
+		m_turning_obj = 10;
+		m_current_turning_accum = 0;
+		m_turning_direction = TURN_RIGHT;
 		break;
 	case RANDOM_WALK:
 		m_linear_speed = 10;
@@ -207,13 +228,41 @@ void MillipedeHead::UpdateNeuroNet(double dt){
 	//ACTION SELECTION: food?escape?follow
 
 	//left antenna has a higher priority when both are hit
+	//avoid swaying 
+
 	if(m_left_antenna->SenseObstacle()){
 		EnterMode(AVOID_OBSTACLE_LEFT);
+		return;
 	}
 	else if(m_right_antenna->SenseObstacle()){
-		EnterMode(AVOID_OBSTACLE_RIGHT);	
+		EnterMode(AVOID_OBSTACLE_RIGHT);
+		return;
 	}
 		
+	double food_intensity_left, food_intensity_right;
+	if(m_left_antenna->SenseFood(food_intensity_left))
+	{
+		if(m_right_antenna->SenseFood(food_intensity_right)){
+			if(food_intensity_left > food_intensity_right){
+				//Turn Left
+				EnterMode(PREDATING_FOOD_LEFT);
+			}
+			else{
+				//Turn right
+				EnterMode(PREDATING_FOOD_RIGHT);
+			}
+		}
+		else{
+			//Turn Left
+			EnterMode(PREDATING_FOOD_LEFT);
+		}
+	}
+
+	if(m_mode == PREDATING_FOOD_LEFT|| m_mode == PREDATING_FOOD_RIGHT){
+		if(m_terrain->ReachFood(m_Center,3))
+			EnterMode(RANDOM_WALK);
+	}
+
 	if(m_mode == ADJUSTING){
 		MillipedeRigidSection *temp_rigid_section;
 		MillipedeSoftSection *temp_soft_section;
@@ -235,7 +284,8 @@ void MillipedeHead::UpdateNeuroNet(double dt){
 		}
 	}
 
-	if(m_mode == RANDOM_WALK || m_mode == AVOID_OBSTACLE_LEFT || m_mode == AVOID_OBSTACLE_RIGHT){
+	if(m_mode == RANDOM_WALK || m_mode == AVOID_OBSTACLE_LEFT || m_mode == AVOID_OBSTACLE_RIGHT
+		||m_mode == PREDATING_FOOD_LEFT || m_mode ==PREDATING_FOOD_RIGHT){
 		m_current_turning_accum += m_turning_speed*dt;
 		if(m_current_turning_accum >= m_turning_obj)
 			EnterMode(RANDOM_WALK);
