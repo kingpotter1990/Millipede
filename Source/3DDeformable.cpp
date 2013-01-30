@@ -596,17 +596,35 @@ void Deformable3D::MouseRight(float x, float y, const Camera& camera){
 void Deformable3D::Output2File(std::ofstream* filestream){
 
 	(*filestream)<<"//BEGIN DEFORMABLE"<<std::endl;
+	(*filestream)<<"mesh2{"<<std::endl;
 	std::vector<Node*> nodes;
 	std::vector<int> faces;
 
 	m_Mesh->GetSurface(nodes, faces);
-	for(int i = 0; i < nodes.size(); i++){
-		(*filestream)<<"v "<<nodes[i]->m_Position[0]<<" "<<nodes[i]->m_Position[1]<<" "<<nodes[i]->m_Position[2]<<std::endl;
-		(*filestream)<<"n "<<nodes[i]->m_Normal[0]<<" "<<nodes[i]->m_Normal[1]<<" "<<nodes[i]->m_Normal[2]<<std::endl;
+
+	(*filestream)<<"vertex_vectors{"<<nodes.size()<<","<<std::endl;
+	for(int i = 0; i < nodes.size()-1; i++){
+            (*filestream)<<"<"<<nodes[i]->m_Position[0]<<","<<nodes[i]->m_Position[1]<<","<<nodes[i]->m_Position[2]<<">,"<<std::endl;
 	}
+        int i = nodes.size()-1;
+        (*filestream)<<"<"<<nodes[i]->m_Position[0]<<","<<nodes[i]->m_Position[1]<<","<<nodes[i]->m_Position[2]<<">,"<<std::endl;
+	(*filestream)<<"}"<<std::endl; // end vertex_vectors
 
-	for(int i = 0; i < faces.size()/3; i++)
-		(*filestream)<<"f "<<faces[3*i]<<" "<<faces[3*i + 1]<<" "<<faces[3*i + 2]<<std::endl;
+	(*filestream)<<"normal_vectors{"<<nodes.size()<<","<<std::endl;
+	for(int i = 0; i < nodes.size()-1; i++){
+            (*filestream)<<"<"<<nodes[i]->m_Normal[0]<<","<<nodes[i]->m_Normal[1]<<","<<nodes[i]->m_Normal[2]<<">,"<<std::endl;
+	}
+        i = nodes.size()-1;
+        (*filestream)<<"<"<<nodes[i]->m_Normal[0]<<","<<nodes[i]->m_Normal[1]<<","<<nodes[i]->m_Normal[2]<<">,"<<std::endl;
+	(*filestream)<<"}"<<std::endl; // end normal_vectors
 
+	(*filestream)<<"face_indices{"<<faces.size()/3<<","<<std::endl;
+	for(int i = 0; i < faces.size()/3-1; i++)
+            (*filestream)<<"<"<<faces[3*i]<<","<<faces[3*i + 1]<<","<<faces[3*i + 2]<<">,"<<std::endl;
+        i = faces.size()/3-1;
+        (*filestream)<<"<"<<faces[3*i]<<","<<faces[3*i + 1]<<","<<faces[3*i + 2]<<">,"<<std::endl;
+	(*filestream)<<"}"<<std::endl; // end face_indices
+
+	(*filestream)<<"}"<<std::endl; // end mesh2
 	(*filestream)<<"//END DEFORMABLE"<<std::endl<<std::endl;
 }

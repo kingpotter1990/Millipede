@@ -45,7 +45,7 @@ void reinitScene(){
 	
 	myWorld->Add_Object(myTerrain);
 	
-	int m = 5, n = 5;
+	int m = 1, n = 1;
 	myMillipedes = new Millipede[m*n];
 	for(int i = 0; i < m; i++)
 		for(int j = 0; j < n; j++)
@@ -269,7 +269,7 @@ void OUTPUT_ONE_FRAME(){
 
 	myOutputFile = new std::ofstream;
 	std::string filename;
-	filename = "Output/FRAME_"+ std::to_string(FRAME_COUNT) + ".txt";
+	filename = "Output/FRAME_"+ std::to_string(FRAME_COUNT) + ".inc";
 	myOutputFile->open(filename);
 
 	//Terrain

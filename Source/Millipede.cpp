@@ -331,36 +331,46 @@ void Millipede::FixTail(){
 
 void Millipede::Output2File(std::ofstream* filestream){
 	
-	(*filestream)<<"//BEGIN MILLIPEDE \n"<<std::endl;
-	//output head
-	m_head->Output2File(filestream);
+    // rigid part start
+    (*filestream)<<"#declare MillipedeRigidPart = union {\n"<<std::endl;
 
-	//output each body section
-	MillipedeRigidSection *temp_rigid_section;
-	MillipedeSoftSection *temp_soft_section;
-	temp_rigid_section = m_head->m_next->m_next;
-	//rigid phase
-	while(1){
-		temp_rigid_section->Output2File(filestream);
-		temp_soft_section = temp_rigid_section->m_next;
-		if(temp_soft_section){
-			temp_rigid_section = temp_soft_section->m_next;
-		}
-		else
-			break;
-	}
-	//soft phase
-	temp_rigid_section = m_head;
-	while(1){
-		temp_soft_section = temp_rigid_section->m_next;
-		if(temp_soft_section){
-			temp_soft_section->Output2File(filestream);
-			temp_rigid_section = temp_soft_section->m_next;
-		}
-		else
-			break;
-	}
+    //output head
+    m_head->Output2File(filestream);
 
-	(*filestream)<<"//END MILLIPEDE \n"<<std::endl;
+    //output each body section
+    MillipedeRigidSection *temp_rigid_section;
+    MillipedeSoftSection *temp_soft_section;
+    temp_rigid_section = m_head->m_next->m_next;
 
+    //rigid phase
+    while(1){
+        temp_rigid_section->Output2File(filestream);
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+
+    // rigid part end
+    (*filestream)<<"}\n"<<std::endl;
+
+    // soft part start
+    (*filestream)<<"#declare MillipedeSoftPart = union { \n"<<std::endl;
+
+    //soft phase
+    temp_rigid_section = m_head;
+    while(1){
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_soft_section->Output2File(filestream);
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+
+    // soft part end
+    (*filestream)<<"}\n"<<std::endl;
 }
