@@ -443,7 +443,11 @@ void MillipedeLeg::EnterSwayForward2(){
 	if(m_prev)
 		if(m_prev->m_leg_state == LEG_STANCE)
 		{
+#ifdef __linux__
+                    m_target_phi = std::min(m_prev->m_phi + phase_lag, m_extreme_phi);
+#else
 			m_target_phi = min(m_prev->m_phi + phase_lag, m_extreme_phi);
+#endif
 		}
 	m_target_alpha = 0;
 	m_target_beta = m_extreme_beta/2;

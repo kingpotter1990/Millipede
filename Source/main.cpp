@@ -6,7 +6,6 @@
 //  Copyright 2011 Jingyi Fang. All rights reserved.
 //
 
-
 #include "main.h"
 
 void initScene(){
@@ -298,9 +297,7 @@ int main (int argc, char ** argv){
     glutMotionFunc(motionCallback);
 	glutPassiveMotionFunc(cursorCallback);
     glutDisplayFunc(displayCallback);
-#ifdef _WIN32
 	glewInit();
-#endif
     initScene();
     glutMainLoop();
     

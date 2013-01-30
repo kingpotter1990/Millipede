@@ -6,7 +6,10 @@
 #ifdef __APPLE__  // include Mac OS X verions of headers
 #  include <OpenGL/OpenGL.h>
 #  include <GLUT/glut.h>
-#else // windows or linux
+#elif __linux__ // linux
+#  include "GL/glew.h"
+#  include "GL/freeglut.h"
+#else // windows
 #  include <windows.h> 
 #  include "GL/glew.h"
 #  include "GL/freeglut.h"
@@ -14,6 +17,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <algorithm>
 #include "Eigen/Dense"
 
 #ifndef DegreesToRadians
