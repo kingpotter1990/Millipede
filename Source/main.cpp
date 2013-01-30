@@ -31,7 +31,7 @@ void initScene(){
 
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 15, RANDOM, OBSTACLE_OFF, FOOD_ON);
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 15, TERRAIN_RANDOM, OBSTACLE_OFF, FOOD_OFF);
 
 	reinitScene();
 
@@ -46,13 +46,15 @@ void reinitScene(){
 	
 	myWorld->Add_Object(myTerrain);
 	
-	myMillipede = new Millipede;
-	myMillipede->Init(Eigen::Vector3f(-10,15,0),6,Eigen::Vector3f(1,1,2),1, myTerrain);
-	
-//	myMillipede->FixHead();
-//	myMillipede->FixTail();
+	int m = 5, n = 5;
+	myMillipedes = new Millipede[m*n];
+	for(int i = 0; i < m; i++)
+		for(int j = 0; j < n; j++)
+		{
+			myMillipedes[i*n +j].Init(Eigen::Vector3f(30*i,15,-20*j),6,Eigen::Vector3f(1,1,2),1, myTerrain);
+			myWorld->Add_Object(&myMillipedes[i*n +j]);
+		}
 
-	myWorld->Add_Object(myMillipede);
 
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime() ;
@@ -82,16 +84,16 @@ void specialCallback(int key, int x, int y){
 	switch(key)
 	{
 		case GLUT_KEY_UP:
-		myMillipede->ReceiveControllKey(0);
+		myMillipedes[0].ReceiveControllKey(0);
 		break;	
 		case GLUT_KEY_DOWN:
-		myMillipede->ReceiveControllKey(1);
+		myMillipedes[0].ReceiveControllKey(1);
 		break;
 		case GLUT_KEY_LEFT:
-		myMillipede->ReceiveControllKey(2);
+		myMillipedes[0].ReceiveControllKey(2);
 		break;
 		case GLUT_KEY_RIGHT:
-		myMillipede->ReceiveControllKey(3);
+		myMillipedes[0].ReceiveControllKey(3);
 		break;
 	}
 	
@@ -104,13 +106,13 @@ void keyboardCallback(unsigned char key, int x, int y){
 		switch(key)
 		{
 			case '7'://down
-			myMillipede->ReceiveControllKey(1);
+			myMillipedes[0].ReceiveControllKey(1);
 			break;
 			case '8'://left
-			myMillipede->ReceiveControllKey(2);
+			myMillipedes[0].ReceiveControllKey(2);
 			break;
 			case '9'://right
-			myMillipede->ReceiveControllKey(3);
+			myMillipedes[0].ReceiveControllKey(3);
 			break;
 		}
 	}
@@ -126,7 +128,7 @@ void keyboardCallback(unsigned char key, int x, int y){
 	if( key == 'c'|| key == 'C')
 	{
 		CONTROL *= -1;
-		myMillipede->SetControl(CONTROL == 1?true:false);
+		myMillipedes[0].SetControl(CONTROL == 1?true:false);
 	}
 	if( key == 'p'|| key == 'P' )
 	{
@@ -271,8 +273,11 @@ void OUTPUT_ONE_FRAME(){
 	filename = "Output/FRAME_"+ std::to_string(FRAME_COUNT) + ".txt";
 	myOutputFile->open(filename);
 
+	//Terrain
+
+
 	//millipede
-	myMillipede->Output2File(myOutputFile);
+	myMillipedes[0].Output2File(myOutputFile);
 
 	myOutputFile->close();
 }

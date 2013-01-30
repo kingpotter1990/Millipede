@@ -17,7 +17,6 @@ public:
 	virtual ~Millipede();
 	void Init(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length, Terrain* a_terrain);
 	void Draw(int type, const Camera& camera, const Light& light);
-	void Update(double a_dt);
     void SetWorld(World* a_world);
     void UpdateAll(double dt);
 	void ReceiveControllKey(int key);
@@ -28,14 +27,13 @@ public:
 protected:
 	void InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length);
 	void InitNeuroNet(Terrain* a_terrain);
-	//void UpdateLegTipPosition(MillipedeRigidSection* a_section, int l_or_r);
-	//void UpdateLegRootPosition(MillipedeRigidSection* a_section, int l_or_r);
+	void UpdateBoundingBox();
 
 public:
 	int m_num_section;
 	Eigen::Vector3f m_size;
 	double m_link_length;
-
+	Eigen::Vector4f m_bounding_box;//x_min, x_max, z_min, z_max
 	Terrain* m_terrain;
 
 	MillipedeHead* m_head;

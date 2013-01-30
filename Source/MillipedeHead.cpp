@@ -35,7 +35,7 @@ void MillipedeAntenna::UpdateTipRootPosition(){
 bool MillipedeAntenna::SenseObstacle(){
 
 	//test anttena line intersection with terrain;
-	return m_head->m_terrain->TestIntersection(m_root_position, m_tip_position);
+	return m_head->m_terrain->TestIntersection(m_head->m_master, m_root_position, m_tip_position);
 
 }
 
@@ -126,8 +126,8 @@ void MillipedeHead::InitNeuroNet(Millipede* a_root){
 	MillipedeRigidSection::InitNeuroNet(a_root,0);
 	m_left_antenna = new MillipedeAntenna();
 	m_right_antenna = new MillipedeAntenna();
-	m_left_antenna->InitNeuroNet(this, 5,1);
-	m_right_antenna->InitNeuroNet(this, 5,-1);
+	m_left_antenna->InitNeuroNet(this, 8,1);
+	m_right_antenna->InitNeuroNet(this, 8,-1);
 
 	EnterMode(ADJUSTING);
 }
@@ -166,7 +166,7 @@ void MillipedeHead::EnterMode(MILLIPEDE_STATUS a_mode){
 	switch (a_mode)
 	{
 	case CONTROLLED:
-		m_linear_speed = 10.0;
+		m_linear_speed = 15.0;
 		m_turning_speed = 0.0;
 		m_turning_obj = 0.0;
 		m_current_turning_accum = 0;
@@ -174,15 +174,15 @@ void MillipedeHead::EnterMode(MILLIPEDE_STATUS a_mode){
 		break;
 	case AVOID_OBSTACLE_LEFT:
 		m_linear_speed = 5;
-		m_turning_speed = 30;
-		m_turning_obj = 10;
+		m_turning_speed = 100;
+		m_turning_obj = 2;
 		m_current_turning_accum = 0;
 		m_turning_direction = TURN_RIGHT;
 		break;
 	case AVOID_OBSTACLE_RIGHT:
 		m_linear_speed = 5;
-		m_turning_speed = 30;
-		m_turning_obj = 10;
+		m_turning_speed = 80;
+		m_turning_obj = 2;
 		m_current_turning_accum = 0;
 		m_turning_direction = TURN_LEFT;
 		break;
@@ -194,22 +194,22 @@ void MillipedeHead::EnterMode(MILLIPEDE_STATUS a_mode){
 		m_turning_direction = GO_STRAIGHT;
 		break;
 	case PREDATING_FOOD_LEFT:
-		m_linear_speed = 10;
+		m_linear_speed = 15;
 		m_turning_speed = 40;
-		m_turning_obj = 10;
+		m_turning_obj = 2;
 		m_current_turning_accum = 0;
 		m_turning_direction = TURN_LEFT;
 		break;
 	case PREDATING_FOOD_RIGHT:
-		m_linear_speed = 10;
+		m_linear_speed = 15;
 		m_turning_speed = 40;
-		m_turning_obj = 10;
+		m_turning_obj = 2;
 		m_current_turning_accum = 0;
 		m_turning_direction = TURN_RIGHT;
 		break;
 	case RANDOM_WALK:
-		m_linear_speed = 10;
-		m_turning_speed = 40;
+		m_linear_speed = 15;
+		m_turning_speed = 30 + 30*Util::getRand();
 		m_current_turning_accum = 0;
 		m_turning_direction = (Util::getRand() > 0.5 ? TURN_LEFT:TURN_RIGHT); //set a new turning direction
 		m_current_turning_accum = 0.0; //clear to 0
@@ -226,6 +226,27 @@ void MillipedeHead::EnterMode(MILLIPEDE_STATUS a_mode){
 void MillipedeHead::UpdateNeuroNet(double dt){
 	//sense the environment and update the turning direction, speed, etc
 	//ACTION SELECTION: food?escape?follow
+
+	if(m_mode == ADJUSTING){
+		MillipedeRigidSection *temp_rigid_section;
+		MillipedeSoftSection *temp_soft_section;
+		temp_rigid_section = m_master->m_head->m_next->m_next;//skip the head since it is controlled by the mind directly
+
+		//In adjusting mode only when all sections get supported will it start walking
+		while(1){
+			if(temp_rigid_section->m_body_state != LEG_SUPPORTED){
+				return;//remain in Adjusting mode
+			}
+			temp_soft_section = temp_rigid_section->m_next;
+			if(temp_soft_section){
+				temp_rigid_section = temp_soft_section->m_next;
+			}
+			else{
+				EnterMode(RANDOM_WALK);//All sections are in Leg_supported mode now
+				break;
+			}
+		}
+	}
 
 	//left antenna has a higher priority when both are hit
 	//avoid swaying 
@@ -261,27 +282,6 @@ void MillipedeHead::UpdateNeuroNet(double dt){
 	if(m_mode == PREDATING_FOOD_LEFT|| m_mode == PREDATING_FOOD_RIGHT){
 		if(m_terrain->ReachFood(m_Center,3))
 			EnterMode(RANDOM_WALK);
-	}
-
-	if(m_mode == ADJUSTING){
-		MillipedeRigidSection *temp_rigid_section;
-		MillipedeSoftSection *temp_soft_section;
-		temp_rigid_section = m_master->m_head->m_next->m_next;//skip the head since it is controlled by the mind directly
-
-		//In adjusting mode only when all sections get supported will it start walking
-		while(1){
-			if(temp_rigid_section->m_body_state != LEG_SUPPORTED){
-				break;
-			}
-			temp_soft_section = temp_rigid_section->m_next;
-			if(temp_soft_section){
-				temp_rigid_section = temp_soft_section->m_next;
-			}
-			else{
-				EnterMode(RANDOM_WALK);//All sections are in Leg_supported mode now
-				break;
-			}
-		}
 	}
 
 	if(m_mode == RANDOM_WALK || m_mode == AVOID_OBSTACLE_LEFT || m_mode == AVOID_OBSTACLE_RIGHT

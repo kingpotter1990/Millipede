@@ -28,6 +28,7 @@ private:
 	double m_phi;//around y axis
 	double m_alpha;//around x-z axis
 	int m_l_r;//1 left, -1 right
+public:
 	Eigen::Vector3f m_root_position;
 	Eigen::Vector3f m_tip_position;
 	double m_food_sense_threshold;
@@ -48,6 +49,7 @@ public:
 	void ExitControl(){EnterMode(m_prev_mode);};//exit current mode
 	double GetLinearSpeed(){return m_linear_speed;};
 	void Output2File(std::ofstream* filestream);
+
 protected:
 	void KeepHeadBalance(double a_dt);
 	void UpdateNeuroNet(double a_dt);
@@ -60,6 +62,7 @@ protected:
 	double m_turning_speed;//degree per seconds
 	double m_turning_obj;
 	double m_current_turning_accum;
+public:
 	MillipedeAntenna* m_left_antenna;
 	MillipedeAntenna* m_right_antenna;
 };

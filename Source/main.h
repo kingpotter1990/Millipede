@@ -33,7 +33,7 @@ Light Lumia;
 World * myWorld = NULL;
 Terrain* myTerrain = NULL;
 Drawer* myDrawer;
-Millipede* myMillipede;
+Millipede* myMillipedes;
 std::ofstream*  myOutputFile;
 
 int STOP = -1;//stop the animation

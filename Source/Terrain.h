@@ -8,8 +8,9 @@
 #include "World.h"
 
 class Sphere;
+class Millipede;
 
-enum TerrainType{RANDOM, FLAT, TEST};
+enum TerrainType{TERRAIN_RANDOM, TERRAIN_FLAT, TERRAIN_TEST};
 
 class Terrain:public Object{
 
@@ -28,16 +29,17 @@ public:
 	~Terrain(){delete[] m_height_data; delete[] m_normal_data;};
 	void Draw(int type, const Camera& camera, const Light& light);
 	void UpdateAll(double dt){};
-	bool TestIntersection(Eigen::Vector3f a_o, Eigen::Vector3f a_p);
+	bool TestIntersection(Millipede* a_bug, Eigen::Vector3f a_o, Eigen::Vector3f a_p);
 	double GetFoodIntensity(Eigen::Vector3f a_pos);
 	bool ReachFood(Eigen::Vector3f pos, double tol);
+	void RegisterMillipede(Millipede* a_millipede);
 public:
 	double m_frictness;
 
 protected:
 	void InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_z, int n_hill, TerrainType a_type);
-	void InitObstacles();
-	void InitFood();
+	void InitObstacles(TerrainType a_type);
+	void InitFood(TerrainType a_type);
 	void InitDraw();
 
 protected:
@@ -61,6 +63,7 @@ protected:
 	Eigen::Vector3f* m_normal_data;//per node
 	std::vector<Object*> m_obstacles;
 	std::vector<Sphere*> m_foods;
+	std::vector<Millipede*> m_millipedes;//registered millipedes on the terrain
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

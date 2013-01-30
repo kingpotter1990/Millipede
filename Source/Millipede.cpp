@@ -1,5 +1,6 @@
 #include "Millipede.h"
 #include "MillipedeHead.h"
+#include "MillipedeLeg.h"
 #include "MillipedeSection.h"
 #include "Terrain.h"
 #include "Drawer.h"
@@ -93,6 +94,8 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 void Millipede::InitNeuroNet(Terrain* a_terrain){
 
 	m_terrain = a_terrain;
+	
+	a_terrain->RegisterMillipede(this);
 
 	MillipedeRigidSection *temp_rigid_section;
 	MillipedeSoftSection *temp_soft_section;
@@ -159,9 +162,19 @@ void Millipede::Draw(int type, const Camera& camera, const Light& light){
 			break;
 	}
 
+	//draw the bounding box
+	myDrawer->SetIdentity();
+	myDrawer->SetColor(Eigen::Vector3f(1.0,1.0,0.0));
+	myDrawer->Translate(Eigen::Vector3f((m_bounding_box[0] + m_bounding_box[1])/2.0, 0,
+		(m_bounding_box[2] + m_bounding_box[3])/2.0));
+	myDrawer->Scale(Eigen::Vector3f(m_bounding_box[1] - m_bounding_box[0],1,m_bounding_box[3] - m_bounding_box[2]));
+	myDrawer->DrawCube(type, camera, light);
+
 }
 
 void Millipede::UpdateAll(double dt){
+
+	UpdateBoundingBox();
 
 	//update head
 	m_head->UpdateAll(dt);
@@ -191,6 +204,68 @@ void Millipede::UpdateAll(double dt){
 		else
 			break;
 	}
+
+}
+
+void Millipede::UpdateBoundingBox(){
+
+	double x_min, z_min, x_max, z_max;
+
+	x_min = min(m_head->m_left_antenna->m_tip_position[0],m_head->m_right_antenna->m_tip_position[0]);
+	x_max = max(m_head->m_left_antenna->m_tip_position[0],m_head->m_right_antenna->m_tip_position[0]);
+	z_min = min(m_head->m_left_antenna->m_tip_position[2],m_head->m_right_antenna->m_tip_position[2]);
+	z_max = max(m_head->m_left_antenna->m_tip_position[2],m_head->m_right_antenna->m_tip_position[2]);
+
+	MillipedeRigidSection *temp_rigid_section;
+	MillipedeSoftSection *temp_soft_section;
+	temp_rigid_section = m_head->m_next->m_next;
+	Eigen::Vector3f current_point;
+
+	
+	//rigid phase
+	while(1){
+
+		
+		current_point = temp_rigid_section->m_left_leg->m_tip_position;
+
+		if(x_min > current_point[0])
+			x_min = current_point[0];
+
+		if(x_max < current_point[0])
+			x_max = current_point[0];
+		
+		if(z_min > current_point[2])
+			z_min = current_point[2];
+		
+		if(z_max < current_point[2])
+			z_max = current_point[2];
+
+		
+		current_point = temp_rigid_section->m_right_leg->m_tip_position;
+		
+		if(x_min > current_point[0])
+			x_min = current_point[0];
+		
+		if(x_max < current_point[0])
+			x_max = current_point[0];
+		
+		if(z_min > current_point[2])
+			z_min = current_point[2];
+		
+		if(z_max < current_point[2])
+			z_max = current_point[2];
+	
+
+		temp_soft_section = temp_rigid_section->m_next;
+		if(temp_soft_section){
+			temp_rigid_section = temp_soft_section->m_next;
+		}
+		else
+			break;
+	}
+	
+	double buffer_zone_size = 3.0;
+	m_bounding_box = buffer_zone_size * Eigen::Vector4f(-1,1,-1,1) + Eigen::Vector4f(x_min, x_max, z_min, z_max);
 
 }
 
@@ -250,10 +325,10 @@ void Millipede::FixTail(){
 void Millipede::Output2File(std::ofstream* filestream){
 	
 	(*filestream)<<"//BEGIN MILLIPEDE \n"<<std::endl;
-	//update head
+	//output head
 	m_head->Output2File(filestream);
 
-	//update each body section
+	//output each body section
 	MillipedeRigidSection *temp_rigid_section;
 	MillipedeSoftSection *temp_soft_section;
 	temp_rigid_section = m_head->m_next->m_next;

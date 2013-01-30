@@ -1,12 +1,13 @@
 Things to work on
 
-1. Invertible Implict Elasticity (not likely)
+1. Invertible Implict Elasticity (not necessary)
 2. Turning (Done)
 3. Terrain (Done)
-4. Antenna (In Progress)
-- Obstacle
-- Food
-1.22 - 1.30
+4. Antenna (Almost Done)
+- Obstacle: sphere, cube, cylinder, other Millipedes (Done)
+- Food (Done)
+- Movement (In Progress)
+1.22 - 1.31
 
 5. Construct different Terrains, experiment
 - cylinders paved road
@@ -17,6 +18,7 @@ Things to work on
 2.1 - 2.30
 
 6. Build different Body Types, experiment
+   Crowd Simulation: flock behavior modeling
 - Multipede Robot
 - Millipede
 - Centipede
@@ -33,9 +35,45 @@ optional
 
 
 Current Issues:
-1. Body not serpentine enough, body line not smooth enough, section bumping all time [Solved By letting body section in supported
+1. Body not serpentine enough, body line not smooth enough, section bumping all time [SOLVED By letting body section in supported
 mode when one leg is in stance mode, also by updating the keep section balanced code]
 2. Legs not in wave pattern, no consideration for collision of legs, etc
 [Plan to solve by applying leg relative rotation diff constraint]
-[Partially Solved]
-3. Terrain GetNormal FUnction seems wrong, generate Normal Function most likely wrong
+[Partially Solved by restricting diff_phase with previous stance leg when entering stance mode]
+Some neighboring legs would move in the same phase, not resulting in wave pattern[TODO]
+3. Terrain GetNormal FUnction seems wrong, generate Normal Function most likely wrong [SOVLED]
+
+Different Parameters:
+
+1. Body Dimension: rigid seciton vs deformable section
+
+2. Leg Dimension; Leg rotation extreme value
+
+3. Leg rotation speed:
+
+4. Section rotation speed/ linear speed in different modes
+
+5. neighbor leg tolerance angle value
+
+6. Antenna Length
+
+Rendering Ideas:
+
+Render Four Types: physics skeleton; centipede; millipede, robot
+Render Scenes: 
+0. Hanging and manipulating a millipede skeleton in air
+[Demonstrate the physical body structure]
+
+2. Millipede/Centipede/Robot walking over three different types of irregular terrains
+[Demonstrate the locomotion model]
+
+OPTIONAL: robot walking on snow, need Alexy's help
+
+3. Maze composed of sphere cylinder and cubes, at the several places of the maze there are foods; 
+The millipede start from the center of the maze and will sense the food, avoid obstacles, find the food, 
+also get out of the maze eventually
+[Demonstrate the antenna capability of sensing food and obstacle]
+
+4. Group Behavior OPTIONAL
+Simulate a group of millipedes/centipedes
+Put a food source far from them, all moving towards the food source

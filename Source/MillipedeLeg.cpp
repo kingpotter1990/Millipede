@@ -13,10 +13,10 @@ MillipedeLeg::MillipedeLeg(int a_l_r):m_l_r(a_l_r){
 
 void MillipedeLeg::InitPhysics(Eigen::Vector3f a_body_size){
 	
-	m_segment_0_size = a_body_size[0]*Eigen::Vector3f(0.2,0.2,0.5);
-	m_segment_1_size = a_body_size[0]*Eigen::Vector3f(0.2,0.2,1.5);
-	m_segment_2_size = a_body_size[0]*Eigen::Vector3f(0.15,0.15,1.0);
-	m_segment_3_size = a_body_size[0]*Eigen::Vector3f(0.12,0.12,0.5);
+	m_segment_0_size = a_body_size[0]*Eigen::Vector3f(0.4,0.4,0.5);
+	m_segment_1_size = a_body_size[0]*Eigen::Vector3f(0.4,0.4,2.0);
+	m_segment_2_size = a_body_size[0]*Eigen::Vector3f(0.25,0.25,1.5);
+	m_segment_3_size = a_body_size[0]*Eigen::Vector3f(0.2,0.2,0.5);
 
 }
 

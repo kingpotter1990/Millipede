@@ -4,17 +4,22 @@
 #include "Cube.h"
 #include "Sphere.h"
 #include "Cylinder.h"
+#include "Millipede.h"
 
 extern Drawer* myDrawer;
 
 Terrain::Terrain(Eigen::Vector2f a_size, Eigen::Vector2i a_res, int n_hill, TerrainType a_type, bool a_obstacle_on_off, bool a_food_on_off){
 	m_type = TypeTerrain;
 	m_frictness = 10;
+	
 	InitBase(a_size.x(), a_size.y(), a_res.x(), a_res.y(), n_hill, a_type);
+	
 	if(a_obstacle_on_off)
-		InitObstacles();
+		InitObstacles(a_type);
+	
 	if(a_food_on_off)
-		InitFood();
+		InitFood(a_type);
+
 	InitDraw();
 }
 
@@ -37,7 +42,7 @@ void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_
 	double hill_center_x, hill_center_z, hill_height, hill_narrowness_x, hill_narrowness_z;
 	double dev_x, dev_z;	
 	
-	if(a_type == FLAT){
+	if(a_type == TERRAIN_FLAT){
 		for(int ix = 0; ix < (a_res_x+1); ix++)
 			for(int iz = 0; iz < (a_res_z+1); iz++){
 				m_height_data[ix*(a_res_z+1) + iz] = 0.0;
@@ -45,10 +50,25 @@ void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_
 			}
 		return;
 	}
+	else if(a_type == TERRAIN_RANDOM){
+		for(int i = 0; i < n_hill; i++){
+			hill_center_x = (Util::getRand()-0.5)*a_size_x;
+			hill_center_z = (Util::getRand()-0.5)*a_size_z;
+			hill_height = Util::getRand()*(hill_height_max - 5) + 5;
+			hill_narrowness_x = Util::getRand()*20 + 20; //20~40
+			hill_narrowness_z = Util::getRand()*20 + 20; //20~40
 
-
-	if(a_type == TEST)
-	{
+			//add the hill to current height map
+			for(int ix = 0; ix < (a_res_x+1); ix++)
+				for(int iz = 0; iz < (a_res_z+1); iz++){
+					dev_x = ix*m_dx - 0.5*a_size_x - hill_center_x;
+					dev_z = iz*m_dz - 0.5*a_size_z - hill_center_z;
+					m_height_data[ix*(a_res_z+1) + iz] += //guassian hill
+						hill_height*exp(-dev_x*dev_x/(2*hill_narrowness_x*hill_narrowness_x)-dev_z*dev_z/(2*hill_narrowness_z*hill_narrowness_z));
+				}
+		}
+	}
+	else if(a_type == TERRAIN_TEST){
 		hill_center_x = -0*a_size_x;
 		hill_center_z = -0*a_size_z;
 		hill_height = hill_height_max;
@@ -129,24 +149,6 @@ void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_
 				m_height_data[ix*(a_res_z+1) + iz] += //guassian hill
 					hill_height*exp(-dev_x*dev_x/(2*hill_narrowness_x*hill_narrowness_x)-dev_z*dev_z/(2*hill_narrowness_z*hill_narrowness_z));
 			}
-	}
-	else if(a_type == RANDOM){
-		for(int i = 0; i < n_hill; i++){
-			hill_center_x = (Util::getRand()-0.5)*a_size_x;
-			hill_center_z = (Util::getRand()-0.5)*a_size_z;
-			hill_height = Util::getRand()*(hill_height_max - 5) + 5;
-			hill_narrowness_x = Util::getRand()*20 + 20; //20~40
-			hill_narrowness_z = Util::getRand()*20 + 20; //20~40
-
-			//add the hill to current height map
-			for(int ix = 0; ix < (a_res_x+1); ix++)
-				for(int iz = 0; iz < (a_res_z+1); iz++){
-					dev_x = ix*m_dx - 0.5*a_size_x - hill_center_x;
-					dev_z = iz*m_dz - 0.5*a_size_z - hill_center_z;
-					m_height_data[ix*(a_res_z+1) + iz] += //guassian hill
-						hill_height*exp(-dev_x*dev_x/(2*hill_narrowness_x*hill_narrowness_x)-dev_z*dev_z/(2*hill_narrowness_z*hill_narrowness_z));
-				}
-		}
 	}
 
 	//normalize
@@ -243,14 +245,17 @@ void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_
 		}
 }
 
-void Terrain::InitObstacles(){
+void Terrain::InitObstacles(TerrainType a_type){
 
 	//test cases
 	//case 1: just cubes
+	
 	Cube* temp_cube;
+	Cylinder* temp_cylinder;
+	Sphere* temp_sphere;
+	
 	Eigen::Vector3f temp_center, temp_scale, temp_color;
 
-	//cube 1
 	temp_cube = new Cube;
 	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
 	temp_cube->m_Color = temp_color;
@@ -267,6 +272,7 @@ void Terrain::InitObstacles(){
 
 	m_obstacles.push_back(temp_cube);
 
+	/*
 	//cube 2
 	temp_cube = new Cube;
 	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
@@ -317,25 +323,84 @@ void Terrain::InitObstacles(){
 	temp_cube->m_TransBack = temp_cube->m_Trans.inverse();
 
 	m_obstacles.push_back(temp_cube);
+
+	*/
+
+	//case 2: cylinders
+
+	temp_cylinder = new Cylinder;
+	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
+	temp_cylinder->m_Color = temp_color;
+
+	myDrawer->SetIdentity();
+	temp_center = Eigen::Vector3f(-100, 25, 0);
+	myDrawer->Translate(temp_center);
+	myDrawer->RotateX(90);
+	temp_scale = Eigen::Vector3f(20,20,50);
+	myDrawer->Scale(temp_scale);
+
+	temp_cylinder->m_Trans = myDrawer->m_transformation;
+	temp_cylinder->m_TransBack = temp_cylinder->m_Trans.inverse();
+
+	m_obstacles.push_back(temp_cylinder);
+
+	//case 3: spheres
+
+	temp_sphere = new Sphere;
+	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
+	temp_sphere->m_Color = temp_color;
+
+	myDrawer->SetIdentity();
+	temp_center = Eigen::Vector3f(-90, 10, 0);
+	myDrawer->Translate(temp_center);
+	temp_scale = Eigen::Vector3f(20,20,20);
+	myDrawer->Scale(temp_scale);
+
+	temp_sphere->m_Trans = myDrawer->m_transformation;
+	temp_sphere->m_TransBack = temp_sphere->m_Trans.inverse();
+
+	m_obstacles.push_back(temp_sphere);
 }
 
-void Terrain::InitFood(){
-
-	int num_food = 5;
+void Terrain::InitFood(TerrainType a_type){
+	
+	int num_food;
 	double x,y,z;
-	double sphere_radius = 1;
+	double sphere_radius;
 	Sphere* temp_sphere;
-	for(int i = 0; i < num_food; i++){
+	
+	if(a_type == TERRAIN_FLAT||a_type == TERRAIN_RANDOM){
+		num_food = 10;
+		sphere_radius = 0.5+Util::getRand();
+		for(int i = 0; i < num_food; i++){
 		
-		x = m_size_x*(Util::getRand() - 0.5);
-		z = m_size_z*(Util::getRand() - 0.5);
-		y = GetHeight(x,z) + sphere_radius;
+			x = m_size_x*(Util::getRand() - 0.5);
+			z = m_size_z*(Util::getRand() - 0.5);
+			y = GetHeight(x,z) + sphere_radius;
 
+			temp_sphere = new Sphere;
+			temp_sphere->Init(Eigen::Vector3f(x,y,z),2*sphere_radius*Eigen::Vector3f(1,1,1),Eigen::Vector3f(0,1,0));
+			m_foods.push_back(temp_sphere);
+		}
+	}
+	else if(a_type == TERRAIN_TEST){
+		sphere_radius = 5;
+		x = -300;
+		z = 0;
+		y = GetHeight(x,z) + 1.8*sphere_radius;
 		temp_sphere = new Sphere;
 		temp_sphere->Init(Eigen::Vector3f(x,y,z),2*sphere_radius*Eigen::Vector3f(1,1,1),Eigen::Vector3f(0,1,0));
 		m_foods.push_back(temp_sphere);
-	}
 	
+	}
+}
+
+void Terrain::RegisterMillipede(Millipede* a_bug){
+	
+	assert(a_bug);
+
+	m_millipedes.push_back(a_bug);
+
 }
 
 bool Terrain::ReachFood(Eigen::Vector3f pos, double tol){
@@ -343,7 +408,13 @@ bool Terrain::ReachFood(Eigen::Vector3f pos, double tol){
 	for(int i = 0; i < m_foods.size(); i++)
 	{
 		if((m_foods[i]->m_Center - pos).norm() < tol){
-			m_foods.erase(m_foods.begin() + i);
+			double sphere_radius =  0.5+Util::getRand();
+			double x = m_size_x*(Util::getRand() - 0.5);
+			double z = m_size_z*(Util::getRand() - 0.5);
+			double y = GetHeight(x,z) + sphere_radius;
+
+			m_foods[i]->Init(Eigen::Vector3f(x,y,z),2*sphere_radius*Eigen::Vector3f(1,1,1),Eigen::Vector3f(0,1,0));
+
 			return true;
 		}
 	}
@@ -395,10 +466,11 @@ Eigen::Vector3f Terrain::GetNormal(Eigen::Vector2f xy) const{
 
 }
 
-bool Terrain::TestIntersection(Eigen::Vector3f a_o, Eigen::Vector3f a_p){
+bool Terrain::TestIntersection(Millipede* a_bug, Eigen::Vector3f a_o, Eigen::Vector3f a_p){
 
-	Cube * temp_cube;
-
+	Cube* temp_cube;
+	Sphere* temp_sphere;
+	Cylinder* temp_cylinder;
 	//generate sample points on the line segment for intersection test
 	int num_sample_points = 5; 
 	assert(num_sample_points > 2);
@@ -423,19 +495,58 @@ bool Terrain::TestIntersection(Eigen::Vector3f a_o, Eigen::Vector3f a_p){
 				temp_point = Eigen::Vector4f(sample_points[j][0],sample_points[j][1],sample_points[j][2],1.0);
 				temp_point = temp_cube->m_TransBack*temp_point;
 				if(fabs(temp_point[0]) < 0.5&&fabs(temp_point[1]) < 0.5 && fabs(temp_point[2]) < 0.5){
-					std::cout<<"HIT!!!!!!!"<<std::endl;
 					return true; 
 					
 				}
 			}
 		break;
 		case TypeSphere:
+			temp_sphere = dynamic_cast<Sphere*>(m_obstacles[i]);
+			for(int j = 0; j < num_sample_points; j++){
+				temp_point = Eigen::Vector4f(sample_points[j][0],sample_points[j][1],sample_points[j][2],1.0);
+				temp_point = temp_sphere->m_TransBack*temp_point;
+				temp_point[3] = 0.0;
+				if(temp_point.norm() < 1.0){
+					return true; 
+					
+				}
+			}
 		break;
 		case TypeCylinder:
+			temp_cylinder = dynamic_cast<Cylinder*>(m_obstacles[i]);
+			for(int j = 0; j < num_sample_points; j++){
+				temp_point = Eigen::Vector4f(sample_points[j][0],sample_points[j][1],sample_points[j][2],1.0);
+				temp_point = temp_cylinder->m_TransBack*temp_point;
+				if(temp_point[0]*temp_point[0] + temp_point[1]*temp_point[1] < 0.5*0.5){
+					return true; 
+				}
+			}
+
 		break;
 		default:
 			break;
 		}
+	}
+
+	//TEst agains the list of other millipedes
+	for(int i = 0; i < m_millipedes.size(); i++){
+		if(m_millipedes[i] == a_bug)
+			continue;
+
+		double x_min, z_min, x_max, z_max;
+		x_min = m_millipedes[i]->m_bounding_box[0];
+		x_max = m_millipedes[i]->m_bounding_box[1];
+		z_min = m_millipedes[i]->m_bounding_box[2];
+		z_max = m_millipedes[i]->m_bounding_box[3];
+		//treat the other millipede as a cube obstacle;
+		for(int j = 0; j < num_sample_points; j++){
+			if( sample_points[j][0] > x_min &&
+				sample_points[j][0] < x_max &&
+				sample_points[j][2] > z_min &&
+				sample_points[j][2] < z_max)
+				return true; 
+		}
+
 	}
 
 	return false;

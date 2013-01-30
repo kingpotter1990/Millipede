@@ -58,10 +58,6 @@ private:
 	Eigen::Vector3f m_segment_2_size;
 	Eigen::Vector3f m_segment_3_size;
 
-	Eigen::Vector3f m_tip_position;//
-	Eigen::Vector3f m_root_position;//root position of the leg, in the rigid cube's cos(after translation and rotation)
-
-
 	double m_extreme_alpha;
 	double m_extreme_beta;
 	double m_extreme_phi;
@@ -81,6 +77,10 @@ private:
 public:
 	MillipedeRigidSection* m_root;//where the leg is attached to
 	LEG_STATUS m_leg_state;
+
+	Eigen::Vector3f m_tip_position;//
+	Eigen::Vector3f m_root_position;//root position of the leg, in the rigid cube's cos(after translation and rotation)
+
 
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW

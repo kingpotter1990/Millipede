@@ -61,6 +61,13 @@ void Cone::Init(Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f col
     m_Size = size;
 	m_Color = color;
 
+	m_Trans.setIdentity();
+	m_Trans.translate(m_Center);
+    m_Trans.scale(m_Size);
+    
+    m_TransBack = m_Trans.inverse();
+
+
 	InitDraw();
 }
 
