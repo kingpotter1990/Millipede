@@ -6,7 +6,7 @@
 #ifdef __APPLE__  // include Mac OS X verions of headers
 #  include <OpenGL/OpenGL.h>
 #  include <GLUT/glut.h>
-#else // windows
+#else // windows or linux
 #  include <windows.h> 
 #  include "GL/glew.h"
 #  include "GL/freeglut.h"
