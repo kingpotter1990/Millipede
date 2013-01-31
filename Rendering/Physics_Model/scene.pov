@@ -1,11 +1,14 @@
 #version 3.6;
 #include "metals.inc"
+#include "glass.inc"
+#include "woods.inc"
 #include "textures.inc"
 #include "@@@"
 
 global_settings {
   radiosity{  }
   max_trace_level 20
+  photons {    spacing 0.008}
 }
 
 // perspective (default) camera
@@ -15,12 +18,6 @@ camera {
   right x*image_width/image_height
   angle  50
 }           
-
-light_source {
-  0*x                  // light's position (translated below)
-  color rgb 0.95       // light's color
-  translate <40, 40, -40>
-}  
 
 object {
    MillipedeRigidPart
@@ -64,4 +61,27 @@ sky_sphere {
   }     
 }
 
+// ground
+object{
+plane{<0,1,0>,0}
+  pigment { color rgb <0.93,0.93,1>*0.6 }
+  finish {
+    diffuse 0.65
+    ambient <0.2,0.2,0.22>
+    roughness 0.5
+    reflection 0.1
+  }
 
+} // end of plane
+
+
+light_source {
+  <40,40,-40>
+  color rgb 0.6       // light's color
+
+   photons {
+      reflection on
+      refraction on
+    }
+  jitter
+}  
