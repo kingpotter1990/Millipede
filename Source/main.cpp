@@ -267,7 +267,7 @@ void idleCallback(){
 		glutPostRedisplay() ; //draw new frame
 		FRAME_TIME = 0;	
 		FRAME_COUNT++;
-		//OUTPUT_ONE_FRAME();
+		OUTPUT_ONE_FRAME();
 	}
 	
 

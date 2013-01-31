@@ -24,6 +24,9 @@ void Millipede::Init(Eigen::Vector3f a_position, int a_num_section, Eigen::Vecto
 
 void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length){
 
+    Eigen::Vector3i soft_resolution(10,10,10);
+    double youngs_modulus = 1000;
+
 	assert(a_num_section >=3);//Need to be at least this lenght
 
 	m_num_section = a_num_section;
@@ -41,7 +44,7 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 	current_soft_section = new MillipedeSoftSection;
 	temp_position = m_head->m_Center 
 		+ Eigen::Vector3f(0.5*a_rigid_size[0], -0.5*a_rigid_size[1], -0.5*a_rigid_size[2]);
-	current_soft_section->Init(Eigen::Vector3i(3,3,3),1.0,3000,0.4,100.0,temp_position,
+	current_soft_section->Init(soft_resolution,1.0,youngs_modulus,0.4,100.0,temp_position,
 		Eigen::Vector3f(a_soft_length,a_rigid_size[1],a_rigid_size[2]),Eigen::Vector3f(1,1,1));
 	//hook up with the previous rigid section
 	m_head->m_next = current_soft_section;
@@ -62,7 +65,7 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 		current_soft_section = new MillipedeSoftSection;
 		temp_position = previous_rigid_section->m_Center 
 			+ Eigen::Vector3f(0.5*a_rigid_size[0], -0.5*a_rigid_size[1], -0.5*a_rigid_size[2]);
-		current_soft_section->Init(Eigen::Vector3i(3,3,3),1.0,3000,0.4,100.0,temp_position,
+		current_soft_section->Init(soft_resolution,1.0,youngs_modulus,0.4,100.0,temp_position,
 			Eigen::Vector3f(a_soft_length,a_rigid_size[1],a_rigid_size[2]),Eigen::Vector3f(1,1,1));
 		//hook up with the previous rigid section
 		previous_rigid_section->m_next = current_soft_section;

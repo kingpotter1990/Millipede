@@ -10,9 +10,10 @@ global_settings {
 
 // perspective (default) camera
 camera {
-  location  <2, 1,  -70>
-  look_at   <2, 1,  0.0>   
-  angle     33
+  location  <-8, 12,  -50>
+  look_at   <-8, 12,  0.0>   
+  right x*image_width/image_height
+  angle  50
 }           
 
 light_source {
