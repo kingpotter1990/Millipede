@@ -586,7 +586,7 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
-	myDrawer->Translate(Eigen::Vector3f(0.0,m_segment_0_size[2],0.0));
+	myDrawer->Translate(Eigen::Vector3f(0.0,-m_segment_0_size[2],0.0));
 
 	point_a = m_root_position;
 	point_b = myDrawer->CurrentOrigin();

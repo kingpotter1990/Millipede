@@ -376,28 +376,28 @@ void Mesh3D::GetSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 
 	faces = faces1;
 	nodes = nodes1;
-	off_set += nodes.size(); 
+	off_set += nodes1.size(); 
 	
 	
 	std::transform(faces2.begin(), faces2.end(), faces2.begin(), bind2nd(std::plus<int>(), off_set));
 	faces.insert(faces.end(), faces2.begin(), faces2.end());
 	nodes.insert(nodes.end(), nodes2.begin(), nodes2.end()); 
-	off_set += nodes.size(); 
+	off_set += nodes2.size(); 
 
 	std::transform(faces3.begin(), faces3.end(), faces3.begin(), bind2nd(std::plus<int>(), off_set));
 	faces.insert(faces.end(), faces3.begin(), faces3.end());
 	nodes.insert(nodes.end(), nodes3.begin(), nodes3.end()); 
-	off_set += nodes.size();
+	off_set += nodes3.size();
 
 	std::transform(faces4.begin(), faces4.end(), faces4.begin(), bind2nd(std::plus<int>(), off_set));
 	faces.insert(faces.end(), faces4.begin(), faces4.end());
 	nodes.insert(nodes.end(), nodes4.begin(), nodes4.end()); 
-	off_set += nodes.size();
+	off_set += nodes4.size();
 	
 	std::transform(faces5.begin(), faces5.end(), faces5.begin(), bind2nd(std::plus<int>(), off_set));
 	faces.insert(faces.end(), faces5.begin(), faces5.end());
 	nodes.insert(nodes.end(), nodes5.begin(), nodes5.end()); 
-	off_set += nodes.size();
+	off_set += nodes5.size();
 
 	std::transform(faces6.begin(), faces6.end(), faces6.begin(), bind2nd(std::plus<int>(), off_set));
 	faces.insert(faces.end(), faces6.begin(), faces6.end());

@@ -602,6 +602,10 @@ void Deformable3D::Output2File(std::ofstream* filestream){
 
 	m_Mesh->GetSurface(nodes, faces);
 
+        for(int i=0;i<nodes.size();i++){
+            nodes[i]->m_Normal.normalize();
+        }
+
 	(*filestream)<<"vertex_vectors{"<<nodes.size()<<","<<std::endl;
 	for(int i = 0; i < nodes.size()-1; i++){
             (*filestream)<<"<"<<nodes[i]->m_Position[0]<<","<<nodes[i]->m_Position[1]<<","<<nodes[i]->m_Position[2]<<">,"<<std::endl;

@@ -30,7 +30,7 @@ void initScene(){
 
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 15, TERRAIN_RANDOM, OBSTACLE_OFF, FOOD_OFF);
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 15, TERRAIN_FLAT, OBSTACLE_OFF, FOOD_OFF);
 
 	reinitScene();
 
@@ -257,7 +257,7 @@ void idleCallback(){
 		glutPostRedisplay() ; //draw new frame
 		FRAME_TIME = 0;	
 		FRAME_COUNT++;
-		//OUTPUT_ONE_FRAME();
+		OUTPUT_ONE_FRAME();
 	}
 	
 

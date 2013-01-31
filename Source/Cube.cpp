@@ -1,4 +1,4 @@
-//
+
 //  Cube.cpp
 //  FEMCloth2D
 //
@@ -177,7 +177,7 @@ void Cube::Output2File(std::ofstream* filestream){
 
 	(*filestream)<<"face_indices{"<<std::endl;
 	(*filestream)<<"12,"<<std::endl;
-        (*filestream)<<"<0,3,1>,<0,2,3>,<1,3,6>,<1,6,5>,<0,7,2>,<0,4,7>,<0,1,5>,<0,5,4>,<2,6,3>,<2,7,6>,<4,5,6>,<4,6,7>"<<std::endl;
+        (*filestream)<<"<0,2,1>,<0,3,2>,<4,5,6>,<4,6,7>,<0,1,5>,<0,5,4>,<3,6,2>,<3,7,6>,<1,2,6>,<1,6,5>,<0,7,3>,<0,4,7>"<<std::endl;
 	(*filestream)<<"}"<<std::endl; // end face_indices
 
 	(*filestream)<<"}"<<std::endl; // end mesh2
