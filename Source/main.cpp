@@ -250,12 +250,13 @@ void idleCallback(){
         
 	DTIME = TIME - TIME_LAST;
 	TIME_LAST = TIME;
-	FRAME_TIME += DTIME;
 
 	if(DTIME > 1/1000.0)
 		DTIME = 1/1000.0;
 	
 	DTIME = 1/2000.0;//fixed dt
+
+	FRAME_TIME += DTIME;
 
 	if(STOP == -1){
 	//only update physics
