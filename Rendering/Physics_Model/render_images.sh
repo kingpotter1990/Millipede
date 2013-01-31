@@ -3,13 +3,13 @@
 # bash render_images.sh | xargs -n 9 -P 32 echo
 # bash render_images.sh | xargs -n 9 -P 32 time
 
-max=12790
+max=268
 
 for i in `seq 1 $max`
 do
     F=`printf "%05d" $i`; 
 
-sed "s/@@@/..\/sim\/FRAME_$i.inc/" < scene.pov > temp/scene$i.pov
+sed "s/@@@/sim\/FRAME_$i.inc/" < scene.pov > temp/scene$i.pov
 
 echo povray temp/scene$i.pov +Orender/$F.png +WT1 Antialias=On Display=Off +W800 +H600 +a0.0
 
