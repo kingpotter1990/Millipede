@@ -6,7 +6,6 @@
 //  Copyright 2011 Jingyi Fang. All rights reserved.
 //
 
-
 #include "main.h"
 
 void initScene(){
@@ -31,7 +30,7 @@ void initScene(){
 
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 15, TERRAIN_RANDOM, OBSTACLE_OFF, FOOD_OFF);
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 15, TERRAIN_FLAT, OBSTACLE_OFF, FOOD_OFF);
 
 	reinitScene();
 
@@ -48,6 +47,7 @@ void reinitScene(){
 	
 	myWorld->Add_Object(myTerrain);
 	
+
 	/*
 	int m = 5, n = 5;
 	myMillipedes = new Millipede[m*n];
@@ -64,6 +64,7 @@ void reinitScene(){
 	myMillipedes->FixHead();
 	myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);
+
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime() ;
 	DTIME = 0.0;
@@ -278,7 +279,7 @@ void OUTPUT_ONE_FRAME(){
 
 	myOutputFile = new std::ofstream;
 	std::string filename;
-	filename = "Output/FRAME_"+ std::to_string(FRAME_COUNT) + ".txt";
+	filename = "Output/FRAME_"+ std::to_string(FRAME_COUNT) + ".inc";
 	myOutputFile->open(filename);
 
 	//Terrain
@@ -306,9 +307,7 @@ int main (int argc, char ** argv){
     glutMotionFunc(motionCallback);
 	glutPassiveMotionFunc(cursorCallback);
     glutDisplayFunc(displayCallback);
-#ifdef _WIN32
 	glewInit();
-#endif
     initScene();
     glutMainLoop();
     

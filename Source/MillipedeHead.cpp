@@ -98,8 +98,7 @@ void MillipedeAntenna::Output2File(std::ofstream* filestream){
 	center = myDrawer->CurrentOrigin();
 	radius = 0.2;
 	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
-	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"sphere{"<<"<"<<center[0]<<","<<center[1]<<","<<center[2]<<">"<<","<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
 	myDrawer->Translate(Eigen::Vector3f(-m_length,0,0));
@@ -107,16 +106,13 @@ void MillipedeAntenna::Output2File(std::ofstream* filestream){
 	point_b = myDrawer->CurrentOrigin();
 	radius = 0.2;
 	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
-	(*filestream)<<point_a[0]<<" "<<point_a[1]<<" "<<point_a[2]<<"//POINT A "<<std::endl;
-	(*filestream)<<point_b[0]<<" "<<point_b[1]<<" "<<point_b[2]<<"//POINT B "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END CYLINDER "<<std::endl;
 
 	center = point_b;
 	radius = 0.2;
 	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
-	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"sphere{"<<"<"<<center[0]<<","<<center[1]<<","<<center[2]<<">"<<","<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
 	(*filestream)<<"//END ANTENNA "<<m_l_r<<std::endl;

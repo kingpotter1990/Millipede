@@ -627,8 +627,7 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	center = m_root_position;
 	radius = m_segment_0_size[0]*0.6;
 	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
-	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
 	myDrawer->Translate(Eigen::Vector3f(0.0,-m_segment_0_size[2],0.0));
@@ -637,17 +636,14 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	point_b = myDrawer->CurrentOrigin();
 	radius = m_segment_0_size[0]*0.5;
 	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
-	(*filestream)<<point_a[0]<<" "<<point_a[1]<<" "<<point_a[2]<<"//POINT A "<<std::endl;
-	(*filestream)<<point_b[0]<<" "<<point_b[1]<<" "<<point_b[2]<<"//POINT B "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END CYLINDER "<<std::endl;
 
 	//segment 1
 	center = point_b;
 	radius = m_segment_0_size[0]*0.5;
 	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
-	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 	
 	myDrawer->RotateY(-m_l_r*m_phi);
@@ -657,17 +653,14 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	point_b = myDrawer->CurrentOrigin();
 	radius = m_segment_1_size[0]*0.5;
 	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
-	(*filestream)<<point_a[0]<<" "<<point_a[1]<<" "<<point_a[2]<<"//POINT A "<<std::endl;
-	(*filestream)<<point_b[0]<<" "<<point_b[1]<<" "<<point_b[2]<<"//POINT B "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END CYLINDER "<<std::endl;
 	
 	//segment 2
 	center = point_b;
 	radius = m_segment_1_size[0]*0.5;
 	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
-	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
 	myDrawer->RotateX(m_l_r*m_beta);
@@ -676,17 +669,14 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	point_b = myDrawer->CurrentOrigin();
 	radius = m_segment_2_size[0]*0.5;
 	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
-	(*filestream)<<point_a[0]<<" "<<point_a[1]<<" "<<point_a[2]<<"//POINT A "<<std::endl;
-	(*filestream)<<point_b[0]<<" "<<point_b[1]<<" "<<point_b[2]<<"//POINT B "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END CYLINDER "<<std::endl;
 
 	//segment 3
 	center = point_b;
 	radius = m_segment_2_size[0]*0.5;
 	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
-	(*filestream)<<center[0]<<" "<<center[1]<<" "<<center[2]<<"//CENTER "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
 	myDrawer->RotateX(m_l_r*m_gamma);
@@ -695,9 +685,8 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	point_b = myDrawer->CurrentOrigin();
 	radius = m_segment_3_size[0]*0.5;
 	(*filestream)<<"//BEGIN CONE "<<std::endl;
-	(*filestream)<<point_a[0]<<" "<<point_a[1]<<" "<<point_a[2]<<"//POINT A "<<std::endl;
-	(*filestream)<<point_b[0]<<" "<<point_b[1]<<" "<<point_b[2]<<"//POINT B "<<std::endl;
-	(*filestream)<<radius<<"//RADIUS "<<std::endl;
+	(*filestream)<<"cone{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,"<<radius<<std::endl;
+	(*filestream)<<"<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,0}"<<std::endl;
 	(*filestream)<<"//END CONE "<<std::endl;
 
 	(*filestream)<<"//END LEG "<<m_l_r<<std::endl;

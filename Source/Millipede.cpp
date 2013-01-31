@@ -243,10 +243,17 @@ void Millipede::UpdateBoundingBox(){
 
 	double x_min, z_min, x_max, z_max;
 
+#ifdef __linux__
+	x_min = std::min(m_head->m_left_antenna->m_tip_position[0],m_head->m_right_antenna->m_tip_position[0]);
+	x_max = std::max(m_head->m_left_antenna->m_tip_position[0],m_head->m_right_antenna->m_tip_position[0]);
+	z_min = std::min(m_head->m_left_antenna->m_tip_position[2],m_head->m_right_antenna->m_tip_position[2]);
+	z_max = std::max(m_head->m_left_antenna->m_tip_position[2],m_head->m_right_antenna->m_tip_position[2]);
+#else
 	x_min = min(m_head->m_left_antenna->m_tip_position[0],m_head->m_right_antenna->m_tip_position[0]);
 	x_max = max(m_head->m_left_antenna->m_tip_position[0],m_head->m_right_antenna->m_tip_position[0]);
 	z_min = min(m_head->m_left_antenna->m_tip_position[2],m_head->m_right_antenna->m_tip_position[2]);
 	z_max = max(m_head->m_left_antenna->m_tip_position[2],m_head->m_right_antenna->m_tip_position[2]);
+#endif
 
 	MillipedeRigidSection *temp_rigid_section;
 	MillipedeSoftSection *temp_soft_section;
@@ -355,38 +362,48 @@ void Millipede::FixTail(){
 }
 
 void Millipede::Output2File(std::ofstream* filestream){
-	
-	(*filestream)<<"//BEGIN MILLIPEDE \n"<<std::endl;
-	//output head
-	m_head->Output2File(filestream);
 
-	//output each body section
-	MillipedeRigidSection *temp_rigid_section;
-	MillipedeSoftSection *temp_soft_section;
-	temp_rigid_section = m_head->m_next->m_next;
-	//rigid phase
-	while(1){
-		temp_rigid_section->Output2File(filestream);
-		temp_soft_section = temp_rigid_section->m_next;
-		if(temp_soft_section){
-			temp_rigid_section = temp_soft_section->m_next;
-		}
-		else
-			break;
-	}
-	//soft phase
-	m_head->m_next->Output2File(filestream);
-	temp_rigid_section = m_head->m_next->m_next;
-	while(1){
-		temp_soft_section = temp_rigid_section->m_next;
-		if(temp_soft_section){
-			temp_soft_section->Output2File(filestream);
-			temp_rigid_section = temp_soft_section->m_next;
-		}
-		else
-			break;
-	}
+    // rigid part start
+    (*filestream)<<"#declare MillipedeRigidPart = union {\n"<<std::endl;
 
-	(*filestream)<<"//END MILLIPEDE \n"<<std::endl;
+    //output head
+    m_head->Output2File(filestream);
 
+    //output each body section
+    MillipedeRigidSection *temp_rigid_section;
+    MillipedeSoftSection *temp_soft_section;
+    temp_rigid_section = m_head->m_next->m_next;
+
+    //rigid phase
+    while(1){
+        temp_rigid_section->Output2File(filestream);
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+
+    // rigid part end
+    (*filestream)<<"}\n"<<std::endl;
+
+    // soft part start
+    (*filestream)<<"#declare MillipedeSoftPart = union { \n"<<std::endl;
+
+    //soft phase
+	m_head->m_next->Output2File(filestream);//first soft
+    temp_rigid_section = m_head->m_next->m_next;
+    while(1){
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_soft_section->Output2File(filestream);
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+
+    // soft part end
+    (*filestream)<<"}\n"<<std::endl;
 }

@@ -1,4 +1,4 @@
-//
+
 //  Cube.cpp
 //  FEMCloth2D
 //
@@ -162,12 +162,25 @@ void Cube::Draw(int type, const Camera& camera,const Light& light){
 void Cube::Output2File(std::ofstream* filestream){
 	
 	(*filestream)<<"//BEGIN CUBE"<<std::endl;
-	Eigen::Vector4f current_vertex;
-	for(int i =0 ; i < 8; i++){
-		current_vertex = m_Trans*m_Points[i];
-		(*filestream)<<current_vertex[0]<<" "<<current_vertex[1]<<" "<<current_vertex[2]<<std::endl;
-	}
+	(*filestream)<<"mesh2{"<<std::endl;
 
+	(*filestream)<<"vertex_vectors{"<<std::endl;
+	(*filestream)<<"8,"<<std::endl;
+	Eigen::Vector4f current_vertex;
+	for(int i =0 ; i < 7; i++){
+		current_vertex = m_Trans*m_Points[i];
+		(*filestream)<<"<"<<current_vertex[0]<<","<<current_vertex[1]<<","<<current_vertex[2]<<">,"<<std::endl;
+	}
+        current_vertex = m_Trans*m_Points[7];
+        (*filestream)<<"<"<<current_vertex[0]<<","<<current_vertex[1]<<","<<current_vertex[2]<<">"<<std::endl;
+	(*filestream)<<"}"<<std::endl; // end vertex_vectors
+
+	(*filestream)<<"face_indices{"<<std::endl;
+	(*filestream)<<"12,"<<std::endl;
+        (*filestream)<<"<0,2,1>,<0,3,2>,<4,5,6>,<4,6,7>,<0,1,5>,<0,5,4>,<3,6,2>,<3,7,6>,<1,2,6>,<1,6,5>,<0,7,3>,<0,4,7>"<<std::endl;
+	(*filestream)<<"}"<<std::endl; // end face_indices
+
+	(*filestream)<<"}"<<std::endl; // end mesh2
 	(*filestream)<<"//END CUBE"<<std::endl;
 }
 

@@ -1,0 +1,29 @@
+#
+# SConscript for Millipede Project
+# Chenfanfu Jiang, 2013
+#
+
+src_files = ['../../../Source/main.cpp']
+src_files.append('../../../Source/3DDeformable.cpp')
+src_files.append('../../../Source/BallAux.cpp')
+src_files.append('../../../Source/Ball.cpp')
+src_files.append('../../../Source/BallMath.cpp')
+src_files.append('../../../Source/Camera.cpp')
+src_files.append('../../../Source/Cone.cpp')
+src_files.append('../../../Source/Cube.cpp')
+src_files.append('../../../Source/Cylinder.cpp')
+src_files.append('../../../Source/Drawer.cpp')
+src_files.append('../../../Source/Millipede.cpp')
+src_files.append('../../../Source/MillipedeHead.cpp')
+src_files.append('../../../Source/MillipedeLeg.cpp')
+src_files.append('../../../Source/MillipedeSection.cpp')
+src_files.append('../../../Source/Object.cpp')
+src_files.append('../../../Source/RigidCube.cpp')
+src_files.append('../../../Source/Sphere.cpp')
+src_files.append('../../../Source/Terrain.cpp')
+src_files.append('../../../Source/Timer.cpp')
+src_files.append('../../../Source/Utility.cpp')
+src_files.append('../../../Source/World.cpp')
+
+Import('env')
+env.Program('Millipede', src_files)
