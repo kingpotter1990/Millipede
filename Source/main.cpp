@@ -45,14 +45,14 @@ void reinitScene(){
 	
 	myWorld->Add_Object(myTerrain);
 	
-	int m = 1, n = 1;
-	myMillipedes = new Millipede[m*n];
-	for(int i = 0; i < m; i++)
-		for(int j = 0; j < n; j++)
-		{
-			myMillipedes[i*n +j].Init(Eigen::Vector3f(30*i,15,-20*j),6,Eigen::Vector3f(1,1,2),1, myTerrain);
-			myWorld->Add_Object(&myMillipedes[i*n +j]);
-		}
+	//int m = 1, n = 1;
+	myMillipedes = new Millipede;
+	
+        myMillipedes->Init(Eigen::Vector3f(0,10,0),16,Eigen::Vector3f(1,1,2),1, myTerrain);
+        myMillipedes->FixHead();
+        myMillipedes->FixTail();
+        
+        myWorld->Add_Object(myMillipedes);
 
 
 	//set up the clock

@@ -133,7 +133,7 @@ void Mesh3D::GetTopSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 			faces.push_back(a);
 			faces.push_back(b);
 			faces.push_back(c);
-			faces.push_back(a);
+			faces.push_back(b);
 			faces.push_back(c);
 			faces.push_back(d);
 		}
@@ -178,7 +178,7 @@ void Mesh3D::GetBottomSurface(std::vector<Node*>& nodes, std::vector<int>& faces
 			faces.push_back(a);
 			faces.push_back(b);
 			faces.push_back(c);
-			faces.push_back(a);
+			faces.push_back(b);
 			faces.push_back(c);
 			faces.push_back(d);
 		}
@@ -222,7 +222,7 @@ void Mesh3D::GetFrontSurface(std::vector<Node*>& nodes, std::vector<int>& faces)
 			faces.push_back(a);
 			faces.push_back(b);
 			faces.push_back(c);
-			faces.push_back(a);
+			faces.push_back(b);
 			faces.push_back(c);
 			faces.push_back(d);
 		}
@@ -266,7 +266,7 @@ void Mesh3D::GetBackSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 			faces.push_back(a);
 			faces.push_back(b);
 			faces.push_back(c);
-			faces.push_back(a);
+			faces.push_back(b);
 			faces.push_back(c);
 			faces.push_back(d);
 		}
@@ -310,7 +310,7 @@ void Mesh3D::GetLeftSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 			faces.push_back(a);
 			faces.push_back(b);
 			faces.push_back(c);
-			faces.push_back(a);
+			faces.push_back(b);
 			faces.push_back(c);
 			faces.push_back(d);
 		}
@@ -354,7 +354,7 @@ void Mesh3D::GetRightSurface(std::vector<Node*>& nodes, std::vector<int>& faces)
 			faces.push_back(a);
 			faces.push_back(b);
 			faces.push_back(c);
-			faces.push_back(a);
+			faces.push_back(b);
 			faces.push_back(c);
 			faces.push_back(d);
 		}

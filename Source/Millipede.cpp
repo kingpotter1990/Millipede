@@ -44,7 +44,7 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 		current_soft_section = new MillipedeSoftSection;
 		temp_position = previous_rigid_section->m_Center 
 			+ Eigen::Vector3f(0.5*a_rigid_size[0], -0.5*a_rigid_size[1], -0.5*a_rigid_size[2]);
-		current_soft_section->Init(Eigen::Vector3i(3,3,3),1.0,3000,0.4,100.0,temp_position,
+		current_soft_section->Init(Eigen::Vector3i(10,10,10),1.0,3000,0.4,100.0,temp_position,
 			Eigen::Vector3f(a_soft_length,a_rigid_size[1],a_rigid_size[2]),Eigen::Vector3f(1,1,1));
 		//hook up with the previous rigid section
 		previous_rigid_section->m_next = current_soft_section;
