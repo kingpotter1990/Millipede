@@ -28,6 +28,8 @@ void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 	m_extreme_alpha = 30;
 	m_extreme_beta = 30;
 
+	m_phase_dif = 2;
+
 	double dif_phase = 30;//12 legs per cycle
 
 	m_phi = m_extreme_phi* cos(DegreesToRadians*m_root->m_section_id*dif_phase);
@@ -45,21 +47,40 @@ void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 	m_next = NULL;
 	m_neig = NULL;
 
-	switch(m_l_r){
-	case 1:
-		if(m_root->m_prev)
-			m_prev = m_root->m_prev->m_prev->m_left_leg;
-		if(m_root->m_next)
-			m_next = m_root->m_next->m_next->m_left_leg;
-		m_neig = m_root->m_right_leg;
-		break;
-	case -1:
-		if(m_root->m_prev)
-			m_prev = m_root->m_prev->m_prev->m_right_leg;
-		if(m_root->m_next)
-			m_next = m_root->m_next->m_next->m_right_leg;
-		m_neig = m_root->m_left_leg;
-		break;
+	if(m_root->m_section_id == 1){
+		//first section, no previous leg
+		switch(m_l_r){
+		case 1:
+			m_prev = NULL;
+			if(m_root->m_next)
+				m_next = m_root->m_next->m_next->m_left_leg;
+			m_neig = m_root->m_right_leg;
+			break;
+		case -1:
+			m_prev = NULL;
+			if(m_root->m_next)
+				m_next = m_root->m_next->m_next->m_right_leg;
+			m_neig = m_root->m_left_leg;
+			break;
+		}
+	}
+	else{
+		switch(m_l_r){
+		case 1:
+			if(m_root->m_prev)
+				m_prev = m_root->m_prev->m_prev->m_left_leg;
+			if(m_root->m_next)
+				m_next = m_root->m_next->m_next->m_left_leg;
+			m_neig = m_root->m_right_leg;
+			break;
+		case -1:
+			if(m_root->m_prev)
+				m_prev = m_root->m_prev->m_prev->m_right_leg;
+			if(m_root->m_next)
+				m_next = m_root->m_next->m_next->m_right_leg;
+			m_neig = m_root->m_left_leg;
+			break;
+		}
 	}
 
 	//set leg initial states
@@ -294,6 +315,22 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 
 			}
 			break;
+
+		case LEG_FREEZE:{
+			//this state if for leg adjusting dif_alpha
+			if(m_prev)
+				if(m_prev->m_leg_state == LEG_STANCE)
+				{//prevleg in stance mode, current leg in freeze mode
+					if(m_prev->m_phi + m_phase_dif > m_extreme_phi){
+						m_phi_velocity *= 0;
+						m_alpha_velocity *= 0;
+						m_beta_velocity *= 0;
+					}
+					else
+						EnterSwayForward2();//melt
+				}
+			}
+			break;
 	}
 }
 
@@ -436,15 +473,26 @@ void MillipedeLeg::EnterSwayForward2(){
 	if(m_leg_state == LEG_SWAY_FORWARD_2)
 		return;
 		
-	double phase_lag = 20;
 	//forward Down
 	m_target_phi = m_extreme_phi;
 	//query previous leg, if previous leg in stance mode, then target the previous leg's landing point
 	if(m_prev)
 		if(m_prev->m_leg_state == LEG_STANCE)
 		{
-			m_target_phi = min(m_prev->m_phi + phase_lag, m_extreme_phi);
+			if(m_prev->m_phi + m_phase_dif > m_extreme_phi){
+				m_leg_state = LEG_FREEZE;
+				return;
+			}
+			else
+				m_target_phi = m_prev->m_phi + m_phase_dif;
 		}
+		else if(m_prev->m_leg_state == LEG_SWAY_FORWARD_2){
+			if(m_prev->m_phi - m_phi < m_phase_dif){
+				m_leg_state = LEG_FREEZE;
+				return;
+			}
+		}
+
 	m_target_alpha = 0;
 	m_target_beta = m_extreme_beta/2;
 	
@@ -583,7 +631,7 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	(*filestream)<<radius<<"//RADIUS "<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
-	myDrawer->Translate(Eigen::Vector3f(0.0,m_segment_0_size[2],0.0));
+	myDrawer->Translate(Eigen::Vector3f(0.0,-m_segment_0_size[2],0.0));
 
 	point_a = m_root_position;
 	point_b = myDrawer->CurrentOrigin();

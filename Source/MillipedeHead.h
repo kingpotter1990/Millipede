@@ -7,6 +7,7 @@
 
 class MillipedeHead;
 class MillipedeAntenna;
+class Millipede;
 
 enum MILLIPEDE_STATUS {CONTROLLED, ADJUSTING, RANDOM_WALK, AVOID_OBSTACLE_LEFT,
 						AVOID_OBSTACLE_RIGHT, PREDATING_FOOD_LEFT, PREDATING_FOOD_RIGHT,ESCAPING_PREDATOR};
@@ -38,10 +39,11 @@ public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-class MillipedeHead:public MillipedeRigidSection{
+class MillipedeHead:public RigidCube{
 public:
 	MillipedeHead(){};
 	~MillipedeHead(){};
+	void InitPhysics(double density, Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f color);
 	void InitNeuroNet(Millipede* a_root);
 	void Draw(int type, const Camera& camera, const Light& light);
 	void UpdateAll(double dt);
@@ -62,9 +64,19 @@ protected:
 	double m_turning_speed;//degree per seconds
 	double m_turning_obj;
 	double m_current_turning_accum;
+
 public:
+
 	MillipedeAntenna* m_left_antenna;
 	MillipedeAntenna* m_right_antenna;
+
+	MillipedeSoftSection* m_next;
+
+	Millipede* m_master;
+	Terrain* m_terrain;
+	int m_section_id;
+	double m_height_obj;
+	double m_prev_dis_obj;
 };
 
 #endif

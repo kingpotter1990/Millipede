@@ -10,7 +10,7 @@
 class Terrain;
 class MillipedeRigidSection;
 
-enum LEG_STATUS {LEG_STANCE, LEG_SWAY_FORWARD_1, LEG_SWAY_FORWARD_2, LEG_SWAY_BACKWARD_1,LEG_SWAY_BACKWARD_2};
+enum LEG_STATUS {LEG_STANCE, LEG_SWAY_FORWARD_1, LEG_SWAY_FORWARD_2, LEG_SWAY_BACKWARD_1,LEG_SWAY_BACKWARD_2, LEG_FREEZE};
 
 class MillipedeLeg:public Object{
     
@@ -53,6 +53,8 @@ private:
 	double m_target_beta;
 	double m_target_phi;
     
+	double m_phase_dif;
+
 	Eigen::Vector3f m_segment_0_size;
 	Eigen::Vector3f m_segment_1_size;
 	Eigen::Vector3f m_segment_2_size;

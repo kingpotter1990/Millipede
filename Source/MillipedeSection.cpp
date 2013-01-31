@@ -1,4 +1,5 @@
-
+#include "Millipede.h"
+#include "MillipedeHead.h"
 #include "MillipedeSection.h"
 #include "Millipede.h"
 #include "MillipedeLeg.h"
@@ -143,7 +144,10 @@ void MillipedeRigidSection::UpdatePBD(double dt){
 	//the tip is fixed, the root nodal point change position
 
 	Eigen::Vector3f prev_link_vector; double turn_angle;
-	prev_link_vector = m_prev->m_prev->m_Center - m_Center;
+	if(m_section_id == 1)
+		prev_link_vector = m_master->m_head->m_Center - m_Center;
+	else
+		prev_link_vector = m_prev->m_prev->m_Center - m_Center;
 
 	m_Center[1] += 10*dt*(m_height_obj - (m_Center[1] - m_terrain->GetHeight(m_Center[0],m_Center[2])));//balance of height	
 	//Minimize the distance to previous section to minimum;

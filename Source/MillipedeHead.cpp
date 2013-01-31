@@ -122,8 +122,20 @@ void MillipedeAntenna::Output2File(std::ofstream* filestream){
 	(*filestream)<<"//END ANTENNA "<<m_l_r<<std::endl;
 }
 
+
+void MillipedeHead::InitPhysics(double density, Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f color){
+	
+	RigidCube::Init(density, center, size, color);
+	m_next = NULL;
+	
+}
+
+
 void MillipedeHead::InitNeuroNet(Millipede* a_root){
-	MillipedeRigidSection::InitNeuroNet(a_root,0);
+	m_master = a_root;
+	m_terrain = m_master->m_terrain;
+	m_section_id = 0;
+
 	m_left_antenna = new MillipedeAntenna();
 	m_right_antenna = new MillipedeAntenna();
 	m_left_antenna->InitNeuroNet(this, 8,1);
@@ -134,6 +146,8 @@ void MillipedeHead::InitNeuroNet(Millipede* a_root){
 
 void MillipedeHead::KeepHeadBalance(double dt){
 	
+	m_height_obj = m_next->m_next->m_height_obj;
+
 	double turn_angle;
 	//the head's height need to be balanced
 	m_Center[1] += 10*dt*(m_height_obj - (m_Center[1] - m_terrain->GetHeight(m_Center[0], m_Center[2])));
@@ -214,7 +228,7 @@ void MillipedeHead::EnterMode(MILLIPEDE_STATUS a_mode){
 		m_turning_direction = (Util::getRand() > 0.5 ? TURN_LEFT:TURN_RIGHT); //set a new turning direction
 		m_current_turning_accum = 0.0; //clear to 0
 		m_turning_obj = Util::getRand()*180; //set a new turning angle
-		//m_turning_direction = GO_STRAIGHT;//for testing
+		m_turning_direction = GO_STRAIGHT;//for testing
 		break;
 	default:
 		break;
@@ -297,7 +311,7 @@ void MillipedeHead::UpdatePhysics(double dt){
 
 	if(m_mode == ADJUSTING){
 		//Head in free fall state
-		MillipedeRigidSection::UpdatePhysics(dt);
+		RigidCube::UpdatePhysics(dt);
 		return;
 	}
 

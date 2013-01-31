@@ -7,7 +7,17 @@ Things to work on
 - Obstacle: sphere, cube, cylinder, other Millipedes (Done)
 - Food (Done)
 - Movement (In Progress)
+5. Output For rendering (Almost Done)
+-Camera
+camera {
+	location <0, 0, -40>
+	look_at <0.0, 0.0, 0.0>
+	angle 33
+}
+
 1.22 - 1.31
+
+
 
 5. Construct different Terrains, experiment
 - cylinders paved road
@@ -77,3 +87,4 @@ also get out of the maze eventually
 4. Group Behavior OPTIONAL
 Simulate a group of millipedes/centipedes
 Put a food source far from them, all moving towards the food source
+

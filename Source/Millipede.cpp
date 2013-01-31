@@ -31,15 +31,33 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 
 	MillipedeRigidSection* previous_rigid_section, *current_rigid_section;
 	MillipedeSoftSection* previous_soft_section, *current_soft_section;
-
+	Eigen::Vector3f temp_position;
+	
 	//create head section
 	m_head = new MillipedeHead;
 	m_head->InitPhysics(1.0, a_position, a_rigid_size, Eigen::Vector3f(1.0,0,0));
-	m_head->m_prev = NULL;
-	//create body sections
-	previous_rigid_section = m_head;
-	Eigen::Vector3f temp_position;
-	for(int iter = 0; iter < m_num_section + 1; iter++){//the last rigid section is tail
+
+	//create neck
+	current_soft_section = new MillipedeSoftSection;
+	temp_position = m_head->m_Center 
+		+ Eigen::Vector3f(0.5*a_rigid_size[0], -0.5*a_rigid_size[1], -0.5*a_rigid_size[2]);
+	current_soft_section->Init(Eigen::Vector3i(3,3,3),1.0,3000,0.4,100.0,temp_position,
+		Eigen::Vector3f(a_soft_length,a_rigid_size[1],a_rigid_size[2]),Eigen::Vector3f(1,1,1));
+	//hook up with the previous rigid section
+	m_head->m_next = current_soft_section;
+	current_soft_section->m_prev = NULL;
+	previous_soft_section = current_soft_section;
+	//create a rigidsection after the previous soft section
+	current_rigid_section = new MillipedeRigidSection;
+	temp_position = m_head->m_Center;
+	temp_position[0] += a_rigid_size[0] + a_soft_length;//the millipede init heading -x direction
+	current_rigid_section->InitPhysics(1,temp_position,a_rigid_size, Eigen::Vector3f(0.4,0.4,0.4));
+	//hook up with previous soft section
+	current_rigid_section->m_prev = previous_soft_section;
+	previous_soft_section->m_next = current_rigid_section;
+	previous_rigid_section = current_rigid_section;
+
+	for(int iter = 0; iter < m_num_section; iter++){//the last rigid section is tail
 		//create a softsection after the previous rigid section
 		current_soft_section = new MillipedeSoftSection;
 		temp_position = previous_rigid_section->m_Center 
@@ -68,8 +86,16 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 	//connect the rigid and soft sections
 	MillipedeRigidSection *temp_rigid_section;
 	MillipedeSoftSection *temp_soft_section;
-	temp_rigid_section = m_head;
 	std::vector<Node*> temp_nodes;
+	temp_soft_section = m_head->m_next;
+	temp_nodes = temp_soft_section->m_Mesh->GetLeftNodes();
+	m_head->AttachNodes(temp_nodes);
+
+	temp_rigid_section = temp_soft_section->m_next;
+	//attach the right face with the next rigid section
+	temp_nodes = temp_soft_section->m_Mesh->GetRightNodes();
+	temp_rigid_section->AttachNodes(temp_nodes);
+
 	//loop through the nodes, init force with gravity, add collision force with the ground
 	while(1){
 		//deal with the rigid section
@@ -105,7 +131,8 @@ void Millipede::InitNeuroNet(Terrain* a_terrain){
 	int id = 1;
 	while(1){
 		//deal with the rigid section
-		temp_rigid_section->InitNeuroNet(this,id++);
+		temp_rigid_section->InitNeuroNet(this,id);
+		id++;
 		temp_soft_section = temp_rigid_section->m_next;
 		if(temp_soft_section){
 			temp_rigid_section = temp_soft_section->m_next;
@@ -122,7 +149,9 @@ void Millipede::SetWorld(World* a_world){
 	//draw all the rigid and soft sections
 	MillipedeRigidSection *temp_rigid_section;
 	MillipedeSoftSection *temp_soft_section;
-	temp_rigid_section = m_head;
+	m_head->SetWorld(a_world);
+	m_head->m_next->SetWorld(a_world);
+	temp_rigid_section = m_head->m_next->m_next;
 	//loop through the nodes, init force with gravity, add collision force with the ground
 	while(1){
 		//deal with the rigid section
@@ -145,7 +174,9 @@ void Millipede::Draw(int type, const Camera& camera, const Light& light){
 	//draw all the rigid and soft sections
 	MillipedeRigidSection *temp_rigid_section;
 	MillipedeSoftSection *temp_soft_section;
-	temp_rigid_section = m_head;
+	m_head->Draw(type, camera, light);//head
+	m_head->m_next->Draw(type, camera, light);//neck
+	temp_rigid_section = m_head->m_next->m_next;
 	//loop through the nodes, init force with gravity, add collision force with the ground
 	while(1){
 		//deal with the rigid section
@@ -194,7 +225,8 @@ void Millipede::UpdateAll(double dt){
 			break;
 	}
 	//soft phase
-	temp_rigid_section = m_head;
+	m_head->m_next->UpdateAll(dt);
+	temp_rigid_section = m_head->m_next->m_next;
 	while(1){
 		temp_soft_section = temp_rigid_section->m_next;
 		if(temp_soft_section){
@@ -343,7 +375,8 @@ void Millipede::Output2File(std::ofstream* filestream){
 			break;
 	}
 	//soft phase
-	temp_rigid_section = m_head;
+	m_head->m_next->Output2File(filestream);
+	temp_rigid_section = m_head->m_next->m_next;
 	while(1){
 		temp_soft_section = temp_rigid_section->m_next;
 		if(temp_soft_section){
