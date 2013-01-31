@@ -3,7 +3,7 @@
 # bash render_images.sh | xargs -n 9 -P 32 echo
 # bash render_images.sh | xargs -n 9 -P 32 time
 
-max=3525
+max=93
 
 for i in `seq 1 $max`
 do
