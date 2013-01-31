@@ -106,7 +106,7 @@ void MillipedeAntenna::Output2File(std::ofstream* filestream){
 	point_b = myDrawer->CurrentOrigin();
 	radius = 0.2;
 	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
-	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
+	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius/2.0<<"}"<<std::endl;
 	(*filestream)<<"//END CYLINDER "<<std::endl;
 
 	center = point_b;
