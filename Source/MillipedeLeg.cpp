@@ -28,7 +28,7 @@ void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 	m_extreme_alpha = 30;
 	m_extreme_beta = 30;
 
-	m_phase_dif = 2;
+	m_phase_dif = 20;
 
 	double dif_phase = 30;//12 legs per cycle
 
@@ -316,21 +316,13 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 			}
 			break;
 
-		case LEG_FREEZE:{
-			//this state if for leg adjusting dif_alpha
-			if(m_prev)
-				if(m_prev->m_leg_state == LEG_STANCE)
-				{//prevleg in stance mode, current leg in freeze mode
-					if(m_prev->m_phi + m_phase_dif > m_extreme_phi){
-						m_phi_velocity *= 0;
-						m_alpha_velocity *= 0;
-						m_beta_velocity *= 0;
-					}
-					else
-						EnterSwayForward2();//melt
-				}
+		case LEG_ADJUST:
+			if(dif.norm() < 2*m_leg_rotation_velocity*a_dt){
+				EnterSwayForward2();
 			}
 			break;
+
+
 	}
 }
 
@@ -371,14 +363,6 @@ void MillipedeLeg::UpdateStanceNet(double a_dt){
 	//TODO: narrow the solution space for inversekinematics
 	if(InverseKinematics(m_tip_position, m_root_position, result))
 	{
-		/*
-		if((Eigen::Vector3f(m_phi,m_alpha,m_beta) - result).norm() > a_dt*1000)
-		{
-			if(m_root->m_section_id == 1&& m_l_r == 1)
-			std::cout<<'\n'<<m_root->m_section_id<<"\n OLD: "<<m_phi<<","<<m_alpha<<","<<m_beta<<
-			"\n NEW"<<result[0]<<","<<result[1]<<","<<result[2]<<std::endl;
-		}
-		*/
 		//update
 		m_phi = result[0];
 		m_alpha = result[1];
@@ -387,6 +371,10 @@ void MillipedeLeg::UpdateStanceNet(double a_dt){
 	else{
 	//InverseKinematics can not resolve
 		EnterSwayForward1();
+		//only ajust rotation speed when exiting stance mode
+		m_leg_rotation_velocity = 70*m_root->m_linear_speed.norm();
+		//sync the neigbor leg
+		m_neig->EnterSwayForward1();
 	}
 	
 	//the stance net results in the inverse kinematics of desired physics configuration
@@ -398,14 +386,13 @@ void MillipedeLeg::UpdateNeuronNet(double a_dt){
 	//leg rotation speed synced with linear speed
 	//maintain the time ratio of body section in supported/free mode;
 
-	m_leg_rotation_velocity = 70*m_root->m_master->m_head->GetLinearSpeed();
-
 	UpdateSwitchNet(a_dt);//manage the switch of different modes
 	switch (m_leg_state) {
         case LEG_SWAY_FORWARD_1:
 		case LEG_SWAY_FORWARD_2:
 		case LEG_SWAY_BACKWARD_1:
 		case LEG_SWAY_BACKWARD_2:
+		case LEG_ADJUST:
 			UpdateSwingNet(a_dt);
 			break;
         case LEG_STANCE:
@@ -424,6 +411,26 @@ void MillipedeLeg::UpdateAll(double a_dt){
 void MillipedeLeg::EnterStance(){
 	//ground contact on the left leg
 	m_leg_state = LEG_STANCE;
+	
+	if(m_next){
+		m_next->EnterAdjust();
+	}
+
+}
+
+void MillipedeLeg::EnterAdjust(){
+	//adjust the leg so that the phase lag between previous leg is maintained
+
+	//ajustable to form different wave
+	m_target_phi = 0;
+	m_target_alpha = m_extreme_alpha;
+	m_target_beta = m_extreme_beta/2;
+
+	m_leg_state = LEG_ADJUST;
+
+	UpdateSpeedNet();
+
+
 }
 
 void MillipedeLeg::EnterSwayBackward1(){
@@ -475,24 +482,7 @@ void MillipedeLeg::EnterSwayForward2(){
 		
 	//forward Down
 	m_target_phi = m_extreme_phi;
-	//query previous leg, if previous leg in stance mode, then target the previous leg's landing point
-	if(m_prev)
-		if(m_prev->m_leg_state == LEG_STANCE)
-		{
-			if(m_prev->m_phi + m_phase_dif > m_extreme_phi){
-				m_leg_state = LEG_FREEZE;
-				return;
-			}
-			else
-				m_target_phi = m_prev->m_phi + m_phase_dif;
-		}
-		else if(m_prev->m_leg_state == LEG_SWAY_FORWARD_2){
-			if(m_prev->m_phi - m_phi < m_phase_dif){
-				m_leg_state = LEG_FREEZE;
-				return;
-			}
-		}
-
+	
 	m_target_alpha = 0;
 	m_target_beta = m_extreme_beta/2;
 	

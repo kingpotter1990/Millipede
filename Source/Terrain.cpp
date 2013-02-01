@@ -403,6 +403,12 @@ void Terrain::RegisterMillipede(Millipede* a_bug){
 
 }
 
+void Terrain::ClearMillipedes(){
+	
+	m_millipedes.clear();
+
+}
+
 bool Terrain::ReachFood(Eigen::Vector3f pos, double tol){
 	
 	for(int i = 0; i < m_foods.size(); i++)

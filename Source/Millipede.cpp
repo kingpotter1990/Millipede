@@ -194,13 +194,14 @@ void Millipede::Draw(int type, const Camera& camera, const Light& light){
 	}
 
 	//draw the bounding box
+	/*
 	myDrawer->SetIdentity();
 	myDrawer->SetColor(Eigen::Vector3f(1.0,1.0,0.0));
 	myDrawer->Translate(Eigen::Vector3f((m_bounding_box[0] + m_bounding_box[1])/2.0, 0,
 		(m_bounding_box[2] + m_bounding_box[3])/2.0));
 	myDrawer->Scale(Eigen::Vector3f(m_bounding_box[1] - m_bounding_box[0],1,m_bounding_box[3] - m_bounding_box[2]));
 	myDrawer->DrawCube(type, camera, light);
-
+	*/
 }
 
 void Millipede::UpdateAll(double dt){

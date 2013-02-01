@@ -31,11 +31,12 @@ void MillipedeRigidSection::InitNeuroNet(Millipede* a_root, int a_id){
 	m_section_id = a_id;
 	m_body_state = NOT_SUPPORTED;
 
+
 	m_left_leg->InitNeuroNet(this);
 	m_right_leg->InitNeuroNet(this);
 	
 	m_prev_dis_obj = m_master->m_link_length;
-
+	m_linear_speed *= 0;
 	m_height_obj = m_Size[1]*0.5 + m_left_leg->GetBalanceHeight();
 }
 
@@ -64,15 +65,7 @@ void MillipedeRigidSection::Draw(int type, const Camera& camera, const Light& li
 }
 
 void MillipedeRigidSection::UpdateNeuronNet(double a_dt){
-	
-	//Sync the two legs' rotation
-	//make sure the rotation state and process are syncronized
-	//get the force on the rigid section
-	//based on the force, adjust the speed of rotation
-	//adjust the m_extreme on each leg
-	//to minimize the force on the rigid section;
-	//the leg would provide support to cancel the gravity
-	//so only the elastic force from deformable sections will be considered
+
 
 	if(m_left_leg->m_leg_state == LEG_STANCE || m_right_leg->m_leg_state == LEG_STANCE)
 		m_body_state = LEG_SUPPORTED;
@@ -111,7 +104,6 @@ void MillipedeRigidSection::UpdateNeuronNet(double a_dt){
 	case LEG_SUPPORTED:{
 			m_velocity *= 0;
 			m_avelocity *= 0;
-			//m_height_obj = m_Size[1]*0.5 + 0.5*(m_left_leg->GetBalanceHeight() + m_right_leg->GetBalanceHeight());
 		}
 		break;
 	}
@@ -151,7 +143,8 @@ void MillipedeRigidSection::UpdatePBD(double dt){
 
 	m_Center[1] += 10*dt*(m_height_obj - (m_Center[1] - m_terrain->GetHeight(m_Center[0],m_Center[2])));//balance of height	
 	//Minimize the distance to previous section to minimum;
-	m_Center += 50*dt*prev_link_vector.normalized()*(prev_link_vector.norm() - m_prev_dis_obj);
+	m_linear_speed = 50*prev_link_vector.normalized()*(prev_link_vector.norm() - m_prev_dis_obj);
+	m_Center += dt*m_linear_speed;
 
 	//keep the balance of lean in x rotation
 	double zaxisdify = (m_rotation*Eigen::Vector3f(0,0,1)).dot(m_terrain->GetNormal(m_Center[0], m_Center[2]));

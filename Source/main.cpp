@@ -30,7 +30,7 @@ void initScene(){
 
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 15, TERRAIN_FLAT, OBSTACLE_OFF, FOOD_OFF);
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 15, TERRAIN_RANDOM, OBSTACLE_OFF, FOOD_OFF);
 
 	reinitScene();
 
@@ -47,6 +47,7 @@ void reinitScene(){
 	
 	myWorld->Add_Object(myTerrain);
 	
+	myTerrain->ClearMillipedes();
 
 	/*
 	int m = 5, n = 5;
@@ -58,11 +59,13 @@ void reinitScene(){
 			myWorld->Add_Object(&myMillipedes[i*n +j]);
 		}
 	*/
+	if(myMillipedes)
+		delete[] myMillipedes;
 
 	myMillipedes = new Millipede;
-	myMillipedes->Init(Eigen::Vector3f(-10,20,0),16,Eigen::Vector3f(1,1,2),1, myTerrain);
-	myMillipedes->FixHead();
-	myMillipedes->FixTail();
+	myMillipedes->Init(Eigen::Vector3f(-10,5,0),16,Eigen::Vector3f(1,1,2),1, myTerrain);
+	//myMillipedes->FixHead();
+//	myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);
 
 	//set up the clock
@@ -263,7 +266,7 @@ void idleCallback(){
 		myWorld->Update(DTIME);
 	}
 
-	if(FRAME_TIME > 0.03)//33 frames per second
+	if(FRAME_TIME > 0.01)//33 frames per second
 	{
 		glutPostRedisplay() ; //draw new frame
 		FRAME_TIME = 0;	

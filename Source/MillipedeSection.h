@@ -42,6 +42,7 @@ public:
 	int m_section_id;
 	double m_height_obj;
 	double m_prev_dis_obj;
+	Eigen::Vector3f m_linear_speed;
 
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW

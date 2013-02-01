@@ -218,13 +218,13 @@ void MillipedeHead::EnterMode(MILLIPEDE_STATUS a_mode){
 		m_turning_direction = TURN_RIGHT;
 		break;
 	case RANDOM_WALK:
-		m_linear_speed = 15;
-		m_turning_speed = 30 + 30*Util::getRand();
+		m_linear_speed = 10;
+		m_turning_speed = 10 + 30*Util::getRand();
 		m_current_turning_accum = 0;
 		m_turning_direction = (Util::getRand() > 0.5 ? TURN_LEFT:TURN_RIGHT); //set a new turning direction
 		m_current_turning_accum = 0.0; //clear to 0
 		m_turning_obj = Util::getRand()*180; //set a new turning angle
-		m_turning_direction = GO_STRAIGHT;//for testing
+		//m_turning_direction = GO_STRAIGHT;//for testing
 		break;
 	default:
 		break;
@@ -234,14 +234,20 @@ void MillipedeHead::EnterMode(MILLIPEDE_STATUS a_mode){
 
 
 void MillipedeHead::UpdateNeuroNet(double dt){
+
 	//sense the environment and update the turning direction, speed, etc
 	//ACTION SELECTION: food?escape?follow
 
 	if(m_mode == ADJUSTING){
-		MillipedeRigidSection *temp_rigid_section;
-		MillipedeSoftSection *temp_soft_section;
-		temp_rigid_section = m_master->m_head->m_next->m_next;//skip the head since it is controlled by the mind directly
+		MillipedeRigidSection *neck;
+		neck = m_master->m_head->m_next->m_next;
 
+		if(neck->m_body_state == LEG_SUPPORTED)
+			EnterMode(RANDOM_WALK);
+		else
+			return;
+	}
+		/*
 		//In adjusting mode only when all sections get supported will it start walking
 		while(1){
 			if(temp_rigid_section->m_body_state != LEG_SUPPORTED){
@@ -256,7 +262,8 @@ void MillipedeHead::UpdateNeuroNet(double dt){
 				break;
 			}
 		}
-	}
+		*/
+	
 
 	//left antenna has a higher priority when both are hit
 	//avoid swaying 

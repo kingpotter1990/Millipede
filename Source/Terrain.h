@@ -33,6 +33,7 @@ public:
 	double GetFoodIntensity(Eigen::Vector3f a_pos);
 	bool ReachFood(Eigen::Vector3f pos, double tol);
 	void RegisterMillipede(Millipede* a_millipede);
+	void ClearMillipedes();
 public:
 	double m_frictness;
 

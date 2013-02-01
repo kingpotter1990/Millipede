@@ -10,7 +10,7 @@
 class Terrain;
 class MillipedeRigidSection;
 
-enum LEG_STATUS {LEG_STANCE, LEG_SWAY_FORWARD_1, LEG_SWAY_FORWARD_2, LEG_SWAY_BACKWARD_1,LEG_SWAY_BACKWARD_2, LEG_FREEZE};
+enum LEG_STATUS {LEG_STANCE, LEG_ADJUST, LEG_SWAY_FORWARD_1, LEG_SWAY_FORWARD_2, LEG_SWAY_BACKWARD_1,LEG_SWAY_BACKWARD_2};
 
 class MillipedeLeg:public Object{
     
@@ -35,6 +35,7 @@ protected:
 	void UpdateSpeedNet();
 
 	void EnterStance();
+	void EnterAdjust();
 	void EnterSwayForward1();
 	void EnterSwayBackward1();
 	void EnterSwayForward2();
@@ -68,8 +69,6 @@ private:
 	double m_phi_velocity;
 	double m_beta_velocity;
 
-	double m_leg_rotation_velocity;
-
 	int m_l_r;//left or right
 
 	MillipedeLeg* m_prev;
@@ -77,6 +76,9 @@ private:
 	MillipedeLeg* m_neig;
 
 public:
+	
+	double m_leg_rotation_velocity;
+
 	MillipedeRigidSection* m_root;//where the leg is attached to
 	LEG_STATUS m_leg_state;
 

@@ -51,6 +51,14 @@ mode when one leg is in stance mode, also by updating the keep section balanced 
 [Plan to solve by applying leg relative rotation diff constraint]
 [Partially Solved by restricting diff_phase with previous stance leg when entering stance mode]
 Some neighboring legs would move in the same phase, not resulting in wave pattern[TODO]
+
+Possible solution: When a leg enter stance, it will expect the posterior leg to enter stance soon,so that leg is expected to be at certain position,
+pass this info to the posterior leg, let it adjust itself to achieve this goal soon.
+This coordination will propogate from the first leg to the end
+If keep the first pair of leg in synchronization, both side's leg wave will be in sync
+
+Linear speed of each section should affect the rotation speed of leg in swing modes(except ajusting mode): very slow linear speed result in very slow rotation speed;
+
 3. Terrain GetNormal FUnction seems wrong, generate Normal Function most likely wrong [SOVLED]
 
 Different Parameters:
@@ -59,7 +67,7 @@ Different Parameters:
 
 2. Leg Dimension; Leg rotation extreme value
 
-3. Leg rotation speed:
+3. Leg rotation speed: associated with linear speed, the association parameter
 
 4. Section rotation speed/ linear speed in different modes
 
