@@ -59,19 +59,21 @@ void reinitScene(){
 			myWorld->Add_Object(&myMillipedes[i*n +j]);
 		}
 	*/
+
 	if(myMillipedes)
 		delete[] myMillipedes;
 
 	myMillipedes = new Millipede;
-	myMillipedes->Init(Eigen::Vector3f(-10,5,0),16,Eigen::Vector3f(1,1,2),1, myTerrain);
+	myMillipedes->Init(Eigen::Vector3f(-10,15,0),16,Eigen::Vector3f(1,1,2),1, myTerrain);
 	//myMillipedes->FixHead();
-//	myMillipedes->FixTail();
+	//myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);
 
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime() ;
 	DTIME = 0.0;
 	FRAME_TIME = 0.0;
+
 
 }
 
