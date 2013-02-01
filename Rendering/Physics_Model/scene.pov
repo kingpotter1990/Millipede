@@ -13,7 +13,7 @@ global_settings {
 
 // perspective (default) camera
 camera {
-  location  <-8, 12,  -15>
+  location  <-8, 12,  -45>
   look_at   <-8, 12,  0.0>   
 
   //location  <-8, 30,  0.0>
