@@ -6,18 +6,19 @@ Things to work on
 4. Antenna (Almost Done)
 - Obstacle: sphere, cube, cylinder, other Millipedes (Done)
 - Food (Done)
-- Movement (In Progress)
+- Animate of Antenna (In Progress)
+
 5. Output For rendering (Almost Done)
--Camera
-camera {
-	location <0, 0, -40>
-	look_at <0.0, 0.0, 0.0>
-	angle 33
-}
+- Output Camera: first build a camera moving system
+
+6. Modify balance net for head and sections
+the height-obj should be based on the stanced leg tips' position
+head's height-obj is from the neck section;
+
+the orientation-obj(a normal) should be from the stanced leg's tip position
+and prev_link. The head's orientation-obj is from the terrain's normal.
 
 1.22 - 1.31
-
-
 
 5. Construct different Terrains, experiment
 - cylinders paved road
@@ -50,14 +51,14 @@ mode when one leg is in stance mode, also by updating the keep section balanced 
 2. Legs not in wave pattern, no consideration for collision of legs, etc
 [Plan to solve by applying leg relative rotation diff constraint]
 [Partially Solved by restricting diff_phase with previous stance leg when entering stance mode]
-Some neighboring legs would move in the same phase, not resulting in wave pattern[TODO]
+Some neighboring legs would move in the same phase, not resulting in wave pattern[SOVLED]
 
 Possible solution: When a leg enter stance, it will expect the posterior leg to enter stance soon,so that leg is expected to be at certain position,
 pass this info to the posterior leg, let it adjust itself to achieve this goal soon.
 This coordination will propogate from the first leg to the end
-If keep the first pair of leg in synchronization, both side's leg wave will be in sync
+If keep the first pair of leg in synchronization, both side's leg wave will be in sync [SOLVED by keeping all legs in sync]
 
-Linear speed of each section should affect the rotation speed of leg in swing modes(except ajusting mode): very slow linear speed result in very slow rotation speed;
+Linear speed of each section should affect the rotation speed of leg in swing modes(except ajusting mode): very slow linear speed result in very slow rotation speed; [SOVLED]
 
 3. Terrain GetNormal FUnction seems wrong, generate Normal Function most likely wrong [SOVLED]
 

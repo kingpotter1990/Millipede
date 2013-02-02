@@ -34,6 +34,7 @@ public:
 	bool ReachFood(Eigen::Vector3f pos, double tol);
 	void RegisterMillipede(Millipede* a_millipede);
 	void ClearMillipedes();
+	void InitSurfaceObjects();
 public:
 	double m_frictness;
 
@@ -42,6 +43,9 @@ protected:
 	void InitObstacles(TerrainType a_type);
 	void InitFood(TerrainType a_type);
 	void InitDraw();
+
+private:
+	void GenerateNormals();
 
 protected:
 	//drawing data
@@ -63,6 +67,7 @@ protected:
 	double* m_height_data;//per node
 	Eigen::Vector3f* m_normal_data;//per node
 	std::vector<Object*> m_obstacles;
+	std::vector<Object*> m_surface_objects;
 	std::vector<Sphere*> m_foods;
 	std::vector<Millipede*> m_millipedes;//registered millipedes on the terrain
 public:

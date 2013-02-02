@@ -18,6 +18,7 @@ Cube::Cube(){
 }
 
 Cube::Cube(Eigen::Vector3f center, Eigen::Vector3f scale, Eigen::Vector3f color){
+	 m_type = TypeCube;
     Init(center, scale, color);
 }
 

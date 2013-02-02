@@ -14,6 +14,11 @@ Cylinder::Cylinder(){
     Init(Eigen::Vector3f(0.0,0.0,0.0),Eigen::Vector3f(1.0,1.0,1.0),Eigen::Vector3f(1.0,0.0,0.0));
 }
 
+Cylinder::Cylinder(Eigen::Vector3f center, Eigen::Vector3f scale, Eigen::Vector3f color){
+	 m_type = TypeCylinder;
+     Init(center, scale, color);
+}
+
 
 void Cylinder::makeCircle()
 {

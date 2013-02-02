@@ -30,7 +30,7 @@ void initScene(){
 
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 15, TERRAIN_RANDOM, OBSTACLE_OFF, FOOD_OFF);
+	myTerrain = new Terrain(Eigen::Vector2f(100,100), Eigen::Vector2i(500,500), 500, TERRAIN_TEST, OBSTACLE_OFF, FOOD_OFF);
 
 	reinitScene();
 
@@ -60,13 +60,15 @@ void reinitScene(){
 		}
 	*/
 
+	
 	if(myMillipedes)
 		delete[] myMillipedes;
 
 	myMillipedes = new Millipede;
-	myMillipedes->Init(Eigen::Vector3f(-10,15,0),16,Eigen::Vector3f(1,1,2),1, myTerrain);
+	myMillipedes->Init(Eigen::Vector3f(-10,5,0),6,Eigen::Vector3f(1,1,2),1, myTerrain);
 	//myMillipedes->FixHead();
 	//myMillipedes->FixTail();
+	
 	myWorld->Add_Object(myMillipedes);
 
 	//set up the clock

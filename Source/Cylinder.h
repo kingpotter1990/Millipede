@@ -18,6 +18,7 @@ class Cylinder:public Object{
 
 public:
     Cylinder();//Default constructor create a unit cube in center of screen
+	Cylinder(Eigen::Vector3f, Eigen::Vector3f,Eigen::Vector3f );
 	virtual ~Cylinder(){}
 	void Init(Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f color);
 	void InitDraw();

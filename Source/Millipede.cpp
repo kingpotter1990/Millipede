@@ -24,7 +24,7 @@ void Millipede::Init(Eigen::Vector3f a_position, int a_num_section, Eigen::Vecto
 
 void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length){
 
-    Eigen::Vector3i soft_resolution(10,10,10);
+    Eigen::Vector3i soft_resolution(3,3,3);
     double youngs_modulus = 2000;
 
 	assert(a_num_section >=3);//Need to be at least this lenght

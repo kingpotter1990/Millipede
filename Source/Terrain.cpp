@@ -23,7 +23,8 @@ Terrain::Terrain(Eigen::Vector2f a_size, Eigen::Vector2i a_res, int n_hill, Terr
 	InitDraw();
 }
 
-void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_z, int n_hill, TerrainType a_type){
+void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_z, int n_hill, TerrainType a_type)
+{
 	
 	m_size_x = a_size_x;
 	m_size_z = a_size_z;
@@ -36,27 +37,26 @@ void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_
 	m_normal_data = new Eigen::Vector3f[(a_res_x+1)*(a_res_z+1)];
 	for(int i = 0; i < (a_res_x+1)*(a_res_z+1); i++)
 		m_height_data[i] = 0.0;//clear to 0
-
-	double hill_height_max = 30;
-
-	double hill_center_x, hill_center_z, hill_height, hill_narrowness_x, hill_narrowness_z;
-	double dev_x, dev_z;	
 	
 	if(a_type == TERRAIN_FLAT){
 		for(int ix = 0; ix < (a_res_x+1); ix++)
 			for(int iz = 0; iz < (a_res_z+1); iz++){
 				m_height_data[ix*(a_res_z+1) + iz] = 0.0;
-				m_normal_data[ix*(a_res_z+1) + iz] = Eigen::Vector3f(0.0,1.0,0.0);
 			}
-		return;
 	}
+
 	else if(a_type == TERRAIN_RANDOM){
-		for(int i = 0; i < n_hill; i++){
+		double hill_height_max = 10;
+		double hill_center_x, hill_center_z, hill_height, hill_narrowness_x, hill_narrowness_z;
+		double dev_x, dev_z;
+
+		for(int i = 0; i < n_hill; i++){	
+
 			hill_center_x = (Util::getRand()-0.5)*a_size_x;
 			hill_center_z = (Util::getRand()-0.5)*a_size_z;
 			hill_height = Util::getRand()*(hill_height_max - 5) + 5;
-			hill_narrowness_x = Util::getRand()*20 + 20; //20~40
-			hill_narrowness_z = Util::getRand()*20 + 20; //20~40
+			hill_narrowness_x = Util::getRand()*5 + 1; //20~40
+			hill_narrowness_z = Util::getRand()*5 + 1; //20~40
 
 			//add the hill to current height map
 			for(int ix = 0; ix < (a_res_x+1); ix++)
@@ -67,142 +67,74 @@ void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_
 						hill_height*exp(-dev_x*dev_x/(2*hill_narrowness_x*hill_narrowness_x)-dev_z*dev_z/(2*hill_narrowness_z*hill_narrowness_z));
 				}
 		}
-	}
-	else if(a_type == TERRAIN_TEST){
-		hill_center_x = -0*a_size_x;
-		hill_center_z = -0*a_size_z;
-		hill_height = hill_height_max;
-		hill_narrowness_x = 0.1*a_size_x; //20~40
-		hill_narrowness_z = 0.1*a_size_z; //20~40
+	
+		//normalize
+		double temp_largest = m_height_data[0];
+		double temp_smallest = m_height_data[0];
+		for(int i = 0; i < (a_res_x+1)*(a_res_z+1); i++)
+		{
+			if(m_height_data[i] > temp_largest)
+				temp_largest = m_height_data[i];
+			if(m_height_data[i] < temp_smallest)
+				temp_smallest = m_height_data[i];
+		}
 
-		//add the hill to current height map
+		for(int i = 0; i < (a_res_x+1)*(a_res_z+1); i++)
+		{
+			//eventually the range would be from 0~m_hill_height_max
+			m_height_data[i] = hill_height_max*(m_height_data[i] - temp_smallest)/temp_largest;
+		}
+
+
+	}else if(a_type == TERRAIN_TEST){
+		
 		for(int ix = 0; ix < (a_res_x+1); ix++)
 			for(int iz = 0; iz < (a_res_z+1); iz++){
-				dev_x = ix*m_dx - 0.5*a_size_x - hill_center_x;
-				dev_z = iz*m_dz - 0.5*a_size_z - hill_center_z;
-				m_height_data[ix*(a_res_z+1) + iz] += //guassian hill
-					hill_height*exp(-dev_x*dev_x/(2*hill_narrowness_x*hill_narrowness_x)-dev_z*dev_z/(2*hill_narrowness_z*hill_narrowness_z));
+				m_height_data[ix*(a_res_z+1) + iz] = 0.0;
 			}
 
-		hill_center_x = 0.25*a_size_x;
-		hill_center_z = -0.25*a_size_z;
-		hill_height = hill_height_max;
-		hill_narrowness_x = 0.1*a_size_x; 
-		hill_narrowness_z = 0.1*a_size_z; 
-
-		hill_center_x = -0.25*a_size_x;
-		hill_center_z = -0.25*a_size_z;
-		hill_height = hill_height_max;
-		hill_narrowness_x = 0.1*a_size_x; //20~40
-		hill_narrowness_z = 0.1*a_size_z; //20~40
-
-		//add the hill to current height map
-		for(int ix = 0; ix < (a_res_x+1); ix++)
-			for(int iz = 0; iz < (a_res_z+1); iz++){
-				dev_x = ix*m_dx - 0.5*a_size_x - hill_center_x;
-				dev_z = iz*m_dz - 0.5*a_size_z - hill_center_z;
-				m_height_data[ix*(a_res_z+1) + iz] += //guassian hill
-					hill_height*exp(-dev_x*dev_x/(2*hill_narrowness_x*hill_narrowness_x)-dev_z*dev_z/(2*hill_narrowness_z*hill_narrowness_z));
-			}
-
-		hill_center_x = 0.25*a_size_x;
-		hill_center_z = -0.25*a_size_z;
-		hill_height = hill_height_max;
-		hill_narrowness_x = 0.1*a_size_x; 
-		hill_narrowness_z = 0.1*a_size_z; 
-
-		//add the hill to current height map
-		for(int ix = 0; ix < (a_res_x+1); ix++)
-			for(int iz = 0; iz < (a_res_z+1); iz++){
-				dev_x = ix*m_dx - 0.5*a_size_x - hill_center_x;
-				dev_z = iz*m_dz - 0.5*a_size_z - hill_center_z;
-				m_height_data[ix*(a_res_z+1) + iz] += //guassian hill
-					hill_height*exp(-dev_x*dev_x/(2*hill_narrowness_x*hill_narrowness_x)-dev_z*dev_z/(2*hill_narrowness_z*hill_narrowness_z));
-			}
-
-		hill_center_x = -0.25*a_size_x;
-		hill_center_z = 0.25*a_size_z;
-		hill_height = hill_height_max;
-		hill_narrowness_x = 0.1*a_size_x;
-		hill_narrowness_z = 0.1*a_size_z; 
-
-		//add the hill to current height map
-		for(int ix = 0; ix < (a_res_x+1); ix++)
-			for(int iz = 0; iz < (a_res_z+1); iz++){
-				dev_x = ix*m_dx - 0.5*a_size_x - hill_center_x;
-				dev_z = iz*m_dz - 0.5*a_size_z - hill_center_z;
-				m_height_data[ix*(a_res_z+1) + iz] += //guassian hill
-					hill_height*exp(-dev_x*dev_x/(2*hill_narrowness_x*hill_narrowness_x)-dev_z*dev_z/(2*hill_narrowness_z*hill_narrowness_z));
-			}
-
-		hill_center_x = 0.25*a_size_x;
-		hill_center_z = 0.25*a_size_z;
-		hill_height = hill_height_max;
-		hill_narrowness_x = 0.1*a_size_x;
-		hill_narrowness_z = 0.1*a_size_z; 
-
-		//add the hill to current height map
-		for(int ix = 0; ix < (a_res_x+1); ix++)
-			for(int iz = 0; iz < (a_res_z+1); iz++){
-				dev_x = ix*m_dx - 0.5*a_size_x - hill_center_x;
-				dev_z = iz*m_dz - 0.5*a_size_z - hill_center_z;
-				m_height_data[ix*(a_res_z+1) + iz] += //guassian hill
-					hill_height*exp(-dev_x*dev_x/(2*hill_narrowness_x*hill_narrowness_x)-dev_z*dev_z/(2*hill_narrowness_z*hill_narrowness_z));
-			}
+		InitSurfaceObjects();
 	}
 
-	//normalize
-	double temp_largest = m_height_data[0];
-	double temp_smallest = m_height_data[0];
-	for(int i = 0; i < (a_res_x+1)*(a_res_z+1); i++)
-	{
-		if(m_height_data[i] > temp_largest)
-			temp_largest = m_height_data[i];
-		if(m_height_data[i] < temp_smallest)
-			temp_smallest = m_height_data[i];
-	}
+	GenerateNormals();
+	
+}
 
-	for(int i = 0; i < (a_res_x+1)*(a_res_z+1); i++)
-	{
-		//eventually the range would be from 0~m_hill_height_max
-		m_height_data[i] = hill_height_max*(m_height_data[i] - temp_smallest)/temp_largest;
-	}
-
-	//generate normal
-	//COULD HAVE BUG
+void Terrain::GenerateNormals(){
+//generate normal
 
 	Eigen::Vector3f v1,v2;
 	Eigen::Vector3f current_normal, temp_face_normal;
-	for(int ix = 0; ix < a_res_x + 1; ix++)
-		for(int iz = 0; iz < a_res_z + 1; iz++){
+	for(int ix = 0; ix < m_res_x + 1; ix++)
+		for(int iz = 0; iz < m_res_z + 1; iz++){
 			current_normal *= 0.0;
 			//upper left face normal
-			if(ix > 0 && iz < a_res_z)
+			if(ix > 0 && iz < m_res_z)
 			{
 				v1.x() = 0;
 				v1.z() = m_dz;
-				v1.y() = m_height_data[ix*(a_res_z+1) + iz + 1] - m_height_data[ix*(a_res_z+1) + iz];
+				v1.y() = m_height_data[ix*(m_res_z+1) + iz + 1] - m_height_data[ix*(m_res_z+1) + iz];
 				v1.normalize();
 
 				v2.x() = -m_dx;
 				v2.z() = 0;
-				v2.y() = m_height_data[(ix-1)*(a_res_z+1) + iz] - m_height_data[ix*(a_res_z+1) + iz];
+				v2.y() = m_height_data[(ix-1)*(m_res_z+1) + iz] - m_height_data[ix*(m_res_z+1) + iz];
 				v2.normalize();
 
 				temp_face_normal = v1.cross(v2);
 				current_normal += temp_face_normal;
 			}
 			//upper right face normal
-			if(ix < a_res_x - 1 && iz < a_res_z)
+			if(ix < m_res_x - 1 && iz < m_res_z)
 			{
 				v1.x() = 0;
 				v1.z() = m_dz;
-				v1.y() = m_height_data[ix*(a_res_z+1) + iz + 1] - m_height_data[ix*(a_res_z+1) + iz];
+				v1.y() = m_height_data[ix*(m_res_z+1) + iz + 1] - m_height_data[ix*(m_res_z+1) + iz];
 				v1.normalize();
 
 				v2.x() = m_dx;
 				v2.z() = 0;
-				v2.y() = m_height_data[(ix+1)*(a_res_z+1) + iz] - m_height_data[ix*(a_res_z+1) + iz];
+				v2.y() = m_height_data[(ix+1)*(m_res_z+1) + iz] - m_height_data[ix*(m_res_z+1) + iz];
 				v2.normalize();
 
 				temp_face_normal = v2.cross(v1);
@@ -213,37 +145,76 @@ void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_
 			{
 				v1.x() = 0;
 				v1.z() = -m_dz;
-				v1.y() = m_height_data[ix*(a_res_z+1) + iz - 1] - m_height_data[ix*(a_res_z+1) + iz];
+				v1.y() = m_height_data[ix*(m_res_z+1) + iz - 1] - m_height_data[ix*(m_res_z+1) + iz];
 				v1.normalize();
 
 				v2.x() = -m_dx;
 				v2.z() = 0;
-				v2.y() = m_height_data[(ix-1)*(a_res_z+1) + iz] - m_height_data[ix*(a_res_z+1) + iz];
+				v2.y() = m_height_data[(ix-1)*(m_res_z+1) + iz] - m_height_data[ix*(m_res_z+1) + iz];
 				v2.normalize();
 
 				temp_face_normal = v2.cross(v1);
 				current_normal += temp_face_normal;
 			}
 			//lower right face normal
-			if(ix < a_res_x  && iz > 0)
+			if(ix < m_res_x  && iz > 0)
 			{
 				v1.x() = 0;
 				v1.z() = -m_dz;
-				v1.y() = m_height_data[ix*(a_res_z+1) + iz - 1] - m_height_data[ix*(a_res_z+1) + iz];
+				v1.y() = m_height_data[ix*(m_res_z+1) + iz - 1] - m_height_data[ix*(m_res_z+1) + iz];
 				v1.normalize();
 
 				v2.x() = m_dx;
 				v2.z() = 0;
-				v2.y() = m_height_data[(ix+1)*(a_res_z+1) + iz] - m_height_data[ix*(a_res_z+1) + iz];
+				v2.y() = m_height_data[(ix+1)*(m_res_z+1) + iz] - m_height_data[ix*(m_res_z+1) + iz];
 				v2.normalize();
 
 				temp_face_normal = v1.cross(v2);
 				current_normal += temp_face_normal;
 			}
 
-			m_normal_data[ix*(a_res_z+1) + iz] = -current_normal.normalized();//average
+			m_normal_data[ix*(m_res_z+1) + iz] = -current_normal.normalized();//average
 		}
+	
+
 }
+
+void Terrain::InitSurfaceObjects(){
+
+	Cube* temp_cube;
+	Cylinder* temp_cylinder;
+	Sphere* temp_sphere;
+	
+	Eigen::Vector3f temp_center, temp_scale, temp_color;
+	double dx = 2, dy, dz = 2;
+	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
+	
+	/*
+	for(int i = 0; i < 20; i++)
+		for(int j = 0; j < 20; j++){
+						
+			dy = Util::getRand()*1;
+			temp_center = Eigen::Vector3f(-i*dx, dy/2, -10 + j*dz);			
+			temp_scale = Eigen::Vector3f(dx,dy,dz);
+			temp_cube = new Cube(temp_center, temp_scale, temp_color);
+
+			m_surface_objects.push_back(temp_cube);
+
+		}
+	*/
+
+	for(int i = 0; i < 30; i++){
+		temp_center = Eigen::Vector3f(-i*2, 0, 0);			
+		temp_scale = Eigen::Vector3f(2,2,10);
+		temp_cylinder = new Cylinder(temp_center, temp_scale, temp_color);
+
+		m_surface_objects.push_back(temp_cylinder);
+	
+	}
+}
+
+
+
 
 void Terrain::InitObstacles(TerrainType a_type){
 
@@ -431,6 +402,41 @@ bool Terrain::ReachFood(Eigen::Vector3f pos, double tol){
 
 double Terrain::GetHeight(Eigen::Vector2f xy) const{
 	
+	Cube* temp_cube;
+	Cylinder* temp_cylinder;
+	Sphere* temp_sphere;
+
+	double x = xy.x();
+	double z = xy.y();
+	//check if x y lands on a surface object
+	for(int i = 0; i < m_surface_objects.size(); i++){
+		
+		switch (m_surface_objects[i]->m_type)
+		{
+		case TypeCube:
+			temp_cube = dynamic_cast<Cube*>(m_surface_objects[i]);
+			if(x < temp_cube->m_Center[0] + temp_cube->m_Size[0]*0.5
+				&& x > temp_cube->m_Center[0] - temp_cube->m_Size[0]*0.5
+				&& z < temp_cube->m_Center[2] + temp_cube->m_Size[2]*0.5
+				&& z > temp_cube->m_Center[2] - temp_cube->m_Size[2]*0.5)
+				return temp_cube->m_Size[1];
+			break;
+		case TypeCylinder:
+			temp_cylinder = dynamic_cast<Cylinder*>(m_surface_objects[i]);
+			if(x < temp_cylinder->m_Center[0] + temp_cylinder->m_Size[0]*0.5
+				&&x > temp_cylinder->m_Center[0] - temp_cylinder->m_Size[0]*0.5
+				&&z < temp_cylinder->m_Center[2] + temp_cylinder->m_Size[2]*0.5
+				&&z > temp_cylinder->m_Center[0] - temp_cylinder->m_Size[2]*0.5)
+				return sqrt(0.25*temp_cylinder->m_Size[1]*temp_cylinder->m_Size[1] - (x - temp_cylinder->m_Center[0])*(x - temp_cylinder->m_Center[0]));
+			break;
+		default:
+			break;
+		}
+		
+	
+	}
+
+
 	int idx, idz;
 	idx = (xy.x() + 0.5*m_size_x)/m_dx;
 	idz = (xy.y() + 0.5*m_size_z)/m_dz;
@@ -725,6 +731,12 @@ void Terrain::Draw(int type, const Camera& camera, const Light& light){
 	for(int i = 0; i < m_foods.size(); i++)
 	{
 		m_foods[i]->Draw(type,camera, light);
+	}
+
+	//draw the obstacles
+	for(int i = 0; i < m_surface_objects.size(); i++)
+	{
+		m_surface_objects[i]->Draw(type,camera, light);
 	}
 
 }
