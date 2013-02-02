@@ -1,0 +1,11 @@
+# SConscript file
+#  for building project
+#
+# Written by:  Jan Hegemann, 2012.
+#
+
+src_files = ['main.cpp', 'jeff/gaussian_quadrature_simplex_rule.cpp']
+
+Import('env')
+
+env.Program('dynamic_elasticity_3d_new', src_files)
