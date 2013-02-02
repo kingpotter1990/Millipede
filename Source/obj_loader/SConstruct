@@ -1,0 +1,107 @@
+# scons build file for dynamic_elasticity_3d_new project
+#
+# Written by: Jan Hegemann, 2012.
+#
+
+import os
+import sys
+
+include_paths = []
+compile_flags = []
+lib_paths = []
+libs = []
+linking_flags = []
+
+
+##
+## processor specific flags
+##
+
+compiler = 'g++'
+
+compile_flags.append('-march=native')
+
+# process command line arguments
+build_type = ARGUMENTS.get('type','release')
+if build_type == 'release':
+
+    build_dir = 'build/release'
+    compile_flags.append('-DNDEBUG')
+    compile_flags.append('-O3')
+
+elif build_type == 'debug':
+
+    build_dir = 'build/debug'
+    compile_flags.append('-g')
+    linking_flags.append('-g')
+
+else:
+    print 'scons type=(release|debug)'
+    sys.exit(1)
+
+openmp = ARGUMENTS.get('openmp','true')
+if openmp == 'true':
+    compile_flags.append('-fopenmp')
+    libs.append('gomp')
+
+
+#
+# get environment variables
+#
+
+boost_root = os.environ.get('BOOST_ROOT')
+if boost_root is None:
+   print 'Environment variable BOOST_ROOT not set.\nPlease set and re-run.'
+   sys.exit(1)
+
+if boost_root[-1] is not '/' or boost_root[-1] is not '\\':
+   boost_root += '/'
+
+sake_root = os.environ.get('SAKE_ROOT')
+if sake_root is None:
+    print 'Environment variable SAKE_ROOT not set.'
+    sys.exit(1)
+
+if sake_root[-1] is not '/':
+    sake_root += '/'
+
+boost_svn_root = os.environ.get('BOOST_SVN_ROOT')
+if boost_svn_root is None:
+    print 'Environment variable BOOST_SVN_ROOT not set.'
+    sys.exit(1)
+
+if boost_svn_root[-1] is not '/':
+    boost_svn_root += '/'
+
+
+
+include_paths.append(boost_root)
+include_paths.append(sake_root)
+include_paths.append(boost_svn_root)
+include_paths.append(boost_svn_root+'boost-sandbox/move')
+
+compile_flags.append('-Wno-deprecated')
+
+#linking_flags.append('-pthread')
+
+# wtf, why do I need x11?
+#libs.append('X11')
+
+#libs.append('gfortran')
+
+env = Environment(
+CXX=compiler,
+CPPFLAGS=compile_flags,
+CPPPATH=include_paths,
+LIBPATH=lib_paths,
+LIBS=libs,
+LINKFLAGS=linking_flags
+)
+
+Export('env')
+
+env.SConscript('SConscript', build_dir=build_dir, duplicate=0)
+
+
+if os.path.exists('./dynamic_elasticity_3d_new_'+build_type) == False:
+    os.system('ln -s build/'+build_type+'/dynamic_elasticity_3d_new dynamic_elasticity_3d_new_'+build_type)
