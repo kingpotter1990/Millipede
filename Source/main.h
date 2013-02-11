@@ -1,6 +1,7 @@
 #include "Utility.h"
 #include "Camera.h"
 #include "Light.h"
+#include "Object.h"
 #include "3DDeformable.h"
 #include "Cube.h"
 #include "RigidCube.h"

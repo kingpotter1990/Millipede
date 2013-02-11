@@ -1,47 +1,50 @@
 Things to work on
 
-1. Invertible Implict Elasticity (not necessary)
-2. Turning (Done)
-3. Terrain (Done)
-4. Antenna (Almost Done)
+*. Implict Elasticity (not necessary)
+*. Turning (Done)
+*. Terrain (Done)
+*. Antenna (Almost Done)
 - Obstacle: sphere, cube, cylinder, other Millipedes (Done)
 - Food (Done)
 - Animate of Antenna (In Progress)
 
-5. Output For rendering (Almost Done)
-- Output Camera: first build a camera moving system
+*. Output For rendering (Almost Done)
+- Output Camera: first build a camera moving system [Optional]
 
-6. Modify balance net for head and sections
+*. Modify balance net for head and sections
 the height-obj should be based on the stanced leg tips' position
-head's height-obj is from the neck section;
+head's height-obj is from the neck section; [Done]
 
-the orientation-obj(a normal) should be from the stanced leg's tip position
-and prev_link. The head's orientation-obj is from the terrain's normal.
+the orientation-obj(a normal) should be from the stanced leg's tip normal. 
+The head's orientation-obj is from the terrain's normal. [Done]
 
 1.22 - 1.31
 
-5. Construct different Terrains, experiment
-- cylinders paved road
-- spheres paved road
-- Cubes paved road
-- Closed Room
+* experimenting  terrain type Closed Spherical Surface
+- Load obj
+- Load a sphere
+- How to get Normal of a point every close/on surface
+- How to test if a point is inside the closed surface
+
+*. Construct different Terrains, experiment
+- cylinders paved road [Done]
+- spheres paved road  
+- Cubes paved road [Done]
+- Ftickles' Face
 - Maze for Food
 2.1 - 2.30
 
-6. Build different Body Types, experiment
+*. Build different Body Types, experiment
    Crowd Simulation: flock behavior modeling
 - Multipede Robot
 - Millipede
 - Centipede
 3.1 - 3.30
 
-7. Try Let the millipede walk on walls, from ground to wall
-optional
-
-8. Rendering
+*. Rendering
 4.1 - 4.30
 
-9. Polishing of Paper
+*. Polishing of Paper
 4.1 - 4.30
 
 

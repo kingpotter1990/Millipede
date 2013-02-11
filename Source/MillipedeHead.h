@@ -76,7 +76,9 @@ public:
 	Terrain* m_terrain;
 	int m_section_id;
 	double m_height_obj;
+	Eigen::Vector3f m_orient_obj;
 	double m_prev_dis_obj;
+	double m_current_height;
 };
 
 #endif

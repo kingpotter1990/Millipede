@@ -175,4 +175,3 @@ void Sphere::Draw(int type, const Camera& camera, const Light& light){
 
 
 
-

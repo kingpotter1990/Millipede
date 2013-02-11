@@ -170,6 +170,9 @@ void MillipedeLeg::Draw(int type, const Camera& camera, const Light& light){
 	case LEG_STANCE:
 		myDrawer->SetColor(Eigen::Vector3f(1.0,0,0));
 		break;
+	case LEG_ADJUST:
+		myDrawer->SetColor(Eigen::Vector3f(1.0,1.0,0));
+		break;
 	}
 
   //  myDrawer->SetColor(Eigen::Vector3f(1,1,1));
@@ -251,75 +254,54 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 	
 		//check leg status, update the leg status when reach Extreme position or leg tip touch ground
 		case LEG_SWAY_FORWARD_1:
-			{
+		
 			if(dif.norm() < 2*m_leg_rotation_velocity*a_dt){
 				EnterSwayForward2();
 				//m_neig->EnterSwayForward2();
 			}
 			break;
-			}
+			
 
 		case LEG_SWAY_FORWARD_2:
-			{
-			if(m_tip_position[1] < m_root->m_terrain->GetHeight(m_tip_position[0],m_tip_position[2])){//tip tapping the ground, TODO test against terrain
+			
+			if(m_root->m_terrain->TestInside(m_tip_position)){//tip tapping the ground, TODO test against terrain
 				EnterStance();
 			}
 			else if(dif.norm() < 2*m_leg_rotation_velocity*a_dt)
 					EnterSwayBackward1();
-			else if(m_prev)
-				if((m_phi - m_prev->m_phi) > m_dif_phi_tolerance){//collision avoidance
-					
-					EnterSwayBackward1();
-
-					if(m_prev->m_leg_state == LEG_SWAY_BACKWARD_1||m_prev->m_leg_state == LEG_SWAY_BACKWARD_2){
-						m_prev->EnterSwayForward1();
-						//m_prev->m_neig->EnterSwayForward1();
-					}
-				}
 			break;
-			}
-        case LEG_SWAY_BACKWARD_1:{
+			
+        case LEG_SWAY_BACKWARD_1:
 			if(dif.norm() < 2*m_leg_rotation_velocity*a_dt)
 			{
 				EnterSwayBackward2();
 			}
-			else if(m_tip_position[1] < m_root->m_terrain->GetHeight(m_tip_position[0],m_tip_position[2])){//tip tapping the ground TODO test against terrain
+			else if(m_root->m_terrain->TestInside(m_tip_position)){//tip tapping the ground TODO test against terrain
 				EnterStance();
 			}
-								 }
+			
 			break;
-		case LEG_SWAY_BACKWARD_2:{
+		case LEG_SWAY_BACKWARD_2:
 
-			if(m_tip_position[1] < m_root->m_terrain->GetHeight(m_tip_position[0],m_tip_position[2])){//tip tapping the ground TODO test against terrain
+			if(m_root->m_terrain->TestInside(m_tip_position)){//tip tapping the ground TODO test against terrain
 				EnterStance();
 			}
 			else if(dif.norm() < 2*m_leg_rotation_velocity*a_dt){//reach extreme position
 				EnterSwayForward1();
 				//m_neig->EnterSwayForward1();
 			}
-			else if(m_next)
-				if((m_next->m_phi - m_phi) > m_dif_phi_tolerance){//collision avoidance
-	
-					EnterSwayForward1();
-					m_neig->EnterSwayForward1();
 
-					if(m_next->m_leg_state == LEG_SWAY_FORWARD_1||m_next->m_leg_state == LEG_SWAY_FORWARD_2){
-						m_next->EnterSwayBackward1();
-					}
-				}
 			
-			break;
-								 }
-                
+						break;                
 		case LEG_STANCE:{
 
 			}
 			break;
 
 		case LEG_ADJUST:
-			if(dif.norm() < 2*m_leg_rotation_velocity*a_dt){
+			if(dif.norm() < 2*m_leg_rotation_velocity*a_dt)
 				EnterSwayForward2();
-			}
+			
 			break;
 
 
@@ -411,7 +393,7 @@ void MillipedeLeg::UpdateAll(double a_dt){
 void MillipedeLeg::EnterStance(){
 	//ground contact on the left leg
 	m_leg_state = LEG_STANCE;
-	
+
 	if(m_next){
 		m_next->EnterAdjust();
 	}
@@ -580,26 +562,7 @@ bool MillipedeLeg::InverseKinematics(Eigen::Vector3f a_tip, Eigen::Vector3f a_ro
 
 	a_result = Eigen::Vector3f(phi, alpha, beta);
 
-	/*
-	if(fabs(phi - m_phi) > 5)
-		if(m_root->m_section_id == 1&& m_l_r == 1){	
-			std::cout<<"\n Phi: "<<m_phi<<"-> "<<phi<<std::endl;
-			std::cout<<"\n Alpha: "<<m_alpha<<"-> "<<alpha<<std::endl;
-			std::cout<<"\n Beta: "<<m_beta<<"-> "<<beta<<std::endl;
-
-		}
-	*/
 	return true;
-	//assign
-	//check whether extreme, if reach extreme of leg rotations, give up, enter swayfroward state
-	//if(fabs(alpha) < 40&& beta > 0 && beta<40){
-		//m_alpha = alpha;
-		//m_beta = beta;
-	//}
-	//else{
-	//	EnterSwayForward();
-	//	return;
-	//}
 
 }
 

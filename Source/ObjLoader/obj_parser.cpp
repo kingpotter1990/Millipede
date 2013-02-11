@@ -291,14 +291,14 @@ int obj_parse_mtl_file(char *filename, list *material_list)
 
 int obj_parse_obj_file(obj_growable_scene_data *growable_data, char *filename)
 {
-	FILE* obj_file_stream;
+	FILE* obj_file_stream = NULL;
 	int current_material = -1; 
 	char *current_token = NULL;
 	char current_line[OBJ_LINE_SIZE];
 	int line_number = 0;
 	// open scene
 	obj_file_stream = fopen( filename, "r");
-	if(obj_file_stream == 0)
+	if(!obj_file_stream)
 	{
 		fprintf(stderr, "Error reading file: %s\n", filename);
 		return 0;

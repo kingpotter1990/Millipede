@@ -41,7 +41,7 @@ void Deformable3D::Init(Eigen::Vector3i Num, float density,float youngs, float p
 	mesh_size[0] = m_Size[0]/m_Num[0];
 	mesh_size[1] = m_Size[1]/m_Num[1];
 	mesh_size[2] = m_Size[2]/m_Num[2];
-    m_Mesh = new Mesh3D(Num, mesh_size, position);//generate the mesh of tetras and nodes and triangles, down, left, back corner at position
+    m_Mesh = new CubicTetraMesh(Num, mesh_size, position);//generate the mesh of tetras and nodes and triangles, down, left, back corner at position
     
     //create the Dm matrix for the tetra
     Eigen::Vector3f X_2_1;
@@ -261,13 +261,15 @@ void Deformable3D::UpdateForce(){
         //now force is updated for all nodes
     }   
 	
-    //collision detection and resolution
-   for(int i = 0; i< m_Mesh->m_Num_Node; i++){
+  /*Old way penalty force, newway is impuse based, handle collision better,etc
+	for(int i = 0; i< m_Mesh->m_Num_Node; i++){
 	   if(!m_Mesh->m_Nodes[i].m_Fixed)
 			m_Mesh->m_Nodes[i].m_Force += CollisionForce(m_Mesh->m_Nodes[i]);
    }
+   */
 }
 
+/*
 Eigen::Vector3f Deformable3D::CollisionForce(const Node& a_node){
 
 	Eigen::Vector3f point = a_node.m_Position;
@@ -290,9 +292,9 @@ Eigen::Vector3f Deformable3D::CollisionForce(const Node& a_node){
 			{
 				temp_terrain = dynamic_cast<Terrain*>(m_world->List_of_Object[i]);
 				double dist_y = point[1] - temp_terrain->GetHeight(Eigen::Vector2f(point[0],point[2]));
-				if(dist_y < 0){
+				if(temp_terrain->TestInside(point)){
 					//add friction
-					surface_normal = temp_terrain->GetNormal(Eigen::Vector2f(point[0],point[2]));
+					surface_normal = temp_terrain->GetNormal(point);
 					gliding_Velocity = a_node.m_Velocity - surface_normal*a_node.m_Velocity.dot(surface_normal);
 					support_force =  fabs(dist_y)*m_world->m_hardness*surface_normal;
 					friction_force = -gliding_Velocity*temp_terrain->m_frictness;//friction force
@@ -383,7 +385,50 @@ Eigen::Vector3f Deformable3D::CollisionForce(const Node& a_node){
     return  Eigen::Vector3f(0.0,0.0,0.0);
 	
 }
+*/
+	
+void Deformable3D::HandleCollision(Node& a_node){
 
+	Terrain* terrain;
+	Eigen::Vector3f material_point = a_node.m_Position;
+	Eigen::Vector3f surface_normal;
+	Eigen::Vector3f prev_momentom_n, prev_momentom_v, new_momentom_n, new_momentom_v;
+	Eigen::Vector3f new_velocity_n_vector;
+	double friction_ness = 0.1;
+
+    for (unsigned int i = 0; i< m_world->List_of_Object.size(); i++) {
+		if(m_world->List_of_Object[i] == this)
+			continue;//this one is itself, no self-collision
+        //find the first intersection and calculate the force, return the force
+        switch (m_world->List_of_Object[i]->GetType()) {
+			case TypeTerrain:
+			{
+				terrain = dynamic_cast<Terrain*>(m_world->List_of_Object[i]);
+				if(terrain->TestInside(material_point)){//penetration
+					surface_normal = terrain->GetNormal(material_point);
+					surface_normal.normalize();
+					
+					prev_momentom_n = a_node.m_Mass*a_node.m_Velocity.dot(surface_normal)*surface_normal;
+					prev_momentom_v = a_node.m_Mass*a_node.m_Velocity - prev_momentom_n;
+					new_velocity_n_vector = prev_momentom_v.normalized();
+
+					new_momentom_n = -0.8* prev_momentom_n;
+					new_momentom_v = new_velocity_n_vector*max(prev_momentom_v.norm() - friction_ness*(new_momentom_n.norm() + prev_momentom_n.norm()),0);
+
+					a_node.m_Velocity = (new_momentom_n + new_momentom_v)/a_node.m_Mass;
+
+					return;
+				}
+			}
+			break;
+            default:
+                break;
+        }
+    }
+    
+    return;
+	
+}
 void Deformable3D::UpdatePosition(double dt){
 	   
     //update position and velocity
@@ -400,6 +445,12 @@ void Deformable3D::UpdatePosition(double dt){
    
    }
    
+   //collision detection and resolution. Friction also handled here
+   for(int i = 0; i< m_Mesh->m_Num_Node; i++){
+	   if(!m_Mesh->m_Nodes[i].m_Fixed)
+			HandleCollision(m_Mesh->m_Nodes[i]);
+   }
+
   //deal with manipulated node
     if(m_Manipulated){
         

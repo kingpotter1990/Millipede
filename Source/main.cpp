@@ -30,7 +30,9 @@ void initScene(){
 
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(100,100), Eigen::Vector2i(500,500), 500, TERRAIN_TEST, OBSTACLE_OFF, FOOD_OFF);
+	myTerrain = new Terrain(Eigen::Vector2f(100,100), Eigen::Vector2i(500,500), 500, TERRAIN_SPHERICAL
+		, OBSTACLE_OFF, FOOD_OFF);
+
 
 	reinitScene();
 
@@ -44,10 +46,10 @@ void reinitScene(){
 	//press SpaceBar to trigger
 
 	myWorld->Clear();
-	
 	myWorld->Add_Object(myTerrain);
-	
-	myTerrain->ClearMillipedes();
+	myTerrain->ClearMillipedes();	
+	if(myMillipedes)
+		delete[] myMillipedes;
 
 	/*
 	int m = 5, n = 5;
@@ -60,15 +62,10 @@ void reinitScene(){
 		}
 	*/
 
-	
-	if(myMillipedes)
-		delete[] myMillipedes;
-
 	myMillipedes = new Millipede;
-	myMillipedes->Init(Eigen::Vector3f(-10,5,0),6,Eigen::Vector3f(1,1,2),1, myTerrain);
+	myMillipedes->Init(Eigen::Vector3f(-10,25,0),6,Eigen::Vector3f(1,1,2),1, myTerrain);
 	//myMillipedes->FixHead();
 	//myMillipedes->FixTail();
-	
 	myWorld->Add_Object(myMillipedes);
 
 	//set up the clock
@@ -80,7 +77,7 @@ void reinitScene(){
 }
 
 void drawScene(){
-    
+
     glEnable( GL_DEPTH_TEST );
     glClearColor(0.0, 0.0, 0.0, 0.0);//Black background
 
@@ -268,6 +265,7 @@ void idleCallback(){
 	if(STOP == -1){
 	//only update physics
 		myWorld->Update(DTIME);
+
 	}
 
 	if(FRAME_TIME > 0.01)//33 frames per second
@@ -299,7 +297,9 @@ void OUTPUT_ONE_FRAME(){
 	myOutputFile->close();
 }
 
+
 int main (int argc, char ** argv){
+
     // init GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
@@ -321,4 +321,5 @@ int main (int argc, char ** argv){
     
     return 0;
 }
+
 

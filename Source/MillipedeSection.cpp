@@ -38,6 +38,7 @@ void MillipedeRigidSection::InitNeuroNet(Millipede* a_root, int a_id){
 	m_prev_dis_obj = m_master->m_link_length;
 	m_linear_speed *= 0;
 	m_height_obj = m_Size[1]*0.5 + m_left_leg->GetBalanceHeight();
+	m_orient_obj = Eigen::Vector3f(0,1,0);
 }
 
 void MillipedeRigidSection::SetWorld(World* a_world){
@@ -67,48 +68,29 @@ void MillipedeRigidSection::Draw(int type, const Camera& camera, const Light& li
 void MillipedeRigidSection::UpdateNeuronNet(double a_dt){
 
 
-	if(m_left_leg->m_leg_state == LEG_STANCE || m_right_leg->m_leg_state == LEG_STANCE)
+	if(m_left_leg->m_leg_state == LEG_STANCE && m_right_leg->m_leg_state == LEG_STANCE){
 		m_body_state = LEG_SUPPORTED;
-	else
-		m_body_state = NOT_SUPPORTED;
+		m_velocity = m_linear_speed;
+		m_avelocity *= 0;
 
-	switch(m_body_state){
-	case NOT_SUPPORTED:
-		{
-			//based on the two legs current configuration
-			//assign different rotational speed such that
-			//they will reach the target rotation
-			//at the same time
+		//generating obj height and orientation
 
-			/*
-			Eigen::Vector3f dif_l, dif_r;
-			dif_l = Eigen::Vector3f(m_left_leg->m_target_phi - m_left_leg->m_phi
-				,m_left_leg->m_target_alpha - m_left_leg->m_alpha
-				,m_left_leg->m_target_alpha - m_left_leg->m_alpha);
-			dif_r = Eigen::Vector3f(m_right_leg->m_target_phi - m_right_leg->m_phi
-				,m_right_leg->m_target_alpha - m_right_leg->m_alpha
-				,m_right_leg->m_target_alpha - m_right_leg->m_alpha);
+		Eigen::Vector3f i,j,k;//the local cs determined by the two leg tip
+		i = (m_right_leg->m_tip_position -  m_left_leg->m_tip_position).normalized();
+		j = (m_master->m_terrain->GetNormal(m_left_leg->m_tip_position) + 
+			m_master->m_terrain->GetNormal(m_right_leg->m_tip_position)).normalized();
+		//k = i.cross(j);
+		
+		m_height_obj = m_Size[1]*0.5 + m_left_leg->GetBalanceHeight();
+		m_orient_obj = j;
 
-			//the closer one moves slower
-			if(dif_l.norm() > dif_r.norm())
-			{
-				m_right_leg->m_leg_rotation_velocity = (dif_r.norm()/dif_l.norm())*m_left_leg->m_leg_rotation_velocity;
-			}else
-			{
-				m_left_leg->m_leg_rotation_velocity = (dif_l.norm()/dif_r.norm())*m_right_leg->m_leg_rotation_velocity;
-			}
-			
-			*/
-		}
-		break;
-	case LEG_SUPPORTED:{
-			m_velocity *= 0;
-			m_avelocity *= 0;
-		}
-		break;
+		m_current_height = (m_Center - 0.5*m_left_leg->m_tip_position - 0.5*m_right_leg->m_tip_position).dot(m_orient_obj);
+		
 	}
-
-
+	else{
+		m_body_state = NOT_SUPPORTED;
+		m_linear_speed = m_velocity;
+	}
 }
 
 void MillipedeRigidSection::UpdateAll(double dt){
@@ -141,19 +123,19 @@ void MillipedeRigidSection::UpdatePBD(double dt){
 	else
 		prev_link_vector = m_prev->m_prev->m_Center - m_Center;
 
-	m_Center[1] += 10*dt*(m_height_obj - (m_Center[1] - m_terrain->GetHeight(m_Center[0],m_Center[2])));//balance of height	
+	m_Center += 10*dt*(m_height_obj - m_current_height)*m_orient_obj;//balance of height	
 	//Minimize the distance to previous section to minimum;
 	m_linear_speed = 50*prev_link_vector.normalized()*(prev_link_vector.norm() - m_prev_dis_obj);
 	m_Center += dt*m_linear_speed;
 
 	//keep the balance of lean in x rotation
-	double zaxisdify = (m_rotation*Eigen::Vector3f(0,0,1)).dot(m_terrain->GetNormal(m_Center[0], m_Center[2]));
+	double zaxisdify = (m_rotation*Eigen::Vector3f(0,0,1)).dot(m_orient_obj);
 	turn_angle = (zaxisdify > 0? 1:-1)*60*dt;
 	Eigen::AngleAxis<float> turnx(DegreesToRadians*turn_angle, Eigen::Vector3f(1,0,0));
 	m_rotation = m_rotation*turnx.toRotationMatrix();
 
 	//keep the balance of lean in z rotation
-	double xaxisdify = (m_rotation*Eigen::Vector3f(-1,0,0)).dot(m_terrain->GetNormal(m_Center[0], m_Center[2]));
+	double xaxisdify = (m_rotation*Eigen::Vector3f(-1,0,0)).dot(m_orient_obj);
 	turn_angle = (xaxisdify > 0? 1:-1)*60*dt;
 	Eigen::AngleAxis<float> turnz(DegreesToRadians*turn_angle,Eigen::Vector3f(0,0,1));
 	m_rotation = m_rotation*turnz.toRotationMatrix();

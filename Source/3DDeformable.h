@@ -48,7 +48,7 @@ private:
     Camera m_Eye;
 
 public:
-    Mesh3D* m_Mesh;
+    CubicTetraMesh* m_Mesh;
     
 public:
      Deformable3D();
@@ -75,7 +75,7 @@ private:
     void Deselect(){m_Manipulated = false; std::cout<<"Node Dismanipulated!"<<std::endl;}
     void Anchor(){m_MadNode->m_Fixed = 1; std::cout<<"Node Fixed!"<<std::endl;};//Anchor the current Manipualated Node
     void Deanchor(){m_MadNode->m_Fixed = 0; std::cout<<"Node Released!"<<std::endl;}
-	Eigen::Vector3f CollisionForce(const Node& a_node);
+	void HandleCollision(Node& a_node);
 };
 
 #endif

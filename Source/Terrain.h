@@ -6,12 +6,15 @@
 #include "Light.h"
 #include "Object.h"
 #include "World.h"
+#include "Boost/boost/unordered_map.hpp"
+#include "Boost/numeric/ublas/vector.hpp"
 
 class Sphere;
 class Millipede;
+class objLoader;
+class MeshObject;
 
-enum TerrainType{TERRAIN_RANDOM, TERRAIN_FLAT, TERRAIN_TEST};
-
+enum TerrainType{TERRAIN_RANDOM, TERRAIN_FLAT, TERRAIN_TEST, TERRAIN_SPHERICAL};
 class Terrain:public Object{
 
 public:
@@ -24,8 +27,8 @@ public:
 	Eigen::Vector2i GetRes() const{return Eigen::Vector2i(m_res_x, m_res_z);};
 	double GetHeight(Eigen::Vector2f xz) const;
 	double GetHeight(double x, double z) const{return GetHeight(Eigen::Vector2f(x,z));};
-	Eigen::Vector3f GetNormal(Eigen::Vector2f xz) const;
-	Eigen::Vector3f GetNormal(double x, double z) const{return GetNormal(Eigen::Vector2f(x,z));};
+	bool TestInside(const Eigen::Vector3f& point);
+	Eigen::Vector3f GetNormal(Eigen::Vector3f xyz);
 	~Terrain(){delete[] m_height_data; delete[] m_normal_data;};
 	void Draw(int type, const Camera& camera, const Light& light);
 	void UpdateAll(double dt){};
@@ -35,18 +38,20 @@ public:
 	void RegisterMillipede(Millipede* a_millipede);
 	void ClearMillipedes();
 	void InitSurfaceObjects();
+	bool LoadObjFileAsTerrain();
+
 public:
 	double m_frictness;
-
+	TerrainType m_terrain_type;
 protected:
-	void InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_z, int n_hill, TerrainType a_type);
+	void InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_z, int n_hill);
 	void InitObstacles(TerrainType a_type);
 	void InitFood(TerrainType a_type);
 	void InitDraw();
 
 private:
 	void GenerateNormals();
-
+	
 protected:
 	//drawing data
 	int m_NTrianglePoints;
@@ -64,8 +69,19 @@ protected:
 	int m_res_z;
 	double m_dx;
 	double m_dz;
+
 	double* m_height_data;//per node
 	Eigen::Vector3f* m_normal_data;//per node
+	
+	objLoader* m_objdata;
+	MeshObject* m_mesh_obj;
+public://for test
+	SurfaceMesh* m_surface_mesh;
+protected:	
+	SpaceGrid m_space_grid;
+
+	boost::unordered_map<int,std::vector<int> > m_spatial_hash;
+
 	std::vector<Object*> m_obstacles;
 	std::vector<Object*> m_surface_objects;
 	std::vector<Sphere*> m_foods;

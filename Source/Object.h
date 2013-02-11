@@ -93,11 +93,11 @@ public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-class Mesh3D{
+class CubicTetraMesh{
 //store pure gemoetry
 public:
-    Mesh3D(Eigen::Vector3i a_num, Eigen::Vector3f a_size, Eigen::Vector3f a_position);
-    virtual ~Mesh3D(){}
+    CubicTetraMesh(Eigen::Vector3i a_num, Eigen::Vector3f a_size, Eigen::Vector3f a_position);
+    virtual ~CubicTetraMesh(){}
     void Meshialize(Eigen::Vector3i a_num, Eigen::Vector3f a_size, Eigen::Vector3f a_position);
     
 	std::vector<Node*> GetTopNodes();//return the vector nodes on the +y face of the 3D cubic mesh
@@ -127,6 +127,60 @@ public:
     int m_Num_Tetra;
     
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+};
+
+
+class SurfaceMesh{
+//store pure gemoetry
+public:
+	SurfaceMesh(){m_Num_v = 0; m_Num_f = 0;};
+	virtual ~SurfaceMesh(){};
+    int m_Num_v;
+	int m_Num_f;
+    
+    std::vector<Node*> m_Nodes;
+    std::vector<Triangle*> m_Trias;
+    
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+};
+
+class SpaceGrid{
+public:
+
+	int m_res_x;
+	int m_res_y;
+	int m_res_z;
+
+	double m_dx;
+	double m_dy;
+	double m_dz;
+
+	double m_start_x;
+	double m_start_y;
+	double m_start_z;
+
+	double m_end_x;
+	double m_end_y;
+	double m_end_z;
+
+	int QueryGridIDX(double ps_x){
+		if(ps_x < m_start_x || ps_x > m_end_x)
+			return -1;
+		return int((ps_x - m_start_x)/m_dx);//from 0 to m_res_x - 1;
+	};
+
+	int QueryGridIDY(double ps_y){
+		if(ps_y < m_start_y || ps_y > m_end_y)
+			return -1;
+		return int((ps_y - m_start_y)/m_dy);//from 0 to m_res_x - 1
+	};
+
+	int QueryGridIDZ(double ps_z){
+		if(ps_z < m_start_z || ps_z > m_end_z)
+			return -1;
+		return int((ps_z - m_start_z)/m_dz);//from 0 to m_res_x - 1
+	};
+
 };
 
 class World;

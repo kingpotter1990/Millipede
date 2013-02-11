@@ -9,11 +9,11 @@
 #include "Object.h"
 #include "World.h"
 
-Mesh3D::Mesh3D(Eigen::Vector3i a_num, Eigen::Vector3f a_size, Eigen::Vector3f a_position){
+CubicTetraMesh::CubicTetraMesh(Eigen::Vector3i a_num, Eigen::Vector3f a_size, Eigen::Vector3f a_position){
     Meshialize(a_num, a_size, a_position);
 }
 
-void Mesh3D::Meshialize(Eigen::Vector3i a_num, Eigen::Vector3f a_size, Eigen::Vector3f a_position){
+void CubicTetraMesh::Meshialize(Eigen::Vector3i a_num, Eigen::Vector3f a_size, Eigen::Vector3f a_position){
     m_Num = a_num;
     m_Size = a_size;
     
@@ -99,7 +99,7 @@ void Mesh3D::Meshialize(Eigen::Vector3i a_num, Eigen::Vector3f a_size, Eigen::Ve
     }
 }
 
-std::vector<Node*> Mesh3D::GetTopNodes(){
+std::vector<Node*> CubicTetraMesh::GetTopNodes(){
 	//return the nodes on the top surface of the cubic meshnet
 	std::vector<Node*> top_nodes;
 	top_nodes.clear();
@@ -117,7 +117,7 @@ std::vector<Node*> Mesh3D::GetTopNodes(){
 }
 
 
-void Mesh3D::GetTopSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
+void CubicTetraMesh::GetTopSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 	//return the nodes on the top surface of the cubic meshnet
 	nodes = GetTopNodes();
 
@@ -142,7 +142,7 @@ void Mesh3D::GetTopSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 
 
 
-std::vector<Node*> Mesh3D::GetBottomNodes(){
+std::vector<Node*> CubicTetraMesh::GetBottomNodes(){
 	//return the nodes on the bottom surface of the cubic meshnet
 	//return the nodes on the top surface of the cubic meshnet
 	std::vector<Node*> bottom_nodes;
@@ -162,7 +162,7 @@ std::vector<Node*> Mesh3D::GetBottomNodes(){
 }
 
 
-void Mesh3D::GetBottomSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
+void CubicTetraMesh::GetBottomSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 	//return the nodes on the top surface of the cubic meshnet
 	nodes = GetBottomNodes();
 
@@ -186,7 +186,7 @@ void Mesh3D::GetBottomSurface(std::vector<Node*>& nodes, std::vector<int>& faces
 }
 
 
-std::vector<Node*> Mesh3D::GetFrontNodes(){
+std::vector<Node*> CubicTetraMesh::GetFrontNodes(){
 	//return the nodes on the bottom surface of the cubic meshnet
 	//return the nodes on the top surface of the cubic meshnet
 	std::vector<Node*> front_nodes;
@@ -206,7 +206,7 @@ std::vector<Node*> Mesh3D::GetFrontNodes(){
 }
 
 
-void Mesh3D::GetFrontSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
+void CubicTetraMesh::GetFrontSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 	//return the nodes on the top surface of the cubic meshnet
 	nodes = GetFrontNodes();
 
@@ -231,7 +231,7 @@ void Mesh3D::GetFrontSurface(std::vector<Node*>& nodes, std::vector<int>& faces)
 
 
 
-std::vector<Node*> Mesh3D::GetBackNodes(){
+std::vector<Node*> CubicTetraMesh::GetBackNodes(){
 	//return the nodes on the bottom surface of the cubic meshnet
 	//return the nodes on the top surface of the cubic meshnet
 	std::vector<Node*> back_nodes;
@@ -250,7 +250,7 @@ std::vector<Node*> Mesh3D::GetBackNodes(){
 	return back_nodes;
 }
 
-void Mesh3D::GetBackSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
+void CubicTetraMesh::GetBackSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 	//return the nodes on the top surface of the cubic meshnet
 	nodes = GetBackNodes();
 
@@ -275,7 +275,7 @@ void Mesh3D::GetBackSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 
 
 
-std::vector<Node*> Mesh3D::GetLeftNodes(){
+std::vector<Node*> CubicTetraMesh::GetLeftNodes(){
 	//return the nodes on the bottom surface of the cubic meshnet
 	//return the nodes on the top surface of the cubic meshnet
 	std::vector<Node*> left_nodes;
@@ -294,7 +294,7 @@ std::vector<Node*> Mesh3D::GetLeftNodes(){
 	return left_nodes;
 }
 
-void Mesh3D::GetLeftSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
+void CubicTetraMesh::GetLeftSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 	//return the nodes on the top surface of the cubic meshnet
 	nodes = GetLeftNodes();
 
@@ -319,7 +319,7 @@ void Mesh3D::GetLeftSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 
 
 
-std::vector<Node*> Mesh3D::GetRightNodes(){
+std::vector<Node*> CubicTetraMesh::GetRightNodes(){
 	//return the nodes on the bottom surface of the cubic meshnet
 	//return the nodes on the top surface of the cubic meshnet
 	std::vector<Node*> right_nodes;
@@ -338,7 +338,7 @@ std::vector<Node*> Mesh3D::GetRightNodes(){
 	return right_nodes;
 }
 
-void Mesh3D::GetRightSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
+void CubicTetraMesh::GetRightSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 	//return the nodes on the top surface of the cubic meshnet
 	nodes = GetRightNodes();
 
@@ -361,7 +361,7 @@ void Mesh3D::GetRightSurface(std::vector<Node*>& nodes, std::vector<int>& faces)
 	}
 }
 
-void Mesh3D::GetSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
+void CubicTetraMesh::GetSurface(std::vector<Node*>& nodes, std::vector<int>& faces){
 
 	std::vector<Node*> nodes1, nodes2, nodes3, nodes4, nodes5, nodes6;
 	std::vector<int> faces1, faces2, faces3, faces4, faces5, faces6;

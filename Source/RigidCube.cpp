@@ -212,9 +212,8 @@ bool RigidCube::CheckCollision(const Eigen::Vector3f& a_point, Eigen::Vector3f& 
 			case TypeTerrain://Terrain
 			{
 				temp_terrain = dynamic_cast<Terrain*>(m_world->List_of_Object[i]);
-				double dist_y = a_point.y() - temp_terrain->GetHeight(Eigen::Vector2f(a_point.x(),a_point.z()));
-				if(dist_y < 0){
-					a_normal = temp_terrain->GetNormal(Eigen::Vector2f(a_point.x(),a_point.z()));
+				if(temp_terrain->TestInside(a_point)){
+					a_normal = temp_terrain->GetNormal(a_point);
 					return true;
 				}
 			}

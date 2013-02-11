@@ -143,19 +143,20 @@ void MillipedeHead::InitNeuroNet(Millipede* a_root){
 void MillipedeHead::KeepHeadBalance(double dt){
 	
 	m_height_obj = m_next->m_next->m_height_obj;
-
+	m_orient_obj = m_next->m_next->m_orient_obj;
+	m_current_height = m_next->m_next->m_current_height;
 	double turn_angle;
 	//the head's height need to be balanced
-	m_Center[1] += 10*dt*(m_height_obj - (m_Center[1] - m_terrain->GetHeight(m_Center[0], m_Center[2])));
+	m_Center += 10*dt*(m_height_obj - m_current_height)*m_orient_obj;//balance of height	
 
 	//keep the balance of lean in x rotation
-	double zaxisdify = (m_rotation*Eigen::Vector3f(0,0,1)).dot(m_terrain->GetNormal(m_Center[0], m_Center[2]));
+	double zaxisdify = (m_rotation*Eigen::Vector3f(0,0,1)).dot(m_orient_obj);
 	turn_angle = (zaxisdify > 0? 1:-1)*60*dt;
 	Eigen::AngleAxis<float> turnx(DegreesToRadians*turn_angle, Eigen::Vector3f(1,0,0));
 	m_rotation = m_rotation*turnx.toRotationMatrix();
 
 	//keep the balance of lean in z rotation
-	double xaxisdify = (m_rotation*Eigen::Vector3f(-1,0,0)).dot(m_terrain->GetNormal(m_Center[0], m_Center[2]));
+	double xaxisdify = (m_rotation*Eigen::Vector3f(-1,0,0)).dot(m_orient_obj);
 	turn_angle = (xaxisdify > 0? 1:-1)*60*dt;
 	Eigen::AngleAxis<float> turnz(DegreesToRadians*turn_angle,Eigen::Vector3f(0,0,1));
 	m_rotation = m_rotation*turnz.toRotationMatrix();

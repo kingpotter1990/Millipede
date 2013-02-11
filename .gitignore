@@ -46,6 +46,10 @@ local.properties
 Output/
 *.txt
 
+#Boost
+Source/Boost/*
+
+
 #pdf files and tex files
 *.tex
 *.pdf

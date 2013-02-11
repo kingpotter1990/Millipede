@@ -44,6 +44,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>C:\Users\ffang\Dropbox\Project\Graphics\Millipede\Source\Boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -56,6 +57,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>C:\Users\ffang\Dropbox\Project\Graphics\Millipede\Source\Boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -76,11 +78,18 @@
     <ClCompile Include="..\..\..\Source\Cylinder.cpp" />
     <ClCompile Include="..\..\..\Source\Drawer.cpp" />
     <ClCompile Include="..\..\..\Source\main.cpp" />
+    <ClCompile Include="..\..\..\Source\MeshQuery\bounding_box_tree.cpp" />
+    <ClCompile Include="..\..\..\Source\MeshQuery\mesh_query.cpp" />
+    <ClCompile Include="..\..\..\Source\MeshQuery\predicates.cpp" />
     <ClCompile Include="..\..\..\Source\Millipede.cpp" />
     <ClCompile Include="..\..\..\Source\MillipedeHead.cpp" />
     <ClCompile Include="..\..\..\Source\MillipedeLeg.cpp" />
     <ClCompile Include="..\..\..\Source\MillipedeSection.cpp" />
     <ClCompile Include="..\..\..\Source\Object.cpp" />
+    <ClCompile Include="..\..\..\Source\ObjLoader\list.cpp" />
+    <ClCompile Include="..\..\..\Source\ObjLoader\objLoader.cpp" />
+    <ClCompile Include="..\..\..\Source\ObjLoader\obj_parser.cpp" />
+    <ClCompile Include="..\..\..\Source\ObjLoader\string_extra.cpp" />
     <ClCompile Include="..\..\..\Source\RigidCube.cpp" />
     <ClCompile Include="..\..\..\Source\Sphere.cpp" />
     <ClCompile Include="..\..\..\Source\Terrain.cpp" />
@@ -100,11 +109,21 @@
     <ClInclude Include="..\..\..\Source\Drawer.h" />
     <ClInclude Include="..\..\..\Source\Light.h" />
     <ClInclude Include="..\..\..\Source\main.h" />
+    <ClInclude Include="..\..\..\Source\MeshQuery\bounding_box.h" />
+    <ClInclude Include="..\..\..\Source\MeshQuery\bounding_box_tree.h" />
+    <ClInclude Include="..\..\..\Source\MeshQuery\mesh_query.h" />
+    <ClInclude Include="..\..\..\Source\MeshQuery\predicates.h" />
+    <ClInclude Include="..\..\..\Source\MeshQuery\util.h" />
+    <ClInclude Include="..\..\..\Source\MeshQuery\vec.h" />
     <ClInclude Include="..\..\..\Source\Millipede.h" />
     <ClInclude Include="..\..\..\Source\MillipedeHead.h" />
     <ClInclude Include="..\..\..\Source\MillipedeLeg.h" />
     <ClInclude Include="..\..\..\Source\MillipedeSection.h" />
     <ClInclude Include="..\..\..\Source\Object.h" />
+    <ClInclude Include="..\..\..\Source\ObjLoader\list.h" />
+    <ClInclude Include="..\..\..\Source\ObjLoader\objLoader.h" />
+    <ClInclude Include="..\..\..\Source\ObjLoader\obj_parser.h" />
+    <ClInclude Include="..\..\..\Source\ObjLoader\string_extra.h" />
     <ClInclude Include="..\..\..\Source\RigidCube.h" />
     <ClInclude Include="..\..\..\Source\Sphere.h" />
     <ClInclude Include="..\..\..\Source\Terrain.h" />
