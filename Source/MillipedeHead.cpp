@@ -143,8 +143,9 @@ void MillipedeHead::InitNeuroNet(Millipede* a_root){
 void MillipedeHead::KeepHeadBalance(double dt){
 	
 	m_height_obj = m_next->m_next->m_height_obj;
-	m_orient_obj = m_next->m_next->m_orient_obj;
-	m_current_height = m_next->m_next->m_current_height;
+	m_orient_obj = m_master->m_terrain->GetNormal(m_Center);
+	m_current_height = m_master->m_terrain->GetHeight(m_Center);
+
 	double turn_angle;
 	//the head's height need to be balanced
 	m_Center += 10*dt*(m_height_obj - m_current_height)*m_orient_obj;//balance of height	
@@ -321,6 +322,9 @@ void MillipedeHead::UpdatePhysics(double dt){
 
 	//Head Balance Net: balance of height, orientation in x and z axis, flat to the ground.
 	KeepHeadBalance(dt);
+
+	m_next->m_next->m_left_leg->m_leg_rotation_velocity =  70*m_linear_speed;
+	m_next->m_next->m_right_leg->m_leg_rotation_velocity =  70*m_linear_speed;
 
 	if(m_mode == CONTROLLED)
 		return;

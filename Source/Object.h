@@ -10,7 +10,14 @@
 #define FEMCloth2D_FEM_Object_h
 
 #include"Eigen/Dense"
+#include "ObjLoader/objLoader.h"
+#include "MeshQuery/mesh_query.h"
+#include "Boost/boost/unordered_map.hpp"
+#include "Boost/numeric/ublas/vector.hpp"
+
 #include <vector>
+#include <windows.h>
+
 
 #define GRAVITY_CONSTANT 9.8
 
@@ -130,20 +137,6 @@ public:
 };
 
 
-class SurfaceMesh{
-//store pure gemoetry
-public:
-	SurfaceMesh(){m_Num_v = 0; m_Num_f = 0;};
-	virtual ~SurfaceMesh(){};
-    int m_Num_v;
-	int m_Num_f;
-    
-    std::vector<Node*> m_Nodes;
-    std::vector<Triangle*> m_Trias;
-    
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-};
-
 class SpaceGrid{
 public:
 
@@ -182,6 +175,30 @@ public:
 	};
 
 };
+
+class SurfaceMesh{
+//store pure gemoetry
+public:
+	SurfaceMesh(){m_Num_v = 0; m_Num_f = 0;};
+	virtual ~SurfaceMesh(){};
+    int m_Num_v;
+	int m_Num_f;
+	bool LoadObjFile(char * filename);
+	bool PointInsideMesh(Eigen::Vector3f point);
+	bool ClosestTriangle(const Eigen::Vector3f& xyz, Triangle& triangle);
+
+    std::vector<Node*> m_Nodes;
+    std::vector<Triangle*> m_Trias;
+    
+	boost::unordered_map<int,std::vector<int> > m_spatial_hash;
+	SpaceGrid m_space_grid;
+
+	objLoader* m_objdata;
+	MeshObject* m_mesh_obj;
+
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+};
+
 
 class World;
 class Camera;

@@ -64,7 +64,6 @@ private:
 	double m_extreme_alpha;
 	double m_extreme_beta;
 	double m_extreme_phi;
-	double m_dif_phi_tolerance;
 	double m_alpha_velocity;
 	double m_phi_velocity;
 	double m_beta_velocity;

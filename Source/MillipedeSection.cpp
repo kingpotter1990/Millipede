@@ -67,25 +67,26 @@ void MillipedeRigidSection::Draw(int type, const Camera& camera, const Light& li
 
 void MillipedeRigidSection::UpdateNeuronNet(double a_dt){
 
+	//generating obj height and orientation
+		
+	/*//from leg tip read normal
+		Eigen::Vector3f i1,i2,j;//the local cs determined by the two leg tip
+		assert(m_master->m_terrain->GetNormal(m_left_leg->m_tip_position,i1)); 
+		assert(m_master->m_terrain->GetNormal(m_right_leg->m_tip_position,i2));
+		j = (i1 + i2).normalized();
+		//k = i.cross(j);
+	*/
 
-	if(m_left_leg->m_leg_state == LEG_STANCE && m_right_leg->m_leg_state == LEG_STANCE){
+
+	if(m_left_leg->m_leg_state == LEG_STANCE || m_right_leg->m_leg_state == LEG_STANCE){
 		m_body_state = LEG_SUPPORTED;
 		m_velocity = m_linear_speed;
-		m_avelocity *= 0;
-
-		//generating obj height and orientation
-
-		Eigen::Vector3f i,j,k;//the local cs determined by the two leg tip
-		i = (m_right_leg->m_tip_position -  m_left_leg->m_tip_position).normalized();
-		j = (m_master->m_terrain->GetNormal(m_left_leg->m_tip_position) + 
-			m_master->m_terrain->GetNormal(m_right_leg->m_tip_position)).normalized();
-		//k = i.cross(j);
+		m_avelocity *= 0;		
 		
 		m_height_obj = m_Size[1]*0.5 + m_left_leg->GetBalanceHeight();
-		m_orient_obj = j;
+		m_orient_obj = m_master->m_terrain->GetNormal(m_Center);
+		m_current_height = m_master->m_terrain->GetHeight(m_Center);
 
-		m_current_height = (m_Center - 0.5*m_left_leg->m_tip_position - 0.5*m_right_leg->m_tip_position).dot(m_orient_obj);
-		
 	}
 	else{
 		m_body_state = NOT_SUPPORTED;

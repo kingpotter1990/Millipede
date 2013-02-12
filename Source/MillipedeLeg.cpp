@@ -39,8 +39,6 @@ void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 	m_gamma = 10;//fixed
 
 	m_leg_rotation_velocity = 1000;
-	m_dif_phi_tolerance = 5000;//disabled by setting it very big
-	
 	
 	//init the previous and next and neighbor legs
 	m_prev = NULL;
@@ -292,7 +290,7 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 			}
 
 			
-						break;                
+			break;                
 		case LEG_STANCE:{
 
 			}
@@ -330,6 +328,8 @@ void MillipedeLeg::UpdateSwingNet(double a_dt){
 
 void MillipedeLeg::UpdateSpeedNet(){
 
+	if(m_prev)
+		m_leg_rotation_velocity = m_prev->m_leg_rotation_velocity;
 	//adjust the speed of rotation
 	Eigen::Vector3f target_rotation(m_target_phi, m_target_alpha, m_target_beta);
 	Eigen::Vector3f dif;
@@ -353,8 +353,6 @@ void MillipedeLeg::UpdateStanceNet(double a_dt){
 	else{
 	//InverseKinematics can not resolve
 		EnterSwayForward1();
-		//only ajust rotation speed when exiting stance mode
-		m_leg_rotation_velocity = 70*m_root->m_linear_speed.norm();
 		//sync the neigbor leg
 		m_neig->EnterSwayForward1();
 	}

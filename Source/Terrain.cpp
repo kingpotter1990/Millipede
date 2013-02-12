@@ -5,8 +5,6 @@
 #include "Sphere.h"
 #include "Cylinder.h"
 #include "Millipede.h"
-#include "ObjLoader/objLoader.h"
-#include "MeshQuery/mesh_query.h"
 #include <algorithm>
 
 
@@ -19,7 +17,13 @@ Terrain::Terrain(Eigen::Vector2f a_size, Eigen::Vector2i a_res, int n_hill, Terr
 	m_terrain_type = a_type;
 
 	if(m_terrain_type == TERRAIN_SPHERICAL){
-		//LoadObjFileAsTerrain();
+		char objFile[100] = "../Model/armadillo.obj";
+
+		//create a Mesh Object for drawing
+		m_surface_mesh = new SurfaceMesh;
+
+		m_surface_mesh->LoadObjFile(objFile);
+
 	}else{
 		InitBase(a_size.x(), a_size.y(), a_res.x(), a_res.y(), n_hill);
 	
@@ -33,147 +37,6 @@ Terrain::Terrain(Eigen::Vector2f a_size, Eigen::Vector2i a_res, int n_hill, Terr
 	InitDraw();
 }
 
-bool Terrain::LoadObjFileAsTerrain(){
-	
-	char objFile[100] = "../Model/sphere.obj";
-
-    m_objdata=new objLoader();
-    if(!m_objdata->load(objFile)){
-		std::cout<<"Loading Error!"<<std::endl;
-		return false;
-	}
-
-	std::cout<<"Model"<<objFile<<"Loaded as Terrain!"<<std::endl;
-	std::cout<<"Generating Mesh for Model"<<std::endl;
-    //printf("- Number of vertices: %i\n",m_objdata->vertexCount);
-    //printf("- Number of faces: %i\n",m_objdata->faceCount);
-
-//	assert(m_objdata->vertexCount == m_objdata->normalCount);
-
-	//create a Mesh Object for inside/outside test
-	int num_vertices= m_objdata->vertexCount;
-    int num_triangles= m_objdata->faceCount;
-	//create a Mesh Object for drawing
-	m_surface_mesh = new SurfaceMesh;
-	m_surface_mesh->m_Num_v = num_vertices;
-	m_surface_mesh->m_Num_f = num_triangles;
-    double *positions=new double[3*num_vertices];Node* temp_node;
-	
-	//apply scale and translation to the model
-	double scale(1); Eigen::Vector3f translation(0,0,0);
-
-   	for(std::size_t v=0;v<num_vertices;v++){
-        positions[3*v] = scale*(translation[0] + m_objdata->vertexList[v]->e[0]);
-        positions[3*v+1] = scale*(translation[1] + m_objdata->vertexList[v]->e[1]);
-        positions[3*v+2] = scale*(translation[2] + m_objdata->vertexList[v]->e[2]);
-		temp_node = new Node;
-		temp_node->m_Position = Eigen::Vector3f(positions[3*v],positions[3*v+1],positions[3*v+2]);
-		temp_node->m_Normal = Eigen::Vector3f(0,0,0);//initalize to 0, generate later
-		m_surface_mesh->m_Nodes.push_back(temp_node);
-	}
-	
-    int *triangles=new int[3*num_triangles];
-	obj_face *o; Triangle* temp_tria;
-
-    for(std::size_t t=0;t<num_triangles;t++){
-		obj_face *o = m_objdata->faceList[t];
-        triangles[3*t] = o->vertex_index[0];
-        triangles[3*t+1] = o->vertex_index[1];
-        triangles[3*t+2] = o->vertex_index[2];
-		temp_tria = new Triangle;
-		temp_tria->m_node_1 = m_surface_mesh->m_Nodes[triangles[3*t]];
-		temp_tria->m_node_2 = m_surface_mesh->m_Nodes[triangles[3*t + 1]];
-		temp_tria->m_node_3 = m_surface_mesh->m_Nodes[triangles[3*t + 2]];
-		m_surface_mesh->m_Trias.push_back(temp_tria);
-	}
-
-	m_mesh_obj = construct_mesh_object(num_vertices,positions,num_triangles,triangles);
-	
-	//generate the spatial hash table for triangles
-	std::cout<<"Generating Spatial Hash for the Model"<<std::endl;
-	Eigen::Vector2f obj_bounding_x(10000,-10000),obj_bounding_y(10000,-10000),obj_bounding_z(10000,-10000);
-	double tx, ty, tz;
-	for(std::size_t v =0;v<num_vertices; v++){
-		
-		tx = m_surface_mesh->m_Nodes[v]->m_Position[0];
-		ty = m_surface_mesh->m_Nodes[v]->m_Position[1];
-		tz = m_surface_mesh->m_Nodes[v]->m_Position[2];
-
-		if(obj_bounding_x[0] > tx)
-			obj_bounding_x[0] = tx;
-		if(obj_bounding_x[1] < tx)
-			obj_bounding_x[1] = tx;
-
-		if(obj_bounding_y[0] > ty)
-			obj_bounding_y[0] = ty;
-		if(obj_bounding_y[1] < ty)
-			obj_bounding_y[1] = ty;
-		
-		if(obj_bounding_z[0] > tz)
-			obj_bounding_z[0] = tz;
-		if(obj_bounding_z[1] < tz)
-			obj_bounding_z[1] = tz;
-	}//getting the bounding volum for the model;
-
-	obj_bounding_x += Eigen::Vector2f(-10,10);
-	obj_bounding_y += Eigen::Vector2f(-10,10);
-	obj_bounding_z += Eigen::Vector2f(-10,10);
-
-	m_space_grid.m_res_x = 10;
-	m_space_grid.m_res_y = 10;
-	m_space_grid.m_res_z = 10;
-	m_space_grid.m_dx = (obj_bounding_x[1] - obj_bounding_x[0])/m_space_grid.m_res_x;
-	m_space_grid.m_dy = (obj_bounding_y[1] - obj_bounding_y[0])/m_space_grid.m_res_y;
-	m_space_grid.m_dz = (obj_bounding_z[1] - obj_bounding_z[0])/m_space_grid.m_res_z;
-	m_space_grid.m_start_x = obj_bounding_x[0];
-	m_space_grid.m_start_y = obj_bounding_y[0];
-	m_space_grid.m_start_z = obj_bounding_z[0];
-	m_space_grid.m_end_x = obj_bounding_x[1];
-	m_space_grid.m_end_y = obj_bounding_y[1];
-	m_space_grid.m_end_z = obj_bounding_z[1];
-
-
- 	int space_res_x, space_res_y, space_res_z;
-	int cell_x_min, cell_x_max, cell_y_min, cell_y_max, cell_z_min, cell_z_max;
-	Eigen::Vector2f current_tria_bounding_x,current_tria_bounding_y,current_tria_bounding_z;
-	for(std::size_t t =0;t<num_triangles;t++){
-		temp_tria = m_surface_mesh->m_Trias[t];
-
-		current_tria_bounding_x[0] = min(min(temp_tria->m_node_1->m_Position[0],
-			temp_tria->m_node_2->m_Position[0]),temp_tria->m_node_3->m_Position[0]);
-		current_tria_bounding_x[1] = max(max(temp_tria->m_node_1->m_Position[0],
-			temp_tria->m_node_2->m_Position[0]),temp_tria->m_node_3->m_Position[0]);
-		current_tria_bounding_y[0] = min(min(temp_tria->m_node_1->m_Position[1],
-			temp_tria->m_node_2->m_Position[1]),temp_tria->m_node_3->m_Position[1]);
-		current_tria_bounding_y[1] = max(max(temp_tria->m_node_1->m_Position[1],
-			temp_tria->m_node_2->m_Position[1]),temp_tria->m_node_3->m_Position[1]);
-		current_tria_bounding_z[0] = min(min(temp_tria->m_node_1->m_Position[2],
-			temp_tria->m_node_2->m_Position[2]),temp_tria->m_node_3->m_Position[2]);
-		current_tria_bounding_z[1] = max(max(temp_tria->m_node_1->m_Position[2],
-			temp_tria->m_node_2->m_Position[2]),temp_tria->m_node_3->m_Position[2]);
-
-		cell_x_min = m_space_grid.QueryGridIDX(current_tria_bounding_x[0]);
-		cell_x_max = m_space_grid.QueryGridIDX(current_tria_bounding_x[1]);
-		
-		cell_y_min = m_space_grid.QueryGridIDY(current_tria_bounding_y[0]);
-		cell_y_max = m_space_grid.QueryGridIDY(current_tria_bounding_y[1]);
-		
-		cell_z_min = m_space_grid.QueryGridIDZ(current_tria_bounding_z[0]);
-		cell_z_max = m_space_grid.QueryGridIDZ(current_tria_bounding_z[1]);
-
-		int hash_key;
-		for(int ix = cell_x_min; ix < cell_x_max + 1; ix++)
-			for(int iy = cell_y_min; iy < cell_y_max + 1; iy++)
-				for(int iz = cell_z_min; iz < cell_z_max + 1; iz++){
-					hash_key = ix*m_space_grid.m_res_y*m_space_grid.m_res_z + iy*m_space_grid.m_res_z + iz;
-					m_spatial_hash[hash_key].push_back(t);
-				}
-	}
-
-	std::cout<<"Generating Surface Normals"<<std::endl;
-	GenerateNormals();
-
-}
 
 void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_z, int n_hill)
 {
@@ -389,20 +252,22 @@ bool Terrain::TestInside(const Eigen::Vector3f& point){
 	p[0] = point[0];p[1] = point[1];p[2] = point[2];
 	switch(m_terrain_type){
 	case TERRAIN_SPHERICAL:
-		return point.norm() < 20;
-        return point_inside_mesh(p,m_mesh_obj);
+		//return point.norm() < 20; //test with sphere
+        return m_surface_mesh->PointInsideMesh(point);
 		break;
 	case TERRAIN_TEST:
 	case TERRAIN_FLAT:
 	case TERRAIN_RANDOM:
 	{//those terrain never reverse
 
-		if(point[1] < GetHeight(point[0], point[2]))
+		if(point[1] < GetHeight(point))
 			return true;
 		else
 			return false;
 	}
 	break;
+	default:
+	return false;
 	}
 
 }
@@ -538,7 +403,7 @@ void Terrain::InitFood(TerrainType a_type){
 		
 			x = m_size_x*(Util::getRand() - 0.5);
 			z = m_size_z*(Util::getRand() - 0.5);
-			y = GetHeight(x,z) + sphere_radius;
+			y = GetHeight(Eigen::Vector3f(x,0,z)) + sphere_radius;
 
 			temp_sphere = new Sphere;
 			temp_sphere->Init(Eigen::Vector3f(x,y,z),2*sphere_radius*Eigen::Vector3f(1,1,1),Eigen::Vector3f(0,1,0));
@@ -549,7 +414,7 @@ void Terrain::InitFood(TerrainType a_type){
 		sphere_radius = 5;
 		x = -300;
 		z = 0;
-		y = GetHeight(x,z) + 1.8*sphere_radius;
+		y = GetHeight(Eigen::Vector3f(x,0,z)) + 1.8*sphere_radius;
 		temp_sphere = new Sphere;
 		temp_sphere->Init(Eigen::Vector3f(x,y,z),2*sphere_radius*Eigen::Vector3f(1,1,1),Eigen::Vector3f(0,1,0));
 		m_foods.push_back(temp_sphere);
@@ -579,7 +444,7 @@ bool Terrain::ReachFood(Eigen::Vector3f pos, double tol){
 			double sphere_radius =  0.5+Util::getRand();
 			double x = m_size_x*(Util::getRand() - 0.5);
 			double z = m_size_z*(Util::getRand() - 0.5);
-			double y = GetHeight(x,z) + sphere_radius;
+			double y = GetHeight(Eigen::Vector3f(x,0,z)) + sphere_radius;
 
 			m_foods[i]->Init(Eigen::Vector3f(x,y,z),2*sphere_radius*Eigen::Vector3f(1,1,1),Eigen::Vector3f(0,1,0));
 
@@ -591,91 +456,76 @@ bool Terrain::ReachFood(Eigen::Vector3f pos, double tol){
 
 }
 
-double Terrain::GetHeight(Eigen::Vector2f xy) const{
+double Terrain::GetHeight(const Eigen::Vector3f& xyz) const{
 	
-	assert(m_terrain_type!=TERRAIN_SPHERICAL);
-	Cube* temp_cube;
-	Cylinder* temp_cylinder;
-	Sphere* temp_sphere;
-
-	double x = xy.x();
-	double z = xy.y();
-	//check if x y lands on a surface object
-	for(int i = 0; i < m_surface_objects.size(); i++){
-		
-		switch (m_surface_objects[i]->m_type)
-		{
-		case TypeCube:
-			temp_cube = dynamic_cast<Cube*>(m_surface_objects[i]);
-			if(x < temp_cube->m_Center[0] + temp_cube->m_Size[0]*0.5
-				&& x > temp_cube->m_Center[0] - temp_cube->m_Size[0]*0.5
-				&& z < temp_cube->m_Center[2] + temp_cube->m_Size[2]*0.5
-				&& z > temp_cube->m_Center[2] - temp_cube->m_Size[2]*0.5)
-				return temp_cube->m_Size[1];
-			break;
-		case TypeCylinder:
-			temp_cylinder = dynamic_cast<Cylinder*>(m_surface_objects[i]);
-			if(x < temp_cylinder->m_Center[0] + temp_cylinder->m_Size[0]*0.5
-				&&x > temp_cylinder->m_Center[0] - temp_cylinder->m_Size[0]*0.5
-				&&z < temp_cylinder->m_Center[2] + temp_cylinder->m_Size[2]*0.5
-				&&z > temp_cylinder->m_Center[0] - temp_cylinder->m_Size[2]*0.5)
-				return sqrt(0.25*temp_cylinder->m_Size[1]*temp_cylinder->m_Size[1] - (x - temp_cylinder->m_Center[0])*(x - temp_cylinder->m_Center[0]));
-			break;
-		default:
-			break;
-		}
-		
-	
-	}
-
-
-	int idx, idz;
-	idx = (xy.x() + 0.5*m_size_x)/m_dx;
-	idz = (xy.y() + 0.5*m_size_z)/m_dz;
-
-	//interpolation
-	double upleft, upright, downleft, downright;
-	downleft = m_height_data[idx*(m_res_z+1) + idz];
-	downright = m_height_data[(idx+1)*(m_res_z+1) + idz];
-	upleft = m_height_data[idx*(m_res_z+1) + idz+1];
-	upright = m_height_data[(idx+1)*(m_res_z+1) + idz+1];
-
-	double alpha, beta;
-	alpha = 1 - (xy.x() + 0.5*m_size_x - idx*m_dx)/m_dx;
-	beta = 1 - (xy.y() + 0.5*m_size_z - idz*m_dz)/m_dz;
-
-	return alpha*beta*downleft + (1-alpha)*beta*downright + (1-beta)*alpha*upleft + (1-beta)*(1-alpha)*upright;
-}
-
-Eigen::Vector3f Terrain::GetNormal(Eigen::Vector3f xyz){
-
 	if(m_terrain_type == TERRAIN_SPHERICAL){
 		
-		return xyz.normalized();//test using a sphere
-
-		//first determine hash key for position xyz
-		int ix, iy,iz; int flat_id;
-		std::vector<int> tria_ids;
-		ix = m_space_grid.QueryGridIDX(xyz.x());
-		iy = m_space_grid.QueryGridIDY(xyz.y());
-		iz = m_space_grid.QueryGridIDZ(xyz.z());
-		assert(ix != -1&&iy != -1&&iz != -1);
-		flat_id = ix*m_space_grid.m_res_y*m_space_grid.m_res_z + iy*m_space_grid.m_res_z + iz;
-		tria_ids = m_spatial_hash[flat_id];
-		assert(tria_ids.size() > 0);
-		Eigen::Vector3f nearest_face_normal;
-		double smallest_dist_surface = 10000, temp_dist_surface;
-		for(int i=0; i<tria_ids.size(); i++){
-			temp_dist_surface = (xyz - (m_surface_mesh->m_Trias[tria_ids[i]]->m_node_1->m_Position
-				+m_surface_mesh->m_Trias[tria_ids[i]]->m_node_2->m_Position + 
-				m_surface_mesh->m_Trias[tria_ids[i]]->m_node_3->m_Position)/3.0).norm();
-			if(temp_dist_surface < smallest_dist_surface){
-				smallest_dist_surface = temp_dist_surface;
-				nearest_face_normal = m_surface_mesh->m_Trias[tria_ids[i]]->m_face_normal;
-			}
-		}
-		return nearest_face_normal;
+		Triangle closest_triangle;
+		assert(m_surface_mesh->ClosestTriangle(xyz, closest_triangle));
+		return (xyz - closest_triangle.m_node_1->m_Position).dot(closest_triangle.m_face_normal);
 	}
+	else{
+		Cube* temp_cube;
+		Cylinder* temp_cylinder;
+		Sphere* temp_sphere;
+
+		double x = xyz.x();
+		double z = xyz.z();
+		//check if x y lands on a surface object
+		for(int i = 0; i < m_surface_objects.size(); i++){
+		
+			switch (m_surface_objects[i]->m_type)
+			{
+			case TypeCube:
+				temp_cube = dynamic_cast<Cube*>(m_surface_objects[i]);
+				if(x < temp_cube->m_Center[0] + temp_cube->m_Size[0]*0.5
+					&& x > temp_cube->m_Center[0] - temp_cube->m_Size[0]*0.5
+					&& z < temp_cube->m_Center[2] + temp_cube->m_Size[2]*0.5
+					&& z > temp_cube->m_Center[2] - temp_cube->m_Size[2]*0.5)
+					return temp_cube->m_Size[1];
+				break;
+			case TypeCylinder:
+				temp_cylinder = dynamic_cast<Cylinder*>(m_surface_objects[i]);
+				if(x < temp_cylinder->m_Center[0] + temp_cylinder->m_Size[0]*0.5
+					&&x > temp_cylinder->m_Center[0] - temp_cylinder->m_Size[0]*0.5
+					&&z < temp_cylinder->m_Center[2] + temp_cylinder->m_Size[2]*0.5
+					&&z > temp_cylinder->m_Center[0] - temp_cylinder->m_Size[2]*0.5)
+					return sqrt(0.25*temp_cylinder->m_Size[1]*temp_cylinder->m_Size[1] - (x - temp_cylinder->m_Center[0])*(x - temp_cylinder->m_Center[0]));
+				break;
+			default:
+				break;
+			}
+		
+	
+		}
+
+
+		int idx, idz;
+		idx = (xyz.x() + 0.5*m_size_x)/m_dx;
+		idz = (xyz.z() + 0.5*m_size_z)/m_dz;
+
+		//interpolation
+		double upleft, upright, downleft, downright;
+		downleft = m_height_data[idx*(m_res_z+1) + idz];
+		downright = m_height_data[(idx+1)*(m_res_z+1) + idz];
+		upleft = m_height_data[idx*(m_res_z+1) + idz+1];
+		upright = m_height_data[(idx+1)*(m_res_z+1) + idz+1];
+
+		double alpha, beta;
+		alpha = 1 - (xyz.x() + 0.5*m_size_x - idx*m_dx)/m_dx;
+		beta = 1 - (xyz.z() + 0.5*m_size_z - idz*m_dz)/m_dz;
+
+		return alpha*beta*downleft + (1-alpha)*beta*downright + (1-beta)*alpha*upleft + (1-beta)*(1-alpha)*upright;
+	}
+}
+
+Eigen::Vector3f Terrain::GetNormal(const Eigen::Vector3f& xyz){
+
+	if(m_terrain_type == TERRAIN_SPHERICAL){
+		Triangle closest_triangle;
+		assert(m_surface_mesh->ClosestTriangle(xyz, closest_triangle));
+		return closest_triangle.m_face_normal;
+	}//end if Terrain Spherical
 	else{
 
 		//first deal with surface objects if any
@@ -704,9 +554,9 @@ Eigen::Vector3f Terrain::GetNormal(Eigen::Vector3f xyz){
 					&&x > temp_cylinder->m_Center[0] - temp_cylinder->m_Size[0]*0.5
 					&&z < temp_cylinder->m_Center[2] + temp_cylinder->m_Size[2]*0.5
 					&&z > temp_cylinder->m_Center[0] - temp_cylinder->m_Size[2]*0.5)
-					return (Eigen::Vector3f(x, GetHeight(x,z), z) - 
-							Eigen::Vector3f(temp_cylinder->m_Center[0], 0, z)).normalized();//something 
-					break;
+					return (Eigen::Vector3f(x, GetHeight(xyz), z) - 
+							Eigen::Vector3f(temp_cylinder->m_Center[0], 0, z)).normalized();//something 	
+				break;
 			default:
 				break;
 			}
@@ -729,7 +579,6 @@ Eigen::Vector3f Terrain::GetNormal(Eigen::Vector3f xyz){
 		beta = 1 - (xyz.z() + 0.5*m_size_z - idz*m_dz)/m_dz;
 
 		return alpha*beta*downleft + (1-alpha)*beta*downright + (1-beta)*alpha*upleft + (1-beta)*(1-alpha)*upright;
-	
 	}
 }
 
@@ -835,7 +684,6 @@ void Terrain::InitDraw(){
 
 	// Initialize the data array on CPU
 	if(m_terrain_type == TERRAIN_SPHERICAL){
-		return;
 		m_NTrianglePoints = m_surface_mesh->m_Num_f*3;
 
 		m_TrianglePoints = new Eigen::Vector4f[m_NTrianglePoints];
@@ -944,11 +792,6 @@ void Terrain::InitDraw(){
 }
 
 void Terrain::Draw(int type, const Camera& camera, const Light& light){
-	myDrawer->SetIdentity();
-	myDrawer->Scale(20);
-	myDrawer->SetColor(Eigen::Vector3f(1,0,0));
-	myDrawer->DrawSphere(type, camera, light);
-	return;
 
 	//Get new position of the cube and update the model view matrix
     Eigen::Affine3f wMo;//object to world matrix

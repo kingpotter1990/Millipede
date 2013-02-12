@@ -417,3 +417,204 @@ void Object::SetWorld(World *a_world){
 	m_world = a_world; 
 }
 
+bool SurfaceMesh::LoadObjFile(char * filename){
+		
+		m_objdata = new objLoader();
+		if(!m_objdata->load(filename)){
+			std::cout<<"Loading Error!"<<std::endl;
+			return false;
+		}
+
+		//generate mesh
+		//create a Mesh Object for inside/outside test
+	int num_vertices= m_objdata->vertexCount;
+    int num_triangles= m_objdata->faceCount;
+	//create a Mesh Object for drawing
+	m_Num_v = num_vertices;
+	m_Num_f = num_triangles;
+    double *positions=new double[3*num_vertices];Node* temp_node;
+	
+	//apply scale and translation to the model
+	double scale(2); Eigen::Vector3f translation(0,0,0);
+
+   	for(std::size_t v=0;v<num_vertices;v++){
+        positions[3*v] = scale*(translation[0] + m_objdata->vertexList[v]->e[0]);
+        positions[3*v+1] = scale*(translation[1] + m_objdata->vertexList[v]->e[1]);
+        positions[3*v+2] = scale*(translation[2] + m_objdata->vertexList[v]->e[2]);
+		temp_node = new Node;
+		temp_node->m_Position = Eigen::Vector3f(positions[3*v],positions[3*v+1],positions[3*v+2]);
+		temp_node->m_Normal = Eigen::Vector3f(0,0,0);//initalize to 0, generate later
+		m_Nodes.push_back(temp_node);
+	}
+	
+    int *triangles=new int[3*num_triangles];
+	obj_face *o; Triangle* temp_tria;
+
+    for(std::size_t t=0;t<num_triangles;t++){
+		o = m_objdata->faceList[t];
+        triangles[3*t] = o->vertex_index[0];
+        triangles[3*t+1] = o->vertex_index[1];
+        triangles[3*t+2] = o->vertex_index[2];
+		temp_tria = new Triangle;
+		temp_tria->m_node_1 = m_Nodes[triangles[3*t]];
+		temp_tria->m_node_2 = m_Nodes[triangles[3*t + 1]];
+		temp_tria->m_node_3 = m_Nodes[triangles[3*t + 2]];
+		m_Trias.push_back(temp_tria);
+	}
+
+	m_mesh_obj = construct_mesh_object(num_vertices,positions,num_triangles,triangles);
+	
+	//generate the spatial hash table for triangles
+	std::cout<<"Generating Spatial Hash for the Model"<<std::endl;
+	Eigen::Vector2f obj_bounding_x(10000,-10000),obj_bounding_y(10000,-10000),obj_bounding_z(10000,-10000);
+	double tx, ty, tz;
+	for(std::size_t v =0;v<num_vertices; v++){
+		
+		tx = m_Nodes[v]->m_Position[0];
+		ty = m_Nodes[v]->m_Position[1];
+		tz = m_Nodes[v]->m_Position[2];
+
+		if(obj_bounding_x[0] > tx)
+			obj_bounding_x[0] = tx;
+		if(obj_bounding_x[1] < tx)
+			obj_bounding_x[1] = tx;
+
+		if(obj_bounding_y[0] > ty)
+			obj_bounding_y[0] = ty;
+		if(obj_bounding_y[1] < ty)
+			obj_bounding_y[1] = ty;
+		
+		if(obj_bounding_z[0] > tz)
+			obj_bounding_z[0] = tz;
+		if(obj_bounding_z[1] < tz)
+			obj_bounding_z[1] = tz;
+	}//getting the bounding volum for the model;
+
+	//creating a buffer zone
+	obj_bounding_x += Eigen::Vector2f(-20,20);
+	obj_bounding_y += Eigen::Vector2f(-20,20);
+	obj_bounding_z += Eigen::Vector2f(-20,20);
+
+	m_space_grid.m_res_x = 30;
+	m_space_grid.m_res_y = 30;
+	m_space_grid.m_res_z = 30;
+	m_space_grid.m_dx = (obj_bounding_x[1] - obj_bounding_x[0])/m_space_grid.m_res_x;
+	m_space_grid.m_dy = (obj_bounding_y[1] - obj_bounding_y[0])/m_space_grid.m_res_y;
+	m_space_grid.m_dz = (obj_bounding_z[1] - obj_bounding_z[0])/m_space_grid.m_res_z;
+	m_space_grid.m_start_x = obj_bounding_x[0];
+	m_space_grid.m_start_y = obj_bounding_y[0];
+	m_space_grid.m_start_z = obj_bounding_z[0];
+	m_space_grid.m_end_x = obj_bounding_x[1];
+	m_space_grid.m_end_y = obj_bounding_y[1];
+	m_space_grid.m_end_z = obj_bounding_z[1];
+
+	int cell_x_min, cell_x_max, cell_y_min, cell_y_max, cell_z_min, cell_z_max;
+	Eigen::Vector2f current_tria_bounding_x,current_tria_bounding_y,current_tria_bounding_z;
+	for(std::size_t t =0;t<num_triangles;t++){
+		temp_tria = m_Trias[t];
+
+		current_tria_bounding_x[0] = min(min(temp_tria->m_node_1->m_Position[0],
+			temp_tria->m_node_2->m_Position[0]),temp_tria->m_node_3->m_Position[0]);
+		current_tria_bounding_x[1] = max(max(temp_tria->m_node_1->m_Position[0],
+			temp_tria->m_node_2->m_Position[0]),temp_tria->m_node_3->m_Position[0]);
+		current_tria_bounding_y[0] = min(min(temp_tria->m_node_1->m_Position[1],
+			temp_tria->m_node_2->m_Position[1]),temp_tria->m_node_3->m_Position[1]);
+		current_tria_bounding_y[1] = max(max(temp_tria->m_node_1->m_Position[1],
+			temp_tria->m_node_2->m_Position[1]),temp_tria->m_node_3->m_Position[1]);
+		current_tria_bounding_z[0] = min(min(temp_tria->m_node_1->m_Position[2],
+			temp_tria->m_node_2->m_Position[2]),temp_tria->m_node_3->m_Position[2]);
+		current_tria_bounding_z[1] = max(max(temp_tria->m_node_1->m_Position[2],
+			temp_tria->m_node_2->m_Position[2]),temp_tria->m_node_3->m_Position[2]);
+
+		cell_x_min = m_space_grid.QueryGridIDX(current_tria_bounding_x[0]);
+		cell_x_max = m_space_grid.QueryGridIDX(current_tria_bounding_x[1]);
+		
+		cell_y_min = m_space_grid.QueryGridIDY(current_tria_bounding_y[0]);
+		cell_y_max = m_space_grid.QueryGridIDY(current_tria_bounding_y[1]);
+		
+		cell_z_min = m_space_grid.QueryGridIDZ(current_tria_bounding_z[0]);
+		cell_z_max = m_space_grid.QueryGridIDZ(current_tria_bounding_z[1]);
+
+		int hash_key;
+		for(int ix = cell_x_min; ix < cell_x_max + 1; ix++)
+			for(int iy = cell_y_min; iy < cell_y_max + 1; iy++)
+				for(int iz = cell_z_min; iz < cell_z_max + 1; iz++){
+					hash_key = ix*m_space_grid.m_res_y*m_space_grid.m_res_z + iy*m_space_grid.m_res_z + iz;
+					m_spatial_hash[hash_key].push_back(t);
+				}
+	}
+
+	Eigen::Vector3f v1,v2;
+	Eigen::Vector3f current_normal, temp_face_normal;
+	
+	for(int i = 0; i < m_Num_f; i++)
+	{
+		v1 = m_Trias[i]->m_node_2->m_Position - m_Trias[i]->m_node_1->m_Position;
+		v2 = m_Trias[i]->m_node_3->m_Position - m_Trias[i]->m_node_1->m_Position;
+		temp_face_normal = v1.cross(v2);
+		temp_face_normal.normalize();
+		m_Trias[i]->m_face_normal = temp_face_normal;
+		m_Trias[i]->m_node_1->m_Normal += temp_face_normal;
+		m_Trias[i]->m_node_2->m_Normal += temp_face_normal;
+		m_Trias[i]->m_node_3->m_Normal += temp_face_normal;
+	}
+	for(int i = 0; i < m_Num_v; i++)
+	{//normalize
+		m_Nodes[i]->m_Normal.normalize();
+	}
+
+		return true;
+}
+
+bool SurfaceMesh::PointInsideMesh(Eigen::Vector3f point){
+		double* p = new double[3];
+		p[0] = point[0];p[1] = point[1];p[2] = point[2];
+		return point_inside_mesh(p,m_mesh_obj);
+	}
+
+bool SurfaceMesh::ClosestTriangle(const Eigen::Vector3f& xyz, Triangle& triangle){
+		
+		//first determine hash key for position xyz
+		int ix, iy,iz; int flat_id;
+		std::vector<int> tria_ids;
+		ix = m_space_grid.QueryGridIDX(xyz.x());
+		iy = m_space_grid.QueryGridIDY(xyz.y());
+		iz = m_space_grid.QueryGridIDZ(xyz.z());
+		if(ix == -1||iy == -1||iz == -1){
+			return false;
+		
+		}
+	
+		flat_id = ix*m_space_grid.m_res_y*m_space_grid.m_res_z + iy*m_space_grid.m_res_z + iz;
+		tria_ids = m_spatial_hash[flat_id];
+		if(tria_ids.size() == 0)//query neighboring boxes as well.
+		{
+			tria_ids.empty();
+			std::vector<int> temp;
+			for(int i = max(0, ix-1); i < min(ix + 2,m_space_grid.m_res_x); i++)
+				for(int j = max(0, iy-1); j < min(iy + 2,m_space_grid.m_res_y); j++)
+					for(int k = max(0, iz-1); k < min(iz + 2,m_space_grid.m_res_z); k++){
+						if(i == ix && j==iy&&k==iz)
+							continue;//skipp current cell
+						flat_id = i*m_space_grid.m_res_y*m_space_grid.m_res_z + j*m_space_grid.m_res_z + k;
+						temp = m_spatial_hash[flat_id];
+						tria_ids.insert(tria_ids.end(),temp.begin(), temp.end());
+					}
+			if(tria_ids.size() == 0){
+				return false;
+			}
+		}
+	
+		double smallest_dist_surface = 10000, temp_dist_surface;
+		for(int i=0; i<tria_ids.size(); i++){
+			temp_dist_surface = (xyz - (m_Trias[tria_ids[i]]->m_node_1->m_Position
+				+m_Trias[tria_ids[i]]->m_node_2->m_Position + 
+				m_Trias[tria_ids[i]]->m_node_3->m_Position)/3.0).norm();
+			if(temp_dist_surface < smallest_dist_surface){
+				smallest_dist_surface = temp_dist_surface;
+				triangle = *m_Trias[tria_ids[i]];
+			}
+		}
+		return true;
+	
+	}

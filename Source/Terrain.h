@@ -6,8 +6,6 @@
 #include "Light.h"
 #include "Object.h"
 #include "World.h"
-#include "Boost/boost/unordered_map.hpp"
-#include "Boost/numeric/ublas/vector.hpp"
 
 class Sphere;
 class Millipede;
@@ -25,10 +23,9 @@ public:
 	int GetResY() const{return m_res_z;};
 	Eigen::Vector2f GetSize() const{return Eigen::Vector2f(m_size_x,m_size_z);};
 	Eigen::Vector2i GetRes() const{return Eigen::Vector2i(m_res_x, m_res_z);};
-	double GetHeight(Eigen::Vector2f xz) const;
-	double GetHeight(double x, double z) const{return GetHeight(Eigen::Vector2f(x,z));};
+	double GetHeight(const Eigen::Vector3f& xyz) const;
 	bool TestInside(const Eigen::Vector3f& point);
-	Eigen::Vector3f GetNormal(Eigen::Vector3f xyz);
+	Eigen::Vector3f GetNormal(const Eigen::Vector3f& xyz);
 	~Terrain(){delete[] m_height_data; delete[] m_normal_data;};
 	void Draw(int type, const Camera& camera, const Light& light);
 	void UpdateAll(double dt){};
@@ -38,7 +35,6 @@ public:
 	void RegisterMillipede(Millipede* a_millipede);
 	void ClearMillipedes();
 	void InitSurfaceObjects();
-	bool LoadObjFileAsTerrain();
 
 public:
 	double m_frictness;
@@ -72,15 +68,10 @@ protected:
 
 	double* m_height_data;//per node
 	Eigen::Vector3f* m_normal_data;//per node
-	
-	objLoader* m_objdata;
-	MeshObject* m_mesh_obj;
-public://for test
-	SurfaceMesh* m_surface_mesh;
-protected:	
-	SpaceGrid m_space_grid;
 
-	boost::unordered_map<int,std::vector<int> > m_spatial_hash;
+	SurfaceMesh* m_surface_mesh;//for spherical terrain 
+
+protected:	
 
 	std::vector<Object*> m_obstacles;
 	std::vector<Object*> m_surface_objects;
