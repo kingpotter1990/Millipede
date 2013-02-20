@@ -13,10 +13,12 @@ MillipedeLeg::MillipedeLeg(int a_l_r):m_l_r(a_l_r){
 
 void MillipedeLeg::InitPhysics(Eigen::Vector3f a_body_size){
 	
-	m_segment_0_size = a_body_size[0]*Eigen::Vector3f(0.4,0.4,0.5);
-	m_segment_1_size = a_body_size[0]*Eigen::Vector3f(0.4,0.4,2.0);
-	m_segment_2_size = a_body_size[0]*Eigen::Vector3f(0.25,0.25,1.5);
-	m_segment_3_size = a_body_size[0]*Eigen::Vector3f(0.2,0.2,0.5);
+	double l0 = 0.039;double l1 = Eigen::Vector2f(1.411,0.275).norm();
+	double l2 = 0.8*Eigen::Vector2f(1.49,0.682).norm(); double l3 = l2/4;
+	m_segment_0_size = Eigen::Vector3f(0.4,0.4,l0);
+	m_segment_1_size = Eigen::Vector3f(0.4,0.4,l1);
+	m_segment_2_size = Eigen::Vector3f(0.25,0.25,l2);
+	m_segment_3_size = Eigen::Vector3f(0.2,0.2,l3);
 
 }
 
@@ -24,7 +26,7 @@ void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 
 	m_root = a_root;
 
-	m_extreme_phi = 30;
+	m_extreme_phi = 20;
 	m_extreme_alpha = 30;
 	m_extreme_beta = 30;
 
@@ -36,7 +38,7 @@ void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
     m_alpha = m_extreme_alpha * sin(DegreesToRadians*m_root->m_section_id*dif_phase);
 	m_beta = m_extreme_beta/2;
 
-	m_gamma = 10;//fixed
+	m_gamma = 0;//fixed
 
 	m_leg_rotation_velocity = 1000;
 	
@@ -116,10 +118,10 @@ void MillipedeLeg::UpdateTipPosition(){
 	myDrawer->Rotate(m_root->m_rotation);
 	switch(m_l_r){
 	case 1:
-		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, m_root->m_Size[2]/4));
+		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, m_root->m_Size[2]/2));
 		break;
 	case -1:
-		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, -m_root->m_Size[2]/4));
+		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, -m_root->m_Size[2]/2));
 		break;
 	}
 
@@ -144,10 +146,10 @@ void MillipedeLeg::UpdateRootPosition(){
 	myDrawer->Rotate(m_root->m_rotation);
 	switch(m_l_r){
 	case 1:
-		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, m_root->m_Size[2]/4));
+		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, m_root->m_Size[2]/2));
 		break;
 	case -1:
-		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, -m_root->m_Size[2]/4));
+		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, -m_root->m_Size[2]/2));
 		break;
 	}
 	m_root_position = myDrawer->CurrentOrigin();

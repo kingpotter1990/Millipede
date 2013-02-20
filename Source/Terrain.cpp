@@ -260,7 +260,7 @@ bool Terrain::TestInside(const Eigen::Vector3f& point){
 	case TERRAIN_RANDOM:
 	{//those terrain never reverse
 
-		if(point[1] < GetHeight(point))
+		if(GetHeight(point) < 0)
 			return true;
 		else
 			return false;
@@ -470,6 +470,7 @@ double Terrain::GetHeight(const Eigen::Vector3f& xyz) const{
 		Sphere* temp_sphere;
 
 		double x = xyz.x();
+		double y = xyz.y();
 		double z = xyz.z();
 		//check if x y lands on a surface object
 		for(int i = 0; i < m_surface_objects.size(); i++){
@@ -482,7 +483,7 @@ double Terrain::GetHeight(const Eigen::Vector3f& xyz) const{
 					&& x > temp_cube->m_Center[0] - temp_cube->m_Size[0]*0.5
 					&& z < temp_cube->m_Center[2] + temp_cube->m_Size[2]*0.5
 					&& z > temp_cube->m_Center[2] - temp_cube->m_Size[2]*0.5)
-					return temp_cube->m_Size[1];
+					return y - temp_cube->m_Size[1];
 				break;
 			case TypeCylinder:
 				temp_cylinder = dynamic_cast<Cylinder*>(m_surface_objects[i]);
@@ -490,7 +491,8 @@ double Terrain::GetHeight(const Eigen::Vector3f& xyz) const{
 					&&x > temp_cylinder->m_Center[0] - temp_cylinder->m_Size[0]*0.5
 					&&z < temp_cylinder->m_Center[2] + temp_cylinder->m_Size[2]*0.5
 					&&z > temp_cylinder->m_Center[0] - temp_cylinder->m_Size[2]*0.5)
-					return sqrt(0.25*temp_cylinder->m_Size[1]*temp_cylinder->m_Size[1] - (x - temp_cylinder->m_Center[0])*(x - temp_cylinder->m_Center[0]));
+					return y - sqrt(0.25*temp_cylinder->m_Size[1]*temp_cylinder->m_Size[1] - 
+					(x - temp_cylinder->m_Center[0])*(x - temp_cylinder->m_Center[0]));
 				break;
 			default:
 				break;
@@ -515,7 +517,7 @@ double Terrain::GetHeight(const Eigen::Vector3f& xyz) const{
 		alpha = 1 - (xyz.x() + 0.5*m_size_x - idx*m_dx)/m_dx;
 		beta = 1 - (xyz.z() + 0.5*m_size_z - idz*m_dz)/m_dz;
 
-		return alpha*beta*downleft + (1-alpha)*beta*downright + (1-beta)*alpha*upleft + (1-beta)*(1-alpha)*upright;
+		return y - alpha*beta*downleft + (1-alpha)*beta*downright + (1-beta)*alpha*upleft + (1-beta)*(1-alpha)*upright;
 	}
 }
 

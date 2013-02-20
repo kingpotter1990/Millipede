@@ -21,16 +21,17 @@ The head's orientation-obj is from the terrain's normal. [Done]
 1.22 - 1.31
 
 * experimenting  terrain type Closed Spherical Surface
-- Load obj
-- Load a sphere
-- How to get Normal of a point every close/on surface
-- How to test if a point is inside the closed surface
+- Load obj [Done]
+- Load a sphere [Done]
+- How to get Normal of a point every close/on surface [Done]
+- How to test if a point is inside the closed surface [Done]
 
 *. Construct different Terrains, experiment
 - cylinders paved road [Done]
 - spheres paved road  
 - Cubes paved road [Done]
 - Ftickles' Face
+- Amadillo [Done]
 - Maze for Food
 2.1 - 2.30
 
@@ -74,8 +75,6 @@ Different Parameters:
 3. Leg rotation speed: associated with linear speed, the association parameter
 
 4. Section rotation speed/ linear speed in different modes
-
-5. neighbor leg tolerance angle value
 
 6. Antenna Length
 
