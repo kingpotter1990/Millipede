@@ -5,7 +5,7 @@
 //  All rights reserved.
 //
 
-
+#include <algorithm>
 #include <cmath>
 #include <queue>
 
@@ -413,7 +413,7 @@ void Deformable3D::HandleCollision(Node& a_node){
 					new_velocity_n_vector = prev_momentom_v.normalized();
 
 					new_momentom_n = -0.8* prev_momentom_n;
-					new_momentom_v = new_velocity_n_vector*max(prev_momentom_v.norm() - friction_ness*(new_momentom_n.norm() + prev_momentom_n.norm()),0);
+					new_momentom_v = new_velocity_n_vector*std::max(prev_momentom_v.norm() - friction_ness*(new_momentom_n.norm() + prev_momentom_n.norm()),0.0);
 
 					a_node.m_Velocity = (new_momentom_n + new_momentom_v)/a_node.m_Mass;
 

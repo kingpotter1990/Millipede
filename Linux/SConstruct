@@ -46,9 +46,16 @@ compile_flags.append('-std=c++0x')
 #############################################################################
 #    What Really Matters
 #############################################################################
+boost_root = os.environ.get('BOOST_ROOT')
+if boost_root is None:
+   print 'Environment variable BOOST_ROOT not set.\nPlease set and re-run.'
+   sys.exit(1)
+if boost_root[-1] is not '/' or boost_root[-1] is not '\\':
+   boost_root += '/'
 
 include_paths.append('/usr/include')
 include_paths.append('/usr/local/include')
+include_paths.append(boost_root)
 include_paths.append('../Source')
 
 # lib_paths.append('/usr/lib')

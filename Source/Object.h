@@ -13,11 +13,13 @@
 #include "ObjLoader/objLoader.h"
 #include "MeshQuery/mesh_query.h"
 #include "Boost/boost/unordered_map.hpp"
-#include "Boost/numeric/ublas/vector.hpp"
+#include "Boost/boost/numeric/ublas/vector.hpp"
 
+#include <algorithm>
 #include <vector>
+#ifdef WIN32
 #include <windows.h>
-
+#endif
 
 #define GRAVITY_CONSTANT 9.8
 
