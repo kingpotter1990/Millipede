@@ -22,7 +22,7 @@ void initScene(){
     Lumia.m_color = Eigen::Vector4f(1.0,1.0,1.0,1.0);//white light
 
 	//set up the world
-	myWorld = new World(50000);
+	myWorld = new World(51000);
 
 	//set up the drawer
 	myDrawer = new Drawer;
