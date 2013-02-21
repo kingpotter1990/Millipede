@@ -6,7 +6,7 @@
 #include "Drawer.h"
 #include "Terrain.h"
 
-extern Drawer* myDrawer;
+extern Drawer* m_Drawer;
 
 void MillipedeRigidSection::InitPhysics(double density, Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f color){
 	
@@ -27,6 +27,7 @@ void MillipedeRigidSection::InitNeuroNet(Millipede* a_root, int a_id){
 
 	//determine the leg rotation speed from the global speed parameter
 	m_master = a_root;
+	m_Drawer = m_master->m_Drawer;
 	m_terrain = m_master->m_terrain;
 	m_section_id = a_id;
 	m_body_state = NOT_SUPPORTED;
@@ -52,11 +53,11 @@ void MillipedeRigidSection::SetWorld(World* a_world){
 
 void MillipedeRigidSection::Draw(int type, const Camera& camera, const Light& light){
 	/*
-	myDrawer->SetIdentity();
-	myDrawer->Translate(this->m_Center);
-	myDrawer->Scale(4);
-	myDrawer->SetColor(Eigen::Vector3f(1,1,1));
-	myDrawer->DrawSphere(type,camera,light);
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(this->m_Center);
+	m_Drawer->Scale(4);
+	m_Drawer->SetColor(Eigen::Vector3f(1,1,1));
+	m_Drawer->DrawSphere(type,camera,light);
 	*/
 	Cube::Draw(type, camera, light);
 	

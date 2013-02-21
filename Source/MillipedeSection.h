@@ -10,6 +10,7 @@ class Millipede;
 class MillipedeRigidSection;
 class MillipedeSoftSection;
 class Terrain;
+class Drawer;
 
 enum SECTION_STATUS {LEG_SUPPORTED, NOT_SUPPORTED};
 
@@ -46,6 +47,7 @@ public:
 	double m_current_height;
 	Eigen::Vector3f m_linear_speed;
 
+	Drawer* m_Drawer;
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

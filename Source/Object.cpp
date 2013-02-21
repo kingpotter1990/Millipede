@@ -9,6 +9,8 @@
 #include "Object.h"
 #include "World.h"
 
+#include <algorithm>
+
 CubicTetraMesh::CubicTetraMesh(Eigen::Vector3i a_num, Eigen::Vector3f a_size, Eigen::Vector3f a_position){
     Meshialize(a_num, a_size, a_position);
 }
@@ -512,7 +514,21 @@ bool SurfaceMesh::LoadObjFile(char * filename){
 	Eigen::Vector2f current_tria_bounding_x,current_tria_bounding_y,current_tria_bounding_z;
 	for(std::size_t t =0;t<num_triangles;t++){
 		temp_tria = m_Trias[t];
+#ifdef WIN32
+		current_tria_bounding_x[0] = min(min(temp_tria->m_node_1->m_Position[0],
+			temp_tria->m_node_2->m_Position[0]),temp_tria->m_node_3->m_Position[0]);
+		current_tria_bounding_x[1] = max(max(temp_tria->m_node_1->m_Position[0],
+			temp_tria->m_node_2->m_Position[0]),temp_tria->m_node_3->m_Position[0]);
+		current_tria_bounding_y[0] = min(min(temp_tria->m_node_1->m_Position[1],
+			temp_tria->m_node_2->m_Position[1]),temp_tria->m_node_3->m_Position[1]);
+		current_tria_bounding_y[1] = max(max(temp_tria->m_node_1->m_Position[1],
+			temp_tria->m_node_2->m_Position[1]),temp_tria->m_node_3->m_Position[1]);
+		current_tria_bounding_z[0] = min(min(temp_tria->m_node_1->m_Position[2],
+			temp_tria->m_node_2->m_Position[2]),temp_tria->m_node_3->m_Position[2]);
+		current_tria_bounding_z[1] = max(max(temp_tria->m_node_1->m_Position[2],
+			temp_tria->m_node_2->m_Position[2]),temp_tria->m_node_3->m_Position[2]);
 
+#else
 		current_tria_bounding_x[0] = std::min(std::min(temp_tria->m_node_1->m_Position[0],
 			temp_tria->m_node_2->m_Position[0]),temp_tria->m_node_3->m_Position[0]);
 		current_tria_bounding_x[1] = std::max(std::max(temp_tria->m_node_1->m_Position[0],
@@ -525,6 +541,7 @@ bool SurfaceMesh::LoadObjFile(char * filename){
 			temp_tria->m_node_2->m_Position[2]),temp_tria->m_node_3->m_Position[2]);
 		current_tria_bounding_z[1] = std::max(std::max(temp_tria->m_node_1->m_Position[2],
 			temp_tria->m_node_2->m_Position[2]),temp_tria->m_node_3->m_Position[2]);
+#endif
 
 		cell_x_min = m_space_grid.QueryGridIDX(current_tria_bounding_x[0]);
 		cell_x_max = m_space_grid.QueryGridIDX(current_tria_bounding_x[1]);
@@ -591,9 +608,15 @@ bool SurfaceMesh::ClosestTriangle(const Eigen::Vector3f& xyz, Triangle& triangle
 		{
 			tria_ids.empty();
 			std::vector<int> temp;
+#ifdef WIN32
+			for(int i = max(0, ix-1); i < min(ix + 2,m_space_grid.m_res_x); i++)
+				for(int j = max(0, iy-1); j < min(iy + 2,m_space_grid.m_res_y); j++)
+					for(int k = max(0, iz-1); k < min(iz + 2,m_space_grid.m_res_z); k++){
+#else
 			for(int i = std::max(0, ix-1); i < std::min(ix + 2,m_space_grid.m_res_x); i++)
 				for(int j = std::max(0, iy-1); j < std::min(iy + 2,m_space_grid.m_res_y); j++)
 					for(int k = std::max(0, iz-1); k < std::min(iz + 2,m_space_grid.m_res_z); k++){
+#endif						
 						if(i == ix && j==iy&&k==iz)
 							continue;//skipp current cell
 						flat_id = i*m_space_grid.m_res_y*m_space_grid.m_res_z + j*m_space_grid.m_res_z + k;

@@ -5,7 +5,6 @@
 #include "Drawer.h"
 #include "Terrain.h"
 
-extern Drawer* myDrawer;
 
 MillipedeLeg::MillipedeLeg(int a_l_r):m_l_r(a_l_r){
 
@@ -15,22 +14,21 @@ void MillipedeLeg::InitPhysics(Eigen::Vector3f a_body_size){
 	
 	double l0 = 0.039;double l1 = Eigen::Vector2f(1.411,0.275).norm();
 	double l2 = 0.8*Eigen::Vector2f(1.49,0.682).norm(); double l3 = l2/4;
-	m_segment_0_size = Eigen::Vector3f(0.4,0.4,l0);
-	m_segment_1_size = Eigen::Vector3f(0.4,0.4,l1);
-	m_segment_2_size = Eigen::Vector3f(0.25,0.25,l2);
-	m_segment_3_size = Eigen::Vector3f(0.2,0.2,l3);
+	m_segment_0_size = Eigen::Vector3f(0.2,0.2,l0);
+	m_segment_1_size = Eigen::Vector3f(0.2,0.2,l1);
+	m_segment_2_size = Eigen::Vector3f(0.15,0.15,l2);
+	m_segment_3_size = Eigen::Vector3f(0.1,0.1,l3);
 
 }
 
 void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 
 	m_root = a_root;
+	m_Drawer = m_root->m_Drawer;
 
-	m_extreme_phi = 20;
+	m_extreme_phi = 30;
 	m_extreme_alpha = 30;
 	m_extreme_beta = 30;
-
-	m_phase_dif = 20;
 
 	double dif_phase = 30;//12 legs per cycle
 
@@ -108,51 +106,50 @@ double MillipedeLeg::GetBalanceHeight(){
 }
 
 void MillipedeLeg::UpdateTipPosition(){
-	
+
 	if(m_leg_state == LEG_STANCE)
 		return;//no update
 	 
 	//go to root position
-	myDrawer->SetIdentity();
-	myDrawer->Translate(m_root->m_Center);
-	myDrawer->Rotate(m_root->m_rotation);
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_root->m_Center);
+	m_Drawer->Rotate(m_root->m_rotation);
 	switch(m_l_r){
 	case 1:
-		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, m_root->m_Size[2]/2));
+		m_Drawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, m_root->m_Size[2]/2));
 		break;
 	case -1:
-		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, -m_root->m_Size[2]/2));
+		m_Drawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, -m_root->m_Size[2]/2));
 		break;
 	}
 
 
-	myDrawer->Translate(Eigen::Vector3f(0.0,-m_segment_0_size[2],0.0));
-	myDrawer->RotateY(-m_l_r*m_phi);
-	myDrawer->RotateX(-m_l_r*m_alpha);
-	myDrawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_1_size[2]));
-	myDrawer->RotateX(m_l_r*m_beta);
-	myDrawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_2_size[2]));
-	myDrawer->RotateX(m_l_r*m_gamma);
-	myDrawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_3_size[2]));
+	m_Drawer->Translate(Eigen::Vector3f(0.0,-m_segment_0_size[2],0.0));
+	m_Drawer->RotateY(-m_l_r*m_phi);
+	m_Drawer->RotateX(-m_l_r*m_alpha);
+	m_Drawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_1_size[2]));
+	m_Drawer->RotateX(m_l_r*m_beta);
+	m_Drawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_2_size[2]));
+	m_Drawer->RotateX(m_l_r*m_gamma);
+	m_Drawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_3_size[2]));
 
-	m_tip_position = myDrawer->CurrentOrigin();
+	m_tip_position = m_Drawer->CurrentOrigin();
 }
 
 void MillipedeLeg::UpdateRootPosition(){
-
 	//follow the rigid cube
-	myDrawer->SetIdentity();
-	myDrawer->Translate(m_root->m_Center);
-	myDrawer->Rotate(m_root->m_rotation);
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_root->m_Center);
+	m_Drawer->Rotate(m_root->m_rotation);
 	switch(m_l_r){
 	case 1:
-		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, m_root->m_Size[2]/2));
+		m_Drawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, m_root->m_Size[2]/2));
 		break;
 	case -1:
-		myDrawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, -m_root->m_Size[2]/2));
+		m_Drawer->Translate(Eigen::Vector3f(0, -m_root->m_Size[1]/2, -m_root->m_Size[2]/2));
 		break;
 	}
-	m_root_position = myDrawer->CurrentOrigin();
+	m_root_position = m_Drawer->CurrentOrigin();
 
 }
 
@@ -161,87 +158,87 @@ void MillipedeLeg::Draw(int type, const Camera& camera, const Light& light){
 	switch(m_leg_state){
 	case LEG_SWAY_FORWARD_1:
 	case LEG_SWAY_FORWARD_2:
-		myDrawer->SetColor(Eigen::Vector3f(0,1,0));
+		m_Drawer->SetColor(Eigen::Vector3f(0,1,0));
 		break;
 	case LEG_SWAY_BACKWARD_1:
 	case LEG_SWAY_BACKWARD_2:
-		myDrawer->SetColor(Eigen::Vector3f(0,0,1));
+		m_Drawer->SetColor(Eigen::Vector3f(0,0,1));
 		break;
 	case LEG_STANCE:
-		myDrawer->SetColor(Eigen::Vector3f(1.0,0,0));
+		m_Drawer->SetColor(Eigen::Vector3f(1.0,0,0));
 		break;
 	case LEG_ADJUST:
-		myDrawer->SetColor(Eigen::Vector3f(1.0,1.0,0));
+		m_Drawer->SetColor(Eigen::Vector3f(1.0,1.0,0));
 		break;
 	}
 
-  //  myDrawer->SetColor(Eigen::Vector3f(1,1,1));
+  //  m_Drawer->SetColor(Eigen::Vector3f(1,1,1));
     
 	//change the matrixes for all the primes based on the parameters
-	myDrawer->SetIdentity();
-	myDrawer->Translate(m_root_position);
-	myDrawer->Rotate(m_root->m_rotation);
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_root_position);
+	m_Drawer->Rotate(m_root->m_rotation);
 
-	myDrawer->PushMatrix();
-	myDrawer->Scale(m_segment_0_size[0]*0.6);
-	myDrawer->DrawSphere(type, camera,  light);
-	myDrawer->PopMatrix();
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(m_segment_0_size[0]*0.6);
+	m_Drawer->DrawSphere(type, camera,  light);
+	m_Drawer->PopMatrix();
 	
 	//cylinder 0
-	myDrawer->Translate(Eigen::Vector3f(0.0,-0.5*m_segment_0_size[2],0.0));
-	myDrawer->PushMatrix();
-	myDrawer->RotateX(90);
-	myDrawer->Scale(m_segment_0_size);
-	myDrawer->DrawCylinder(type, camera, light);
-	myDrawer->PopMatrix();
+	m_Drawer->Translate(Eigen::Vector3f(0.0,-0.5*m_segment_0_size[2],0.0));
+	m_Drawer->PushMatrix();
+	m_Drawer->RotateX(90);
+	m_Drawer->Scale(m_segment_0_size);
+	m_Drawer->DrawCylinder(type, camera, light);
+	m_Drawer->PopMatrix();
 
 	//sphere 1
-	myDrawer->Translate(Eigen::Vector3f(0.0,-0.5*m_segment_0_size[2],0.0));
-	myDrawer->PushMatrix();
-	myDrawer->Scale(m_segment_0_size[0]*0.5);
-	myDrawer->DrawSphere(type, camera,  light);
-	myDrawer->PopMatrix();
+	m_Drawer->Translate(Eigen::Vector3f(0.0,-0.5*m_segment_0_size[2],0.0));
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(m_segment_0_size[0]*0.5);
+	m_Drawer->DrawSphere(type, camera,  light);
+	m_Drawer->PopMatrix();
 
 	//cylinder 1
-	myDrawer->RotateY(-m_l_r*m_phi);
-	myDrawer->RotateX(-m_l_r*m_alpha);
-	myDrawer->Translate(Eigen::Vector3f(0.0,0.0,m_l_r*0.5*m_segment_1_size[2]));
-	myDrawer->PushMatrix();
-	myDrawer->Scale(m_segment_1_size);
-	myDrawer->DrawCylinder(type, camera, light);
-	myDrawer->PopMatrix();
+	m_Drawer->RotateY(-m_l_r*m_phi);
+	m_Drawer->RotateX(-m_l_r*m_alpha);
+	m_Drawer->Translate(Eigen::Vector3f(0.0,0.0,m_l_r*0.5*m_segment_1_size[2]));
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(m_segment_1_size);
+	m_Drawer->DrawCylinder(type, camera, light);
+	m_Drawer->PopMatrix();
 
 	//sphere 2
-	myDrawer->Translate(Eigen::Vector3f(0.0,0.0, m_l_r*0.5*m_segment_1_size[2]));
-	myDrawer->PushMatrix();
-	myDrawer->Scale(m_segment_1_size[0]*0.5);
-	myDrawer->DrawSphere(type, camera,  light);
-	myDrawer->PopMatrix();
+	m_Drawer->Translate(Eigen::Vector3f(0.0,0.0, m_l_r*0.5*m_segment_1_size[2]));
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(m_segment_1_size[0]*0.5);
+	m_Drawer->DrawSphere(type, camera,  light);
+	m_Drawer->PopMatrix();
 
 	//cylinder 2
-	myDrawer->RotateX(m_l_r*m_beta);
-	myDrawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*0.5*m_segment_2_size[2]));
-	myDrawer->PushMatrix();
-	myDrawer->Scale(m_segment_2_size);
-	myDrawer->DrawCylinder(type, camera, light);
-	myDrawer->PopMatrix();
+	m_Drawer->RotateX(m_l_r*m_beta);
+	m_Drawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*0.5*m_segment_2_size[2]));
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(m_segment_2_size);
+	m_Drawer->DrawCylinder(type, camera, light);
+	m_Drawer->PopMatrix();
 
 	//sphere 3
-	myDrawer->Translate(Eigen::Vector3f(0.0,0.0, m_l_r*0.5*m_segment_2_size[2]));
-	myDrawer->PushMatrix();
-	myDrawer->Scale(m_segment_2_size[0]*0.5);
-	myDrawer->DrawSphere(type, camera,  light);
-	myDrawer->PopMatrix();
+	m_Drawer->Translate(Eigen::Vector3f(0.0,0.0, m_l_r*0.5*m_segment_2_size[2]));
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(m_segment_2_size[0]*0.5);
+	m_Drawer->DrawSphere(type, camera,  light);
+	m_Drawer->PopMatrix();
 
 	//cone 0
-	myDrawer->RotateX(m_l_r*m_gamma);
-	myDrawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*0.5*m_segment_3_size[2]));
-	myDrawer->PushMatrix();
-	myDrawer->Scale(m_segment_3_size);
+	m_Drawer->RotateX(m_l_r*m_gamma);
+	m_Drawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*0.5*m_segment_3_size[2]));
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(m_segment_3_size);
 	if(m_l_r == 1)//left
-		myDrawer->RotateX(180);
-	myDrawer->DrawCone(type, camera, light);
-	myDrawer->PopMatrix();
+		m_Drawer->RotateX(180);
+	m_Drawer->DrawCone(type, camera, light);
+	m_Drawer->PopMatrix();
 }
 
 void MillipedeLeg::UpdateSwitchNet(double a_dt){
@@ -291,12 +288,7 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 				//m_neig->EnterSwayForward1();
 			}
 
-			
 			break;                
-		case LEG_STANCE:{
-
-			}
-			break;
 
 		case LEG_ADJUST:
 			if(dif.norm() < 2*m_leg_rotation_velocity*a_dt)
@@ -331,7 +323,8 @@ void MillipedeLeg::UpdateSwingNet(double a_dt){
 void MillipedeLeg::UpdateSpeedNet(){
 
 	if(m_prev)
-		m_leg_rotation_velocity = m_prev->m_leg_rotation_velocity;
+		m_leg_rotation_velocity = m_prev->m_leg_rotation_velocity;//speed is defined by head and propogated down
+
 	//adjust the speed of rotation
 	Eigen::Vector3f target_rotation(m_target_phi, m_target_alpha, m_target_beta);
 	Eigen::Vector3f dif;
@@ -404,8 +397,8 @@ void MillipedeLeg::EnterAdjust(){
 	//adjust the leg so that the phase lag between previous leg is maintained
 
 	//ajustable to form different wave
-	m_target_phi = 0;
-	m_target_alpha = m_extreme_alpha;
+	m_target_phi = m_extreme_phi*0.8;
+	m_target_alpha = m_extreme_alpha*0.8;
 	m_target_beta = m_extreme_beta/2;
 
 	m_leg_state = LEG_ADJUST;
@@ -510,10 +503,10 @@ bool MillipedeLeg::InverseKinematics(Eigen::Vector3f a_tip, Eigen::Vector3f a_ro
 	d = D.norm();
 	D.normalize();
 	//get the leg plane normal
-	myDrawer->SetIdentity();
-	myDrawer->Rotate(m_root->m_rotation);
-	myDrawer->RotateY(-m_l_r*phi);
-	Leg_Plane_N = (myDrawer->m_transformation).linear()*Eigen::Vector3f(-1,0,0);
+	m_Drawer->SetIdentity();
+	m_Drawer->Rotate(m_root->m_rotation);
+	m_Drawer->RotateY(-m_l_r*phi);
+	Leg_Plane_N = (m_Drawer->m_transformation).linear()*Eigen::Vector3f(-1,0,0);
 	//get the vector normal to D on the plane
 	N = m_l_r*D.cross(Leg_Plane_N);
 	N.normalize();
@@ -545,10 +538,10 @@ bool MillipedeLeg::InverseKinematics(Eigen::Vector3f a_tip, Eigen::Vector3f a_ro
 	//if(fabs(alpha) > m_extreme_alpha)
 		//return false;
 	Eigen::Vector3f H;
-	myDrawer->SetIdentity();
-	myDrawer->Rotate(m_root->m_rotation);
-	myDrawer->RotateY(-m_l_r*phi);
-	H = myDrawer->m_transformation.linear()*Eigen::Vector3f(0,0,-m_l_r*1);
+	m_Drawer->SetIdentity();
+	m_Drawer->Rotate(m_root->m_rotation);
+	m_Drawer->RotateY(-m_l_r*phi);
+	H = m_Drawer->m_transformation.linear()*Eigen::Vector3f(0,0,-m_l_r*1);
 	H.normalize();
 	psi = acos(H.dot(M-O)/(M-O).norm())/DegreesToRadians;
 
@@ -567,14 +560,14 @@ bool MillipedeLeg::InverseKinematics(Eigen::Vector3f a_tip, Eigen::Vector3f a_ro
 }
 
 void MillipedeLeg::Output2File(std::ofstream* filestream){
-
+	
 
 	Eigen::Vector3f point_a, point_b, center; double radius;
 	(*filestream)<<"//BEGIN LEG "<<m_l_r<<std::endl;
 
-	myDrawer->SetIdentity();
-	myDrawer->Translate(m_root_position);
-	myDrawer->Rotate(m_root->m_rotation);
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_root_position);
+	m_Drawer->Rotate(m_root->m_rotation);
 
 	//segment 0
 	center = m_root_position;
@@ -583,10 +576,10 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
-	myDrawer->Translate(Eigen::Vector3f(0.0,-m_segment_0_size[2],0.0));
+	m_Drawer->Translate(Eigen::Vector3f(0.0,-m_segment_0_size[2],0.0));
 
 	point_a = m_root_position;
-	point_b = myDrawer->CurrentOrigin();
+	point_b = m_Drawer->CurrentOrigin();
 	radius = m_segment_0_size[0]*0.5;
 	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
 	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
@@ -599,11 +592,11 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 	
-	myDrawer->RotateY(-m_l_r*m_phi);
-	myDrawer->RotateX(-m_l_r*m_alpha);
-	myDrawer->Translate(Eigen::Vector3f(0.0,0.0,m_l_r*m_segment_1_size[2]));
+	m_Drawer->RotateY(-m_l_r*m_phi);
+	m_Drawer->RotateX(-m_l_r*m_alpha);
+	m_Drawer->Translate(Eigen::Vector3f(0.0,0.0,m_l_r*m_segment_1_size[2]));
 	point_a = point_b;
-	point_b = myDrawer->CurrentOrigin();
+	point_b = m_Drawer->CurrentOrigin();
 	radius = m_segment_1_size[0]*0.5;
 	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
 	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
@@ -616,10 +609,10 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
-	myDrawer->RotateX(m_l_r*m_beta);
-	myDrawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_2_size[2]));
+	m_Drawer->RotateX(m_l_r*m_beta);
+	m_Drawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_2_size[2]));
 	point_a = point_b;
-	point_b = myDrawer->CurrentOrigin();
+	point_b = m_Drawer->CurrentOrigin();
 	radius = m_segment_2_size[0]*0.5;
 	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
 	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
@@ -632,10 +625,10 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
-	myDrawer->RotateX(m_l_r*m_gamma);
-	myDrawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_3_size[2]));
+	m_Drawer->RotateX(m_l_r*m_gamma);
+	m_Drawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_3_size[2]));
 	point_a = point_b;
-	point_b = myDrawer->CurrentOrigin();
+	point_b = m_Drawer->CurrentOrigin();
 	radius = m_segment_3_size[0]*0.5;
 	(*filestream)<<"//BEGIN CONE "<<std::endl;
 	(*filestream)<<"cone{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,"<<radius<<std::endl;

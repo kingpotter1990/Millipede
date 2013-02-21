@@ -8,6 +8,7 @@
 class MillipedeHead;
 class MillipedeAntenna;
 class Millipede;
+class Drawer;
 
 enum MILLIPEDE_STATUS {CONTROLLED, ADJUSTING, RANDOM_WALK, AVOID_OBSTACLE_LEFT,
 						AVOID_OBSTACLE_RIGHT, PREDATING_FOOD_LEFT, PREDATING_FOOD_RIGHT,ESCAPING_PREDATOR};
@@ -33,6 +34,7 @@ public:
 	Eigen::Vector3f m_root_position;
 	Eigen::Vector3f m_tip_position;
 	double m_food_sense_threshold;
+	Drawer* m_Drawer;
 protected:
 	void UpdateTipRootPosition();
 public:
@@ -79,6 +81,7 @@ public:
 	Eigen::Vector3f m_orient_obj;
 	double m_prev_dis_obj;
 	double m_current_height;
+	Drawer* m_Drawer;
 };
 
 #endif

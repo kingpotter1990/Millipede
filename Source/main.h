@@ -33,8 +33,8 @@ Camera  Pentax;
 Light Lumia;
 World * myWorld = NULL;
 Terrain* myTerrain = NULL;
-Drawer* myDrawer;
 Millipede* myMillipedes;
+Drawer* g_Drawer;
 std::ofstream*  myOutputFile;
 
 int STOP = -1;//stop the animation

@@ -4,11 +4,10 @@
 #include "Drawer.h"
 #include "Terrain.h"
 
-extern Drawer* myDrawer;
-
 void MillipedeAntenna::InitNeuroNet(MillipedeHead* a_head, double a_length, int a_l_r){
 	m_l_r = a_l_r;
 	m_head = a_head;
+	m_Drawer = m_head->m_Drawer;
 	m_length = a_length;
 	m_phi = 30;
 	m_alpha = 0;
@@ -18,17 +17,17 @@ void MillipedeAntenna::InitNeuroNet(MillipedeHead* a_head, double a_length, int 
 }
 
 void MillipedeAntenna::UpdateTipRootPosition(){
-	
-	myDrawer->SetIdentity();
-	myDrawer->Translate(m_head->m_Center);
-	myDrawer->Rotate(m_head->m_rotation);
-	myDrawer->Translate(Eigen::Vector3f(-0.5*m_head->m_Size[0], 0.5*m_head->m_Size[1], 0.5*m_l_r*m_head->m_Size[2]));
-	myDrawer->RotateY(m_l_r*m_phi);
-	myDrawer->RotateZ(-m_alpha);
 
-	m_root_position = myDrawer->CurrentOrigin(); //update root position
-	myDrawer->Translate(Eigen::Vector3f(-m_length,0,0));
-	m_tip_position = myDrawer->CurrentOrigin();//update tip position
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_head->m_Center);
+	m_Drawer->Rotate(m_head->m_rotation);
+	m_Drawer->Translate(Eigen::Vector3f(-0.5*m_head->m_Size[0], 0.5*m_head->m_Size[1], 0.5*m_l_r*m_head->m_Size[2]));
+	m_Drawer->RotateY(m_l_r*m_phi);
+	m_Drawer->RotateZ(-m_alpha);
+
+	m_root_position = m_Drawer->CurrentOrigin(); //update root position
+	m_Drawer->Translate(Eigen::Vector3f(-m_length,0,0));
+	m_tip_position = m_Drawer->CurrentOrigin();//update tip position
 
 }
 
@@ -48,32 +47,32 @@ bool MillipedeAntenna::SenseFood(double& intensity){
 }
 
 void MillipedeAntenna::Draw(int type, const Camera& camera, const Light& light){
-		
-	myDrawer->SetIdentity();
-	myDrawer->Translate(m_head->m_Center);
-	myDrawer->Rotate(m_head->m_rotation);
-	myDrawer->Translate(Eigen::Vector3f(-0.5*m_head->m_Size[0], 0.5*m_head->m_Size[1], 0.5*m_l_r*m_head->m_Size[2]));
-	myDrawer->RotateY(m_l_r*m_phi);
-	myDrawer->RotateZ(-m_alpha);
 
-	myDrawer->PushMatrix();
-	myDrawer->Scale(Eigen::Vector3f(0.2,0.2,0.2));
-	myDrawer->SetColor(Eigen::Vector3f(1,1,1));
-	myDrawer->DrawSphere(type,camera,light);
-	myDrawer->PopMatrix();
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_head->m_Center);
+	m_Drawer->Rotate(m_head->m_rotation);
+	m_Drawer->Translate(Eigen::Vector3f(-0.5*m_head->m_Size[0], 0.5*m_head->m_Size[1], 0.5*m_l_r*m_head->m_Size[2]));
+	m_Drawer->RotateY(m_l_r*m_phi);
+	m_Drawer->RotateZ(-m_alpha);
 
-	myDrawer->PushMatrix();
-	myDrawer->Translate(Eigen::Vector3f(-0.5*m_length,0,0));
-	myDrawer->RotateY(90);
-	myDrawer->Scale(Eigen::Vector3f(0.2,0.2,m_length));
-	myDrawer->DrawCylinder(type, camera, light);
-	myDrawer->PopMatrix();
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(Eigen::Vector3f(0.2,0.2,0.2));
+	m_Drawer->SetColor(Eigen::Vector3f(1,1,1));
+	m_Drawer->DrawSphere(type,camera,light);
+	m_Drawer->PopMatrix();
 
-	myDrawer->Translate(Eigen::Vector3f(-m_length,0,0));
+	m_Drawer->PushMatrix();
+	m_Drawer->Translate(Eigen::Vector3f(-0.5*m_length,0,0));
+	m_Drawer->RotateY(90);
+	m_Drawer->Scale(Eigen::Vector3f(0.2,0.2,m_length));
+	m_Drawer->DrawCylinder(type, camera, light);
+	m_Drawer->PopMatrix();
 
-	myDrawer->Scale(Eigen::Vector3f(0.3,0.3,0.3));
-	myDrawer->SetColor(Eigen::Vector3f(1,0,0));
-	myDrawer->DrawSphere(type,camera,light);
+	m_Drawer->Translate(Eigen::Vector3f(-m_length,0,0));
+
+	m_Drawer->Scale(Eigen::Vector3f(0.3,0.3,0.3));
+	m_Drawer->SetColor(Eigen::Vector3f(1,0,0));
+	m_Drawer->DrawSphere(type,camera,light);
 
 }
 
@@ -88,22 +87,22 @@ void MillipedeAntenna::Output2File(std::ofstream* filestream){
 	Eigen::Vector3f point_a, point_b, center; double radius;
 
 	(*filestream)<<"//BEGIN ANTENNA "<<m_l_r<<std::endl;
-	myDrawer->SetIdentity();
-	myDrawer->Translate(m_head->m_Center);
-	myDrawer->Rotate(m_head->m_rotation);
-	myDrawer->Translate(Eigen::Vector3f(-0.5*m_head->m_Size[0], 0.5*m_head->m_Size[1], 0.5*m_l_r*m_head->m_Size[2]));
-	myDrawer->RotateY(m_l_r*m_phi);
-	myDrawer->RotateZ(-m_alpha);
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_head->m_Center);
+	m_Drawer->Rotate(m_head->m_rotation);
+	m_Drawer->Translate(Eigen::Vector3f(-0.5*m_head->m_Size[0], 0.5*m_head->m_Size[1], 0.5*m_l_r*m_head->m_Size[2]));
+	m_Drawer->RotateY(m_l_r*m_phi);
+	m_Drawer->RotateZ(-m_alpha);
 
-	center = myDrawer->CurrentOrigin();
+	center = m_Drawer->CurrentOrigin();
 	radius = 0.2;
 	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
 	(*filestream)<<"sphere{"<<"<"<<center[0]<<","<<center[1]<<","<<center[2]<<">"<<","<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
-	myDrawer->Translate(Eigen::Vector3f(-m_length,0,0));
+	m_Drawer->Translate(Eigen::Vector3f(-m_length,0,0));
 	point_a = center;
-	point_b = myDrawer->CurrentOrigin();
+	point_b = m_Drawer->CurrentOrigin();
 	radius = 0.2;
 	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
 	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius/2.0<<"}"<<std::endl;
@@ -131,7 +130,7 @@ void MillipedeHead::InitNeuroNet(Millipede* a_root){
 	m_master = a_root;
 	m_terrain = m_master->m_terrain;
 	m_section_id = 0;
-
+	m_Drawer = m_master->m_Drawer;
 	m_left_antenna = new MillipedeAntenna();
 	m_right_antenna = new MillipedeAntenna();
 	m_left_antenna->InitNeuroNet(this, 8,1);
@@ -323,8 +322,9 @@ void MillipedeHead::UpdatePhysics(double dt){
 	//Head Balance Net: balance of height, orientation in x and z axis, flat to the ground.
 	KeepHeadBalance(dt);
 
-	m_next->m_next->m_left_leg->m_leg_rotation_velocity =  70*m_linear_speed;
-	m_next->m_next->m_right_leg->m_leg_rotation_velocity =  70*m_linear_speed;
+	//speed sync, head control the speed
+	m_next->m_next->m_left_leg->m_leg_rotation_velocity =  100*m_linear_speed;
+	m_next->m_next->m_right_leg->m_leg_rotation_velocity =  100*m_linear_speed;
 
 	if(m_mode == CONTROLLED)
 		return;

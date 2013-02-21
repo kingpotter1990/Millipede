@@ -9,6 +9,7 @@
 
 class Terrain;
 class MillipedeRigidSection;
+class Drawer;
 
 enum LEG_STATUS {LEG_STANCE, LEG_ADJUST, LEG_SWAY_FORWARD_1, LEG_SWAY_FORWARD_2, LEG_SWAY_BACKWARD_1,LEG_SWAY_BACKWARD_2};
 
@@ -53,8 +54,7 @@ private:
 	double m_target_alpha;
 	double m_target_beta;
 	double m_target_phi;
-    
-	double m_phase_dif;
+ 
 
 	Eigen::Vector3f m_segment_0_size;
 	Eigen::Vector3f m_segment_1_size;
@@ -84,7 +84,7 @@ public:
 	Eigen::Vector3f m_tip_position;//
 	Eigen::Vector3f m_root_position;//root position of the leg, in the rigid cube's cos(after translation and rotation)
 
-
+	Drawer* m_Drawer;
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

@@ -9,6 +9,7 @@ class MillipedeRigidSection;
 class MillipedeSoftSection;
 class MillipedeHead;
 class Terrain;
+class Drawer;
 
 class Millipede:public Object{
 
@@ -38,6 +39,8 @@ public:
 
 	MillipedeHead* m_head;
 	MillipedeRigidSection* m_tail;
+
+	Drawer* m_Drawer;
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

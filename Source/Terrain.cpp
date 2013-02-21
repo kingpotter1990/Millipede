@@ -7,8 +7,7 @@
 #include "Millipede.h"
 #include <algorithm>
 
-
-extern Drawer* myDrawer;
+extern Drawer* g_Drawer;
 
 Terrain::Terrain(Eigen::Vector2f a_size, Eigen::Vector2i a_res, int n_hill, TerrainType a_type, bool a_obstacle_on_off, bool a_food_on_off){
 	m_type = TypeTerrain;
@@ -287,14 +286,14 @@ void Terrain::InitObstacles(TerrainType a_type){
 	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
 	temp_cube->m_Color = temp_color;
 
-	myDrawer->SetIdentity();
+	g_Drawer->SetIdentity();
 	temp_center = Eigen::Vector3f(0, 25, -100);
-	myDrawer->Translate(temp_center);
-	myDrawer->RotateY(0);
+	g_Drawer->Translate(temp_center);
+	g_Drawer->RotateY(0);
 	temp_scale = Eigen::Vector3f(200,50,10);
-	myDrawer->Scale(temp_scale);
+	g_Drawer->Scale(temp_scale);
 
-	temp_cube->m_Trans = myDrawer->m_transformation;
+	temp_cube->m_Trans = g_Drawer->m_transformation;
 	temp_cube->m_TransBack = temp_cube->m_Trans.inverse();
 
 	m_obstacles.push_back(temp_cube);
@@ -305,14 +304,14 @@ void Terrain::InitObstacles(TerrainType a_type){
 	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
 	temp_cube->m_Color = temp_color;
 
-	myDrawer->SetIdentity();
+	m_Drawer->SetIdentity();
 	temp_center = Eigen::Vector3f(0, 25, 100);
-	myDrawer->Translate(temp_center);
-	myDrawer->RotateY(0);
+	m_Drawer->Translate(temp_center);
+	m_Drawer->RotateY(0);
 	temp_scale = Eigen::Vector3f(200,50,10);
-	myDrawer->Scale(temp_scale);
+	m_Drawer->Scale(temp_scale);
 
-	temp_cube->m_Trans = myDrawer->m_transformation;
+	temp_cube->m_Trans = m_Drawer->m_transformation;
 	temp_cube->m_TransBack = temp_cube->m_Trans.inverse();
 
 	m_obstacles.push_back(temp_cube);
@@ -322,14 +321,14 @@ void Terrain::InitObstacles(TerrainType a_type){
 	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
 	temp_cube->m_Color = temp_color;
 
-	myDrawer->SetIdentity();
+	m_Drawer->SetIdentity();
 	temp_center = Eigen::Vector3f(100, 25, 0);
-	myDrawer->Translate(temp_center);
-	myDrawer->RotateY(0);
+	m_Drawer->Translate(temp_center);
+	m_Drawer->RotateY(0);
 	temp_scale = Eigen::Vector3f(10,50,200);
-	myDrawer->Scale(temp_scale);
+	m_Drawer->Scale(temp_scale);
 
-	temp_cube->m_Trans = myDrawer->m_transformation;
+	temp_cube->m_Trans = m_Drawer->m_transformation;
 	temp_cube->m_TransBack = temp_cube->m_Trans.inverse();
 
 	m_obstacles.push_back(temp_cube);
@@ -339,14 +338,14 @@ void Terrain::InitObstacles(TerrainType a_type){
 	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
 	temp_cube->m_Color = temp_color;
 
-	myDrawer->SetIdentity();
+	m_Drawer->SetIdentity();
 	temp_center = Eigen::Vector3f(-100, 25, 0);
-	myDrawer->Translate(temp_center);
-	myDrawer->RotateY(0);
+	m_Drawer->Translate(temp_center);
+	m_Drawer->RotateY(0);
 	temp_scale = Eigen::Vector3f(10,50,200);
-	myDrawer->Scale(temp_scale);
+	m_Drawer->Scale(temp_scale);
 
-	temp_cube->m_Trans = myDrawer->m_transformation;
+	temp_cube->m_Trans = m_Drawer->m_transformation;
 	temp_cube->m_TransBack = temp_cube->m_Trans.inverse();
 
 	m_obstacles.push_back(temp_cube);
@@ -359,14 +358,14 @@ void Terrain::InitObstacles(TerrainType a_type){
 	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
 	temp_cylinder->m_Color = temp_color;
 
-	myDrawer->SetIdentity();
+	g_Drawer->SetIdentity();
 	temp_center = Eigen::Vector3f(-100, 25, 0);
-	myDrawer->Translate(temp_center);
-	myDrawer->RotateX(90);
+	g_Drawer->Translate(temp_center);
+	g_Drawer->RotateX(90);
 	temp_scale = Eigen::Vector3f(20,20,50);
-	myDrawer->Scale(temp_scale);
+	g_Drawer->Scale(temp_scale);
 
-	temp_cylinder->m_Trans = myDrawer->m_transformation;
+	temp_cylinder->m_Trans = g_Drawer->m_transformation;
 	temp_cylinder->m_TransBack = temp_cylinder->m_Trans.inverse();
 
 	m_obstacles.push_back(temp_cylinder);
@@ -377,13 +376,13 @@ void Terrain::InitObstacles(TerrainType a_type){
 	temp_color = Eigen::Vector3f(0.3,0.3,0.1);
 	temp_sphere->m_Color = temp_color;
 
-	myDrawer->SetIdentity();
+	g_Drawer->SetIdentity();
 	temp_center = Eigen::Vector3f(-90, 10, 0);
-	myDrawer->Translate(temp_center);
+	g_Drawer->Translate(temp_center);
 	temp_scale = Eigen::Vector3f(20,20,20);
-	myDrawer->Scale(temp_scale);
+	g_Drawer->Scale(temp_scale);
 
-	temp_sphere->m_Trans = myDrawer->m_transformation;
+	temp_sphere->m_Trans = g_Drawer->m_transformation;
 	temp_sphere->m_TransBack = temp_sphere->m_Trans.inverse();
 
 	m_obstacles.push_back(temp_sphere);

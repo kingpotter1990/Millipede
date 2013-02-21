@@ -66,5 +66,6 @@ private:
 	Eigen::Vector3f m_color;
 };
 
+extern Drawer* g_Drawer;
 
 #endif

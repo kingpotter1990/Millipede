@@ -21,16 +21,16 @@ void initScene(){
     Lumia.m_position = Pentax.m_position;
     Lumia.m_color = Eigen::Vector4f(1.0,1.0,1.0,1.0);//white light
 
+	//set up the drawer
+	g_Drawer = new Drawer;
+	g_Drawer->SetIdentity();
+
 	//set up the world
 	myWorld = new World(51000);
 
-	//set up the drawer
-	myDrawer = new Drawer;
-	myDrawer->PushMatrix();
-
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(500,500), 500, TERRAIN_FLAT
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(10,10), 500, TERRAIN_FLAT
 		, OBSTACLE_OFF, FOOD_OFF);
 
 
@@ -51,22 +51,22 @@ void reinitScene(){
 	if(myMillipedes)
 		delete[] myMillipedes;
 
-	/*
-	int m = 5, n = 5;
+	
+	int m = 2, n = 2;
 	myMillipedes = new Millipede[m*n];
 	for(int i = 0; i < m; i++)
 		for(int j = 0; j < n; j++)
 		{
 			myMillipedes[i*n +j].Init(Eigen::Vector3f(30*i,15,-20*j),6,Eigen::Vector3f(1,1,2),1, myTerrain);
-			myWorld->Add_Object(&myMillipedes[i*n +j]);
+			myWorld->Add_Object(&myMillipedes[i*n + j]);
 		}
-	*/
+	
 
-	myMillipedes = new Millipede;
-	myMillipedes->Init(Eigen::Vector3f(-10,5,0),16,Eigen::Vector3f(0.2,1.0,2.422),0.89644444, myTerrain);
+	//myMillipedes = new Millipede;
+	//myMillipedes->Init(Eigen::Vector3f(-10,5,0),16,Eigen::Vector3f(0.2,1.0,2.422),0.89644444, myTerrain);
 	//myMillipedes->FixHead();
 	//myMillipedes->FixTail();
-	myWorld->Add_Object(myMillipedes);
+	//myWorld->Add_Object(myMillipedes);
 
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime() ;
@@ -264,8 +264,11 @@ void idleCallback(){
 
 	if(STOP == -1){
 	//only update physics
-		myWorld->Update(DTIME);
-
+		//myWorld->Update(DTIME);
+		//update the millipedes
+		#pragma omp parallel for
+		for(int i = 0; i < 4; i++)
+			myMillipedes[i].UpdateAll(DTIME);
 	}
 
 	if(FRAME_TIME > 0.01)//33 frames per second

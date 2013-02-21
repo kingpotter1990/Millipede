@@ -10,8 +10,6 @@
 #include "World.h"
 #include "Drawer.h"
 
-extern Drawer* myDrawer;
-
 Cube::Cube(){
     m_type = TypeCube;
     Init(Eigen::Vector3f(0.0,0.0,0.0),Eigen::Vector3f(1.0,1.0,1.0),Eigen::Vector3f(1.0,0.0,0.0));
@@ -165,8 +163,9 @@ void Cube::Draw(int type, const Camera& camera,const Light& light){
 
 void Cube::Output2File(std::ofstream* filestream){
 	
-	myDrawer->SetIdentity();
-	myDrawer->Scale(Eigen::Vector3f(0.99,1,1));
+
+	g_Drawer->SetIdentity();
+	g_Drawer->Scale(Eigen::Vector3f(0.99,1,1));
 
 	(*filestream)<<"//BEGIN CUBE"<<std::endl;
 	(*filestream)<<"mesh2{"<<std::endl;
@@ -175,10 +174,10 @@ void Cube::Output2File(std::ofstream* filestream){
 	(*filestream)<<"8,"<<std::endl;
 	Eigen::Vector4f current_vertex;
 	for(int i =0 ; i < 7; i++){
-		current_vertex = m_Trans*myDrawer->m_transformation*m_Points[i];
+		current_vertex = m_Trans*g_Drawer->m_transformation*m_Points[i];
 		(*filestream)<<"<"<<current_vertex[0]<<","<<current_vertex[1]<<","<<current_vertex[2]<<">,"<<std::endl;
 	}
-        current_vertex = m_Trans*myDrawer->m_transformation*m_Points[7];
+        current_vertex = m_Trans*g_Drawer->m_transformation*m_Points[7];
         (*filestream)<<"<"<<current_vertex[0]<<","<<current_vertex[1]<<","<<current_vertex[2]<<">"<<std::endl;
 	(*filestream)<<"}"<<std::endl; // end vertex_vectors
 

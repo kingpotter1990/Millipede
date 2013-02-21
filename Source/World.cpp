@@ -56,8 +56,10 @@ void World::Draw(int type, const Camera& camera, const Light& light){
     }
 }
 
+
 void World::Update(double dt){
-	for (unsigned int i = 0; i<List_of_Object.size(); i++) {
+
+	for (int i = 0; i<List_of_Object.size(); i++) {
        List_of_Object[i]->UpdateAll(dt);
     }
 }
