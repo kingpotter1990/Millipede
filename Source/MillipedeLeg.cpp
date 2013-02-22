@@ -396,9 +396,10 @@ void MillipedeLeg::EnterStance(){
 void MillipedeLeg::EnterAdjust(){
 	//adjust the leg so that the phase lag between previous leg is maintained
 
-	//ajustable to form different wave
+	//ajustable to form different size wave
+	//change the m_target_phi to change the dif phase of stanced legs
 	m_target_phi = m_extreme_phi*0.8;
-	m_target_alpha = m_extreme_alpha*0.8;
+	m_target_alpha = m_extreme_alpha*0.2;
 	m_target_beta = m_extreme_beta/2;
 
 	m_leg_state = LEG_ADJUST;

@@ -246,9 +246,6 @@ void Terrain::InitSurfaceObjects(){
 }
 
 bool Terrain::TestInside(const Eigen::Vector3f& point){
-
-	double* p = new double[3];
-	p[0] = point[0];p[1] = point[1];p[2] = point[2];
 	switch(m_terrain_type){
 	case TERRAIN_SPHERICAL:
 		//return point.norm() < 20; //test with sphere

@@ -323,6 +323,8 @@ void MillipedeHead::UpdatePhysics(double dt){
 	KeepHeadBalance(dt);
 
 	//speed sync, head control the speed
+	//the factor depends on the leg length
+	//faster the leg rotation, more legs supportting body
 	m_next->m_next->m_left_leg->m_leg_rotation_velocity =  100*m_linear_speed;
 	m_next->m_next->m_right_leg->m_leg_rotation_velocity =  100*m_linear_speed;
 

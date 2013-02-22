@@ -51,8 +51,8 @@ void reinitScene(){
 	if(myMillipedes)
 		delete[] myMillipedes;
 
-	
-	int m = 2, n = 2;
+/*
+	int m = 2, n = 3;
 	myMillipedes = new Millipede[m*n];
 	for(int i = 0; i < m; i++)
 		for(int j = 0; j < n; j++)
@@ -60,13 +60,13 @@ void reinitScene(){
 			myMillipedes[i*n +j].Init(Eigen::Vector3f(30*i,15,-20*j),6,Eigen::Vector3f(1,1,2),1, myTerrain);
 			myWorld->Add_Object(&myMillipedes[i*n + j]);
 		}
-	
+*/	
 
-	//myMillipedes = new Millipede;
-	//myMillipedes->Init(Eigen::Vector3f(-10,5,0),16,Eigen::Vector3f(0.2,1.0,2.422),0.89644444, myTerrain);
+	myMillipedes = new Millipede;
+	myMillipedes->Init(Eigen::Vector3f(-10,5,0),12,Eigen::Vector3f(0.2,1.0,2.422),0.89644444, myTerrain);
 	//myMillipedes->FixHead();
 	//myMillipedes->FixTail();
-	//myWorld->Add_Object(myMillipedes);
+	myWorld->Add_Object(myMillipedes);
 
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime() ;
@@ -264,11 +264,7 @@ void idleCallback(){
 
 	if(STOP == -1){
 	//only update physics
-		//myWorld->Update(DTIME);
-		//update the millipedes
-		#pragma omp parallel for
-		for(int i = 0; i < 4; i++)
-			myMillipedes[i].UpdateAll(DTIME);
+		myWorld->Update(DTIME);
 	}
 
 	if(FRAME_TIME > 0.01)//33 frames per second

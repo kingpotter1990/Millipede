@@ -58,7 +58,7 @@ void World::Draw(int type, const Camera& camera, const Light& light){
 
 
 void World::Update(double dt){
-
+	#pragma omp parallel for
 	for (int i = 0; i<List_of_Object.size(); i++) {
        List_of_Object[i]->UpdateAll(dt);
     }
