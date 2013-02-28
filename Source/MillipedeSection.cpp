@@ -79,7 +79,7 @@ void MillipedeRigidSection::UpdateNeuronNet(double a_dt){
 	*/
 
 
-	if(m_left_leg->m_leg_state == LEG_STANCE || m_right_leg->m_leg_state == LEG_STANCE){
+	if(m_left_leg->m_leg_state == LEG_STANCE && m_right_leg->m_leg_state == LEG_STANCE){
 		m_body_state = LEG_SUPPORTED;
 		m_velocity = m_linear_speed;
 		m_avelocity *= 0;		

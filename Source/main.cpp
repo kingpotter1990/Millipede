@@ -30,7 +30,7 @@ void initScene(){
 
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(10,10), 500, TERRAIN_FLAT
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 500, TERRAIN_RANDOM
 		, OBSTACLE_OFF, FOOD_OFF);
 
 
