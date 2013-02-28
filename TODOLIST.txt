@@ -30,7 +30,7 @@ The head's orientation-obj is from the terrain's normal. [Done]
 - cylinders paved road [Done]
 - spheres paved road  
 - Cubes paved road [Done]
-- Ftickles' Face
+- Ftickles' Face [Almost Done with the Amadillo model]
 - Amadillo [Done]
 - Maze for Food
 2.1 - 2.30

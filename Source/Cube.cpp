@@ -163,7 +163,10 @@ void Cube::Draw(int type, const Camera& camera,const Light& light){
 
 void Cube::Output2File(std::ofstream* filestream){
 	
+	//output for maya python script
+	
 
+	/* output for povray
 	g_Drawer->SetIdentity();
 	g_Drawer->Scale(Eigen::Vector3f(0.99,1,1));
 
@@ -188,5 +191,6 @@ void Cube::Output2File(std::ofstream* filestream){
 
 	(*filestream)<<"}"<<std::endl; // end mesh2
 	(*filestream)<<"//END CUBE"<<std::endl;
+	*/
 }
 

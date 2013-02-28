@@ -366,6 +366,11 @@ void Millipede::FixTail(){
 
 void Millipede::Output2File(std::ofstream* filestream){
 
+	//output for the python script in maya
+	m_rotation.eulerAngles(0,1,2);//x, y, z
+
+/* output for povray
+
     // rigid part start
     (*filestream)<<"#declare MillipedeRigidPart = union {\n"<<std::endl;
 
@@ -409,4 +414,5 @@ void Millipede::Output2File(std::ofstream* filestream){
 
     // soft part end
     (*filestream)<<"}\n"<<std::endl;
+	*/
 }

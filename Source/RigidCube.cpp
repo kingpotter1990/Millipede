@@ -272,4 +272,5 @@ bool RigidCube::CheckCollision(const Eigen::Vector3f& a_point, Eigen::Vector3f& 
 		}//end switch
 	}//end for
 	return false;
+	
 }
