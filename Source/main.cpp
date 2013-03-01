@@ -27,12 +27,14 @@ void initScene(){
 
 	//set up the world
 	myWorld = new World(51000);
-
+	FRAME_COUNT = 0;
     std::cout<<"Setting up the World..."<<std::endl;
 
 	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 500, TERRAIN_RANDOM
 		, OBSTACLE_OFF, FOOD_OFF);
 
+	myOutputFile = new std::ofstream;
+	myOutputFile->open("millipede.mel");
 
 	reinitScene();
 
@@ -132,6 +134,7 @@ void keyboardCallback(unsigned char key, int x, int y){
     
 	if ( key == EscKey || key == 'q' || key == 'Q' ) 
     {
+		myOutputFile->close();
         exit(0);
     }
     if( key == 's'|| key == 'S')
@@ -267,12 +270,12 @@ void idleCallback(){
 		myWorld->Update(DTIME);
 	}
 
-	if(FRAME_TIME > 0.01)//33 frames per second
+	if(FRAME_TIME > 0.03)//33 frames per second
 	{
 		glutPostRedisplay() ; //draw new frame
 		FRAME_TIME = 0;	
 		FRAME_COUNT++;
-		//OUTPUT_ONE_FRAME();
+		OUTPUT_ONE_FRAME();
 	}
 	
 
@@ -282,18 +285,16 @@ void idleCallback(){
 
 void OUTPUT_ONE_FRAME(){
 
-	myOutputFile = new std::ofstream;
-	std::string filename;
-	filename = "Output/FRAME_"+ std::to_string(FRAME_COUNT) + ".inc";
-	myOutputFile->open(filename);
-
 	//Terrain
 
-
 	//millipede
+	
+	(*myOutputFile)<<"//Frame "<<FRAME_COUNT<<std::endl;
+
 	myMillipedes[0].Output2File(myOutputFile);
 
-	myOutputFile->close();
+	(*myOutputFile)<<"//save to obj"<<std::endl;
+	(*myOutputFile)<<"file -force -options \"groups=1;ptgroups=1;materials=0;smoothing=1;normals=1\" -type \"OBJexport\" -pr -ea \"/Users/fanfu/Desktop/obj/MillipedeFrame"<<FRAME_COUNT<<".obj\";"<<std::endl;
 }
 
 

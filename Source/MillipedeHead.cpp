@@ -378,15 +378,20 @@ void MillipedeHead::Draw(int type, const Camera& camera, const Light& light){
 void MillipedeHead::Output2File(std::ofstream* filestream){
 	
 	//output for maya python script
-	(*filestream)<<"#BEGIN HEAD#"<<std::endl;
+	(*filestream)<<"//BEGIN HEAD"<<std::endl;
 	
-	m_rotation.eulerAngles(0,1,2);
-
+	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2);
+	(*filestream)<<"select -r head ;"<<std::endl;
+	(*filestream)<<"setAttr \"head.translate\" "<<-m_Center.z() <<" "<<m_Center.y()<<" "<<m_Center.x()<<";"<<std::endl;
+	(*filestream)<<"setAttr \"head.rotate\" "<<ea.x()<<" "<<ea.y()<<" "<<ea.z()<<";"<<std::endl;
 	//no legs
+
 	//two antenna
 	//m_left_antenna->Output2File(filestream);
 	//m_right_antenna->Output2File(filestream);
-	(*filestream)<<"#END HEAD#"<<std::endl;
+	(*filestream)<<"//END HEAD"<<std::endl;
+
+
 
 /* output for povray
 	(*filestream)<<"//BEGIN HEAD"<<std::endl;

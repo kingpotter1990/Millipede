@@ -161,7 +161,38 @@ void MillipedeRigidSection::UpdatePBD(double dt){
 }
 
 void MillipedeRigidSection::Output2File(std::ofstream* filestream){
+	//output for maya script
+
+	(*filestream)<<"//BEGIN SECTION "<< m_section_id <<std::endl;
 	
+	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2);
+	(*filestream)<<"setAttr \"s"<<m_section_id<<".translate\" "<< -m_Center.z() <<" "<<m_Center.y()<<" "<< m_Center.x()<<";"<<std::endl;
+	(*filestream)<<"setAttr \"s"<<m_section_id<<".rotate\" "<<ea.x()<<" "<<ea.y()<<" "<<ea.z()<<";"<<std::endl;
+
+	//output leg rotations
+	//left
+	(*filestream)<<"setAttr \"s"<<m_section_id<<"l1"<<".rotate\" 0 0 0;"<<std::endl;
+	(*filestream)<<"select -r s"<<m_section_id<<"l1 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 -"<<m_left_leg->GetPhi()<<" 0 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<m_left_leg->GetAlpha()<<";"<<std::endl;
+
+	(*filestream)<<"setAttr \"s"<<m_section_id<<"l2"<<".rotate\" 0 0 0;"<<std::endl;
+	(*filestream)<<"select -r s"<<m_section_id<<"l2 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<m_left_leg->GetBeta()<<" ;"<<std::endl;
+
+	//right
+	(*filestream)<<"setAttr \"s"<<m_section_id<<"r1"<<".rotate\" 0 0 0;"<<std::endl;
+	(*filestream)<<"select -r s"<<m_section_id<<"r1 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 -"<<m_right_leg->GetPhi()<<" 0 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<m_right_leg->GetAlpha()<<";"<<std::endl;
+
+	(*filestream)<<"setAttr \"s"<<m_section_id<<"l2"<<".rotate\" 0 0 0;"<<std::endl;
+	(*filestream)<<"select -r s"<<m_section_id<<"l2 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<m_right_leg->GetBeta()<<" ;"<<std::endl;
+
+	(*filestream)<<"//END SECTION "<< m_section_id <<std::endl;
+	
+/* Output for povray
 	(*filestream)<<"//BEGIN RIGID ID"<<m_section_id<<std::endl;
 
 	Cube::Output2File(filestream);
@@ -169,5 +200,5 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream){
 	m_right_leg->Output2File(filestream);
 
 	(*filestream)<<"//END RIGID ID"<<m_section_id<<std::endl<<std::endl;
-	
+*/	
 }

@@ -27,6 +27,9 @@ public:
 	void UpdateRootPosition();//the tip is fixed
 	double GetBalanceHeight();
 	void Output2File(std::ofstream *filestream);
+	double GetAlpha(){return m_alpha;};
+	double GetPhi(){return m_phi;};
+	double GetBeta(){return m_beta;}
 
 protected:
 	

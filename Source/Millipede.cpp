@@ -368,9 +368,8 @@ void Millipede::Output2File(std::ofstream* filestream){
 
 	//output for the python script in maya
 	 // rigid part start
-	(*filestream)<<"#Head#\n"<<std::endl;
-
     //output head
+	(*filestream)<<"//Begin Millipede\n"<<std::endl;
     m_head->Output2File(filestream);
 
     //output each body section
@@ -389,21 +388,8 @@ void Millipede::Output2File(std::ofstream* filestream){
             break;
     }
 
-    //soft phase
-	m_head->m_next->Output2File(filestream);//first soft
-    temp_rigid_section = m_head->m_next->m_next;
-    while(1){
-        temp_soft_section = temp_rigid_section->m_next;
-        if(temp_soft_section){
-            temp_soft_section->Output2File(filestream);
-            temp_rigid_section = temp_soft_section->m_next;
-        }
-        else
-            break;
-    }
-
     // soft part end
-    (*filestream)<<"}\n"<<std::endl;
+    (*filestream)<<"//End Millipede\n"<<std::endl;
 /* output for povray
 
     // rigid part start
