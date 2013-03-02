@@ -65,7 +65,7 @@ void reinitScene(){
 */	
 
 	myMillipedes = new Millipede;
-	myMillipedes->Init(Eigen::Vector3f(-10,5,0),12,Eigen::Vector3f(0.2,1.0,2.422),0.89644444, myTerrain);
+	myMillipedes->Init(Eigen::Vector3f(-10,15,0),18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
 	//myMillipedes->FixHead();
 	//myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);
@@ -294,7 +294,8 @@ void OUTPUT_ONE_FRAME(){
 	myMillipedes[0].Output2File(myOutputFile);
 
 	(*myOutputFile)<<"//save to obj"<<std::endl;
-	(*myOutputFile)<<"file -force -options \"groups=1;ptgroups=1;materials=0;smoothing=1;normals=1\" -type \"OBJexport\" -pr -ea \"/Users/fanfu/Desktop/obj/MillipedeFrame"<<FRAME_COUNT<<".obj\";"<<std::endl;
+	(*myOutputFile)<<"file -force -options \"groups=1;ptgroups=1;materials=0;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
+		"-ea \"D:/TEMP/MillipedeFrame"<<FRAME_COUNT<<".obj\";"<<std::endl;
 }
 
 

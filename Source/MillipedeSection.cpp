@@ -163,6 +163,7 @@ void MillipedeRigidSection::UpdatePBD(double dt){
 void MillipedeRigidSection::Output2File(std::ofstream* filestream){
 	//output for maya script
 
+	double alpha1 = 22.7721822, alpha2 = 42.6333898;
 	(*filestream)<<"//BEGIN SECTION "<< m_section_id <<std::endl;
 	
 	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2);
@@ -173,22 +174,22 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream){
 	//left
 	(*filestream)<<"setAttr \"s"<<m_section_id<<"l1"<<".rotate\" 0 0 0;"<<std::endl;
 	(*filestream)<<"select -r s"<<m_section_id<<"l1 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 -"<<m_left_leg->GetPhi()<<" 0 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 0 "<<m_left_leg->GetAlpha()<<";"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 "<<-m_left_leg->GetPhi()<<" 0 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<m_left_leg->GetAlpha() + alpha1 <<";"<<std::endl;
 
 	(*filestream)<<"setAttr \"s"<<m_section_id<<"l2"<<".rotate\" 0 0 0;"<<std::endl;
 	(*filestream)<<"select -r s"<<m_section_id<<"l2 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 0 "<<m_left_leg->GetBeta()<<" ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<-m_left_leg->GetBeta() + alpha2<<" ;"<<std::endl;
 
 	//right
 	(*filestream)<<"setAttr \"s"<<m_section_id<<"r1"<<".rotate\" 0 0 0;"<<std::endl;
 	(*filestream)<<"select -r s"<<m_section_id<<"r1 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 -"<<m_right_leg->GetPhi()<<" 0 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 0 "<<m_right_leg->GetAlpha()<<";"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 "<<-m_right_leg->GetPhi()<<" 0 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<m_right_leg->GetAlpha()  + alpha1 <<";"<<std::endl;
 
-	(*filestream)<<"setAttr \"s"<<m_section_id<<"l2"<<".rotate\" 0 0 0;"<<std::endl;
-	(*filestream)<<"select -r s"<<m_section_id<<"l2 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 0 "<<m_right_leg->GetBeta()<<" ;"<<std::endl;
+	(*filestream)<<"setAttr \"s"<<m_section_id<<"r2"<<".rotate\" 0 0 0;"<<std::endl;
+	(*filestream)<<"select -r s"<<m_section_id<<"r2 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<-m_right_leg->GetBeta() + alpha2<<" ;"<<std::endl;
 
 	(*filestream)<<"//END SECTION "<< m_section_id <<std::endl;
 	
