@@ -239,7 +239,6 @@ void Deformable3D::UpdateForce(){
         M_P = m_Mu*(M_F - M_F_Inverse_Transpose) + m_Lambda*log(M_F.determinant())*M_F_Inverse_Transpose;
         //the calculate force
 
-		// this might be wrong
         F_2_F_3_F_4 = -temp_tetra->m_volume*M_P*temp_tetra->m_D_m_Inverse_Transpose;
         f_2 = Eigen::Vector3f(F_2_F_3_F_4(0,0),F_2_F_3_F_4(1,0),F_2_F_3_F_4(2,0));
         f_3 = Eigen::Vector3f(F_2_F_3_F_4(0,1),F_2_F_3_F_4(1,1),F_2_F_3_F_4(2,1));
@@ -260,13 +259,6 @@ void Deformable3D::UpdateForce(){
 		temp_tetra->m_node_4->m_Force += -m_Gamma*temp_tetra->m_volume*(temp_tetra->m_node_4->m_Velocity - e_velocity);
         //now force is updated for all nodes
     }   
-	
-  /*Old way penalty force, newway is impuse based, handle collision better,etc
-	for(int i = 0; i< m_Mesh->m_Num_Node; i++){
-	   if(!m_Mesh->m_Nodes[i].m_Fixed)
-			m_Mesh->m_Nodes[i].m_Force += CollisionForce(m_Mesh->m_Nodes[i]);
-   }
-   */
 }
 
 /*
@@ -475,9 +467,6 @@ void Deformable3D::UpdatePhysics(double dt){
 void Deformable3D::UpdateAll(double dt){
 
 	UpdatePhysics(dt);
-    //update drawing buffer: Points and Colors, Normals, etc
-    UpdateDraw();
-                    
 }
 
 void Deformable3D::MouseMove(const Camera& camera, double cursor_x, double cursor_y){
@@ -492,6 +481,9 @@ void Deformable3D::MouseMove(const Camera& camera, double cursor_x, double curso
 void Deformable3D::Draw(int type, const Camera& camera, const Light& light){
     
 
+    //update drawing buffer: Points and Colors, Normals, etc
+    UpdateDraw();
+                    
     //dt is the timestep, x and y are the cursor's input, camera defines the view atmrix and projection matrix
     //update the position and color of vertexesfor drawing
     if(!m_is_init)

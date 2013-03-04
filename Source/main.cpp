@@ -54,7 +54,7 @@ void reinitScene(){
 		delete[] myMillipedes;
 
 /*
-	int m = 2, n = 3;
+	int m = 4, n = 4;
 	myMillipedes = new Millipede[m*n];
 	for(int i = 0; i < m; i++)
 		for(int j = 0; j < n; j++)
@@ -62,7 +62,7 @@ void reinitScene(){
 			myMillipedes[i*n +j].Init(Eigen::Vector3f(30*i,15,-20*j),6,Eigen::Vector3f(1,1,2),1, myTerrain);
 			myWorld->Add_Object(&myMillipedes[i*n + j]);
 		}
-*/	
+*/
 
 	myMillipedes = new Millipede;
 	myMillipedes->Init(Eigen::Vector3f(-10,15,0),18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
@@ -258,16 +258,11 @@ void idleCallback(){
 	DTIME = TIME - TIME_LAST;
 	TIME_LAST = TIME;
 
-	if(DTIME > 1/1000.0)
-		DTIME = 1/1000.0;
-	
-	DTIME = 1/2000.0;//fixed dt
-
 	FRAME_TIME += DTIME;
 
 	if(STOP == -1){
 	//only update physics
-		myWorld->Update(DTIME);
+		myWorld->Update(0.01);//The real physics time step is much smaller
 	}
 
 	if(FRAME_TIME > 0.03)//33 frames per second
@@ -275,7 +270,7 @@ void idleCallback(){
 		glutPostRedisplay() ; //draw new frame
 		FRAME_TIME = 0;	
 		FRAME_COUNT++;
-		OUTPUT_ONE_FRAME();
+		//OUTPUT_ONE_FRAME();
 	}
 	
 

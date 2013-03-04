@@ -58,9 +58,12 @@ void World::Draw(int type, const Camera& camera, const Light& light){
 
 
 void World::Update(double dt){
-	#pragma omp parallel for
+	double physics_time_step = 1/2000.0;
+	int num_division = int (dt/physics_time_step);
+	//#pragma omp parallel for
 	for (int i = 0; i<List_of_Object.size(); i++) {
-       List_of_Object[i]->UpdateAll(dt);
+		for(int j =0 ;j<num_division; j++)
+	      List_of_Object[i]->UpdateAll(physics_time_step);
     }
 }
 
