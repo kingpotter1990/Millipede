@@ -107,6 +107,9 @@
     <ClCompile Include="..\..\..\Source\MeshQuery\predicates.cpp">
       <Filter>MeshQuery</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Source\HeightFieldWater.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Source\Millipede.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Source\MeshQuery\vec.h">
       <Filter>MeshQuery</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\HeightFieldWater.h">
+      <Filter>World</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

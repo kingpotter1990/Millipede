@@ -7,6 +7,7 @@
 #include "RigidCube.h"
 #include "Sphere.h"
 #include "Millipede.h"
+#include "HeightFieldWater.h"
 #include "Terrain.h"
 #include "World.h"
 #include "Ball.h"
@@ -33,6 +34,7 @@ Camera  Pentax;
 Light Lumia;
 World * myWorld = NULL;
 Terrain* myTerrain = NULL;
+HFWater* myWater = NULL;
 Millipede* myMillipedes;
 Drawer* g_Drawer;
 std::ofstream*  myOutputFile;

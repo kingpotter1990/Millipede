@@ -30,12 +30,13 @@ void initScene(){
 	FRAME_COUNT = 0;
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 500, TERRAIN_RANDOM
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 500, TERRAIN_FLAT
 		, OBSTACLE_OFF, FOOD_OFF);
 
 	myOutputFile = new std::ofstream;
 	myOutputFile->open("millipede.mel");
 
+	
 	reinitScene();
 
 	std::cout<<"Starting Animation..."<<std::endl;
@@ -48,8 +49,15 @@ void reinitScene(){
 	//press SpaceBar to trigger
 
 	myWorld->Clear();
+
+	if(myWater)
+		delete myWater;
+	myWater = new HFWater(Eigen::Vector2i(200,200), 0.5);
+	myWorld->Add_Object(myWater);
+
 	myWorld->Add_Object(myTerrain);
 	myTerrain->ClearMillipedes();	
+
 	if(myMillipedes)
 		delete[] myMillipedes;
 
@@ -68,8 +76,10 @@ void reinitScene(){
 	myMillipedes->Init(Eigen::Vector3f(-10,15,0),18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
 	//myMillipedes->FixHead();
 	//myMillipedes->FixTail();
-	myWorld->Add_Object(myMillipedes);
+	//myWorld->Add_Object(myMillipedes);
 
+	Sphere* sphere1 = new Sphere(Eigen::Vector3f(0,15,0), Eigen::Vector3f(3,3,3), Eigen::Vector3f(1,0,1));
+	myWorld->Add_Object(sphere1);
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime() ;
 	DTIME = 0.0;

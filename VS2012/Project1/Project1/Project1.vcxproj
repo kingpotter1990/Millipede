@@ -83,6 +83,7 @@
     <ClCompile Include="..\..\..\Source\Cube.cpp" />
     <ClCompile Include="..\..\..\Source\Cylinder.cpp" />
     <ClCompile Include="..\..\..\Source\Drawer.cpp" />
+    <ClCompile Include="..\..\..\Source\HeightFieldWater.cpp" />
     <ClCompile Include="..\..\..\Source\main.cpp" />
     <ClCompile Include="..\..\..\Source\MeshQuery\bounding_box_tree.cpp" />
     <ClCompile Include="..\..\..\Source\MeshQuery\mesh_query.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="..\..\..\Source\Cube.h" />
     <ClInclude Include="..\..\..\Source\Cylinder.h" />
     <ClInclude Include="..\..\..\Source\Drawer.h" />
+    <ClInclude Include="..\..\..\Source\HeightFieldWater.h" />
     <ClInclude Include="..\..\..\Source\Light.h" />
     <ClInclude Include="..\..\..\Source\main.h" />
     <ClInclude Include="..\..\..\Source\MeshQuery\bounding_box.h" />

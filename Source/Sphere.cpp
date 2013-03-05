@@ -16,6 +16,8 @@ Sphere::Sphere(){
 }
 
 Sphere::Sphere(Eigen::Vector3f center, Eigen::Vector3f scale, Eigen::Vector3f color){
+	 m_type = TypeSphere;
+	m_count = 0;
     Init(center, scale, color);
 }
 
