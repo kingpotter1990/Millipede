@@ -3,6 +3,7 @@
 #include "MillipedeLeg.h"
 #include "MillipedeSection.h"
 #include "Terrain.h"
+#include "HeightFieldWater.h"
 #include "Drawer.h"
 
 Millipede::Millipede(){
@@ -120,7 +121,7 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 }
 
 void Millipede::InitNeuroNet(Terrain* a_terrain){
-
+	assert(a_terrain != NULL);
 	m_terrain = a_terrain;
 	
 	a_terrain->RegisterMillipede(this);
@@ -141,6 +142,27 @@ void Millipede::InitNeuroNet(Terrain* a_terrain){
 		}
 		else
 			break;
+	}
+
+	m_tip_spheres.clear();
+	//create tip sphere for water effect
+	temp_rigid_section = m_head->m_next->m_next;
+	//loop through the nodes, init force with gravity, add collision force with the ground
+	while(1){
+		m_tip_spheres.push_back(temp_rigid_section->m_left_leg->GetTipSphere());
+		m_tip_spheres.push_back(temp_rigid_section->m_right_leg->GetTipSphere());
+		temp_soft_section = temp_rigid_section->m_next;
+		if(temp_soft_section){
+			temp_rigid_section = temp_soft_section->m_next;
+		}
+		else
+			break;
+	}
+
+	if(m_terrain->m_terrain_type == TERRAIN_WATER){
+	
+		m_terrain->m_water->UpdateSpheres(m_tip_spheres);
+
 	}
 
 }
@@ -242,6 +264,12 @@ void Millipede::UpdateAll(double dt){
 
 }
 
+void Millipede::UpdateTipSphere(){
+	
+
+
+
+}
 void Millipede::UpdateBoundingBox(){
 
 	double x_min, z_min, x_max, z_max;

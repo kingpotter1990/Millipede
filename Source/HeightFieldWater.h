@@ -13,7 +13,7 @@
 #include "Light.h"
 #include "Object.h"
 
-
+class Sphere;
 class HFWater:public Object{
     
 protected:
@@ -37,6 +37,7 @@ private:
 	double* m_height_data;
 	double* m_velocity_data;
     Eigen::Vector3f* m_normal_data;
+	std::vector<Sphere*> m_spheres;
 public:
     HFWater(Eigen::Vector2i res, double dx);//Default constructor create a unit cube in center of screen
 	virtual ~HFWater(){delete[] m_height_data; delete[] m_velocity_data;
@@ -47,6 +48,7 @@ public:
 	virtual void UpdateDraw();
 	virtual void UpdateAll(double dt);
 	virtual void UpdateNormal();
+	virtual void UpdateSpheres(std::vector<Sphere*>& a_spheres){m_spheres = a_spheres;};
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 

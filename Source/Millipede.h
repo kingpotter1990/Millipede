@@ -10,7 +10,7 @@ class MillipedeSoftSection;
 class MillipedeHead;
 class Terrain;
 class Drawer;
-
+class Sphere;
 class Millipede:public Object{
 
 public:
@@ -29,7 +29,7 @@ protected:
 	void InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length);
 	void InitNeuroNet(Terrain* a_terrain);
 	void UpdateBoundingBox();
-
+	void UpdateTipSphere();
 public:
 	int m_num_section;
 	Eigen::Vector3f m_size;
@@ -39,7 +39,7 @@ public:
 
 	MillipedeHead* m_head;
 	MillipedeRigidSection* m_tail;
-
+	std::vector<Sphere*> m_tip_spheres;//For interacting with water;
 	Drawer* m_Drawer;
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW

@@ -28,16 +28,16 @@ HFWater::HFWater(Eigen::Vector2i res, double dx){
 void HFWater::InitWave(){
 	
 	for(int i = 0; i < m_res_x*m_res_z; i++){
-		m_height_data[i] = 10.0;//clear to 0
+		m_height_data[i] = 0.1;//clear to 0
 		m_velocity_data[i] = 0.0;
 	}
 	
-	
+	/*
 		double hill_height_max = 115;
 		double hill_center_x, hill_center_z, hill_height, hill_narrowness_x, hill_narrowness_z;
 		double dev_x, dev_z;
-
-		for(int i = 0; i < 1; i++){	
+		
+		for(int i = 0; i <1 ; i++){	
 
 			hill_center_x = (Util::getRand()-0.5)*m_size_x;
 			hill_center_z = (Util::getRand()-0.5)*m_size_z;
@@ -54,6 +54,7 @@ void HFWater::InitWave(){
 						hill_height*exp(-dev_x*dev_x/(2*hill_narrowness_x*hill_narrowness_x)-dev_z*dev_z/(2*hill_narrowness_z*hill_narrowness_z));
 				}
 		}
+		*/
 	/*
 		//normalize
 		double temp_largest = m_height_data[0];
@@ -111,7 +112,8 @@ void HFWater::UpdateNormal(){
 		for(int iz = 0; iz < m_res_z; iz++){
 			current_normal *= 0.0;
 			//upper left face normal
-			if(ix > 0 && iz < m_res_z)
+			
+			if(ix > 0 && iz < m_res_z -1)
 			{
 				v1.x() = 0;
 				v1.z() = m_dx;
@@ -127,7 +129,7 @@ void HFWater::UpdateNormal(){
 				current_normal += temp_face_normal;
 			}
 			//upper right face normal
-			if(ix < m_res_x - 1 && iz < m_res_z)
+			if(ix < m_res_x - 1 && iz < m_res_z -1)
 			{
 				v1.x() = 0;
 				v1.z() = m_dx;
@@ -159,7 +161,7 @@ void HFWater::UpdateNormal(){
 				current_normal += temp_face_normal;
 			}
 			//lower right face normal
-			if(ix < m_res_x  && iz > 0)
+			if(ix < m_res_x - 1  && iz > 0)
 			{
 				v1.x() = 0;
 				v1.z() = -m_dx;
@@ -174,7 +176,7 @@ void HFWater::UpdateNormal(){
 				temp_face_normal = v1.cross(v2);
 				current_normal += temp_face_normal;
 			}
-
+			
 			m_normal_data[ix*(m_res_z) + iz] = -current_normal.normalized();//average
 		}
 
@@ -264,7 +266,7 @@ void HFWater::Draw(int type, const Camera& camera, const Light& light){
 void HFWater::UpdateAll(double dt){
 
 	double up, down, left, right, center, force;
-	double c_2 = 100;
+	double c_2 = 900;
 	int index; double m_dx_2 = m_dx*m_dx;
 	for(int ix= 0; ix< m_res_x; ix++)
 		for(int iz = 0; iz< m_res_z; iz++){
@@ -292,30 +294,37 @@ void HFWater::UpdateAll(double dt){
 
 			force = c_2*(up + left +right +down - 4*center)/(m_dx_2);
 			//add damping force
-			force -= 0.1*m_velocity_data[index];
+			force -= 0.5*m_velocity_data[index];
 
 			m_velocity_data[index] += force*dt;
 
 		}//udpate velocity
-
+	//update height map
 	for(int ix= 0; ix< m_res_x; ix++)
 		for(int iz = 0; iz< m_res_z; iz++){
 			index = ix*m_res_z + iz;
 			m_height_data[index] += m_velocity_data[index]*dt;
 		}
-
-	//Handle Collision with sphere
+	
+	//Handle Collision with spheres
 	double tdx, tdz, tr;
+	int sx,ex, sz, ez;
 	Sphere* current_sphere;Eigen::Vector3f temp_point; Eigen::Vector3f trans_point;double dif;
-	for (unsigned int i = 0; i< m_world->List_of_Object.size(); i++) {
-		if(m_world->List_of_Object[i] == this)
-			continue;//this one is itself, no self-collision
-        //find the first intersection and calculate the force, return the force
-        if (m_world->List_of_Object[i]->GetType()==TypeSphere) {
-			current_sphere = dynamic_cast<Sphere*>(m_world->List_of_Object[i]);
+	
+	for(int i = 0; i < m_spheres.size(); i++){
+			current_sphere = m_spheres[i];
+			if(current_sphere->m_Center[1] > current_sphere->m_Size[1] + 0.2)
+				continue;//this is a hack
 			assert(current_sphere->m_Size[0] == current_sphere->m_Size[1] && current_sphere->m_Size[2] == current_sphere->m_Size[1]);
-			for(int ix= 0; ix< m_res_x; ix++)
-				for(int iz = 0; iz< m_res_z; iz++){
+			//only check the box of water that is in sphere's y direction shadow
+			sx = max((current_sphere->m_Center[0] - current_sphere->m_Size[0] +  m_size_x*0.5)/m_dx - 2, 0);
+			sz = max((current_sphere->m_Center[2] - current_sphere->m_Size[2] +  m_size_z*0.5)/m_dx - 2, 0);
+
+			ex = min((current_sphere->m_Center[0] + current_sphere->m_Size[0] + m_size_x*0.5)/m_dx + 2, m_res_x);
+			ez = min((current_sphere->m_Center[2] + current_sphere->m_Size[2] + m_size_z*0.5)/m_dx + 2, m_res_z);
+
+			for(int ix= sx; ix< ex; ix++)
+				for(int iz = sz; iz< ez; iz++){
 					//intersection of sphere and water column
 					tdx = current_sphere->m_Center[0] - (ix*m_dx - 0.5*m_size_x); 
 					tdz = current_sphere->m_Center[2] - (iz*m_dx - 0.5*m_size_z);
@@ -326,28 +335,27 @@ void HFWater::UpdateAll(double dt){
 					if(dif > 0)
 					{
 						m_height_data[ix*m_res_z+iz] -= dif;
-						m_velocity_data[ix*m_res_z+iz] = -dif/dt;
+						m_velocity_data[ix*m_res_z+iz] = 0;
 						//distribute the dif term
 						assert(ix!=0&&ix!=m_res_x-1&&iz!=0&&iz!=m_res_z-1);
 						m_height_data[ix*m_res_z+iz -1] += dif/4.0;
-						m_velocity_data[ix*m_res_z+iz -1] = dif/(4*dt);
+						m_velocity_data[ix*m_res_z+iz -1] = 0;
 						m_height_data[ix*m_res_z+iz +1] += dif/4.0;
-						m_velocity_data[ix*m_res_z+iz +1] = dif/(4*dt);
+						m_velocity_data[ix*m_res_z+iz +1] = 0;
 						m_height_data[(ix+1)*m_res_z + iz] += dif/4.0;
-						m_velocity_data[(ix+1)*m_res_z+iz] = dif/(4*dt);
+						m_velocity_data[(ix+1)*m_res_z+iz] = 0;
 						m_height_data[(ix-1)*m_res_z + iz] += dif/4.0;
-						m_velocity_data[(ix-1)*m_res_z+iz -1] = dif/(4*dt);
+						m_velocity_data[(ix-1)*m_res_z+iz -1] = 0;
 						//also update the velocity
 					}
 						
 				}
-		}//end for each object in world
 	}
 }
 
 void HFWater::UpdateDraw(){
 	
-	UpdateNormal();
+		UpdateNormal();
 
 		int box_id;
 		Eigen::Vector4f a,b,c,d;
@@ -355,9 +363,9 @@ void HFWater::UpdateDraw(){
 		Eigen::Vector4f red(1,0,0,1);
 		Eigen::Vector4f green(0,1,0,1); double ratio;
 		double va, vb, vc,vd;
-		for(int ix = 0; ix < m_res_x - 1; ix++)
-			for(int iz = 0; iz < m_res_z - 1; iz++){
-
+		for(int ix = 0; ix < m_res_x - 1 ; ix++)
+			for(int iz = 0; iz < m_res_z - 1 ; iz++){
+				
 			box_id = ix*(m_res_z -1 ) + iz;
 		
 			a.x() = m_dx*ix - 0.5*m_size_x;a.z() = m_dx*iz - 0.5*m_size_z;a.y() = m_height_data[ix*m_res_z + iz];a.w() = 1.0;
@@ -395,6 +403,8 @@ void HFWater::UpdateDraw(){
 			m_TriangleColors[6*box_id + 3] = fabs(vc)*red + green; 
 			m_TriangleColors[6*box_id + 4] = fabs(vd)*red + green; 
 			m_TriangleColors[6*box_id + 5] = fabs(va)*red + green; 
+
+			
 			}	
 
 }

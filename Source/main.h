@@ -34,9 +34,9 @@ Camera  Pentax;
 Light Lumia;
 World * myWorld = NULL;
 Terrain* myTerrain = NULL;
-HFWater* myWater = NULL;
 Millipede* myMillipedes;
 Drawer* g_Drawer;
+Sphere* mySphere = NULL;
 std::ofstream*  myOutputFile;
 
 int STOP = -1;//stop the animation

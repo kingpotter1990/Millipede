@@ -5,6 +5,7 @@
 #include "Sphere.h"
 #include "Cylinder.h"
 #include "Millipede.h"
+#include "HeightFieldWater.h"
 #include <algorithm>
 
 extern Drawer* g_Drawer;
@@ -23,7 +24,11 @@ Terrain::Terrain(Eigen::Vector2f a_size, Eigen::Vector2i a_res, int n_hill, Terr
 
 		m_surface_mesh->LoadObjFile(objFile);
 
-	}else{
+	}else {
+		
+		if(m_terrain_type == TERRAIN_WATER){
+			m_water = new HFWater(Eigen::Vector2i(500,500), 0.2);
+		}
 		InitBase(a_size.x(), a_size.y(), a_res.x(), a_res.y(), n_hill);
 	
 		if(a_obstacle_on_off)
@@ -35,7 +40,6 @@ Terrain::Terrain(Eigen::Vector2f a_size, Eigen::Vector2i a_res, int n_hill, Terr
 
 	InitDraw();
 }
-
 
 void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_z, int n_hill)
 {
@@ -52,7 +56,7 @@ void Terrain::InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_
 	for(int i = 0; i < (a_res_x+1)*(a_res_z+1); i++)
 		m_height_data[i] = 0.0;//clear to 0
 	
-	if(m_terrain_type == TERRAIN_FLAT){
+	if(m_terrain_type == TERRAIN_FLAT||m_terrain_type == TERRAIN_WATER){
 		for(int ix = 0; ix < (a_res_x+1); ix++)
 			for(int iz = 0; iz < (a_res_z+1); iz++){
 				m_height_data[ix*(a_res_z+1) + iz] = 0.0;
@@ -250,6 +254,7 @@ bool Terrain::TestInside(const Eigen::Vector3f& point){
 		//return point.norm() < 20; //test with sphere
         return m_surface_mesh->PointInsideMesh(point);
 		break;
+	case TERRAIN_WATER:
 	case TERRAIN_TEST:
 	case TERRAIN_FLAT:
 	case TERRAIN_RANDOM:
@@ -677,6 +682,12 @@ double Terrain::GetFoodIntensity(Eigen::Vector3f pos){
 	return intensity;
 }
 
+void Terrain::UpdateAll(double dt){
+if(m_terrain_type == TERRAIN_WATER){
+	m_water->UpdateAll(dt);
+}
+}
+
 void Terrain::InitDraw(){
 
 	// Initialize the data array on CPU
@@ -789,7 +800,11 @@ void Terrain::InitDraw(){
 }
 
 void Terrain::Draw(int type, const Camera& camera, const Light& light){
-
+	if(m_terrain_type == TERRAIN_WATER){
+		
+		m_water->Draw(type, camera, light);
+		return;//just draw the water	
+	}
 	//Get new position of the cube and update the model view matrix
     Eigen::Affine3f wMo;//object to world matrix
     Eigen::Affine3f cMw;

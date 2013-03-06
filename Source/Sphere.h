@@ -38,6 +38,9 @@ public:
     Sphere();//Default constructor create a unit cube in center of screen
     Sphere(Eigen::Vector3f, Eigen::Vector3f,Eigen::Vector3f );//constructor creating a cube with size and center
     void GenerateSphere();
+	void UpdateMatrix();
+	void MoveUp(double amount);
+	void MoveDown(double amount);
 	Eigen::Vector4f Sphere::Unit(const Eigen::Vector4f &p);
 	void DividTriangle(const Eigen::Vector4f& a,const Eigen::Vector4f& b, const Eigen::Vector4f& c, int n);//for iterative generation of sphere
     void Init(Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f color);//Init the data

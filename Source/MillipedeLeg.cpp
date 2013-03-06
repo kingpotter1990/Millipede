@@ -4,10 +4,11 @@
 #include "Millipede.h"
 #include "Drawer.h"
 #include "Terrain.h"
-
+#include "Sphere.h"
 
 MillipedeLeg::MillipedeLeg(int a_l_r):m_l_r(a_l_r){
-
+	m_tip_sphere = new Sphere();
+	m_tip_sphere->m_Size = 0.5*Eigen::Vector3f(1,1,1);
 }
 
 void MillipedeLeg::InitPhysics(Eigen::Vector3f a_body_size){
@@ -134,6 +135,10 @@ void MillipedeLeg::UpdateTipPosition(){
 	m_Drawer->Translate(Eigen::Vector3f(0.0, 0.0, m_l_r*m_segment_3_size[2]));
 
 	m_tip_position = m_Drawer->CurrentOrigin();
+
+	m_tip_sphere->m_Center = m_tip_position;
+	m_tip_sphere->m_Center[1] += m_tip_sphere->m_Size[1];
+	m_tip_sphere->UpdateMatrix();
 }
 
 void MillipedeLeg::UpdateRootPosition(){
@@ -171,6 +176,8 @@ void MillipedeLeg::Draw(int type, const Camera& camera, const Light& light){
 		m_Drawer->SetColor(Eigen::Vector3f(1.0,1.0,0));
 		break;
 	}
+
+	m_tip_sphere->Draw(type, camera, light);
 
   //  m_Drawer->SetColor(Eigen::Vector3f(1,1,1));
     

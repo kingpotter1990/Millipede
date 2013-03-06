@@ -21,6 +21,26 @@ Sphere::Sphere(Eigen::Vector3f center, Eigen::Vector3f scale, Eigen::Vector3f co
     Init(center, scale, color);
 }
 
+void Sphere::UpdateMatrix(){
+	
+	m_Trans.setIdentity();
+	m_Trans.translate(m_Center);
+    m_Trans.scale(m_Size);
+    
+    m_TransBack = m_Trans.inverse();
+
+}
+
+void Sphere::MoveUp(double amount){
+	m_Center[1] += amount;
+	UpdateMatrix();
+}
+
+void Sphere::MoveDown(double amount){
+	m_Center[1] -= amount;
+	UpdateMatrix();
+}
+
 void Sphere::Init(Eigen::Vector3f center, Eigen::Vector3f scale, Eigen::Vector3f color){
     m_Center = center;
     m_Size = scale;

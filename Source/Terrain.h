@@ -11,8 +11,8 @@ class Sphere;
 class Millipede;
 class objLoader;
 class MeshObject;
-
-enum TerrainType{TERRAIN_RANDOM, TERRAIN_FLAT, TERRAIN_TEST, TERRAIN_SPHERICAL};
+class HFWater;
+enum TerrainType{TERRAIN_RANDOM, TERRAIN_FLAT, TERRAIN_TEST, TERRAIN_SPHERICAL, TERRAIN_WATER};
 class Terrain:public Object{
 
 public:
@@ -28,7 +28,7 @@ public:
 	Eigen::Vector3f GetNormal(const Eigen::Vector3f& xyz);
 	~Terrain(){delete[] m_height_data; delete[] m_normal_data;};
 	void Draw(int type, const Camera& camera, const Light& light);
-	void UpdateAll(double dt){};
+	void UpdateAll(double dt);
 	bool TestIntersection(Millipede* a_bug, Eigen::Vector3f a_o, Eigen::Vector3f a_p);
 	double GetFoodIntensity(Eigen::Vector3f a_pos);
 	bool ReachFood(Eigen::Vector3f pos, double tol);
@@ -39,6 +39,7 @@ public:
 public:
 	double m_frictness;
 	TerrainType m_terrain_type;
+	HFWater* m_water;
 protected:
 	void InitBase(double a_size_x, double a_size_z, int a_res_x, int a_res_z, int n_hill);
 	void InitObstacles(TerrainType a_type);
@@ -70,7 +71,6 @@ protected:
 	Eigen::Vector3f* m_normal_data;//per node
 
 	SurfaceMesh* m_surface_mesh;//for spherical terrain 
-
 protected:	
 
 	std::vector<Object*> m_obstacles;

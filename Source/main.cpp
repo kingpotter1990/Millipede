@@ -30,7 +30,7 @@ void initScene(){
 	FRAME_COUNT = 0;
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 500, TERRAIN_FLAT
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 500, TERRAIN_WATER
 		, OBSTACLE_OFF, FOOD_OFF);
 
 	myOutputFile = new std::ofstream;
@@ -50,17 +50,11 @@ void reinitScene(){
 
 	myWorld->Clear();
 
-	if(myWater)
-		delete myWater;
-	myWater = new HFWater(Eigen::Vector2i(200,200), 0.5);
-	myWorld->Add_Object(myWater);
-
 	myWorld->Add_Object(myTerrain);
 	myTerrain->ClearMillipedes();	
 
 	if(myMillipedes)
 		delete[] myMillipedes;
-
 /*
 	int m = 4, n = 4;
 	myMillipedes = new Millipede[m*n];
@@ -71,15 +65,14 @@ void reinitScene(){
 			myWorld->Add_Object(&myMillipedes[i*n + j]);
 		}
 */
-
 	myMillipedes = new Millipede;
-	myMillipedes->Init(Eigen::Vector3f(-10,15,0),18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
+	myMillipedes->Init(Eigen::Vector3f(-10,3,0),3,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
 	//myMillipedes->FixHead();
 	//myMillipedes->FixTail();
-	//myWorld->Add_Object(myMillipedes);
-
-	Sphere* sphere1 = new Sphere(Eigen::Vector3f(0,15,0), Eigen::Vector3f(3,3,3), Eigen::Vector3f(1,0,1));
-	myWorld->Add_Object(sphere1);
+	myWorld->Add_Object(myMillipedes);
+	
+	//mySphere= new Sphere(Eigen::Vector3f(0,15,0), Eigen::Vector3f(3,3,3), Eigen::Vector3f(1,0,1));
+	//myWorld->Add_Object(mySphere);
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime() ;
 	DTIME = 0.0;
@@ -130,15 +123,18 @@ void keyboardCallback(unsigned char key, int x, int y){
 	if(CONTROL == 1){
 		switch(key)
 		{
-			case '7'://down
-			myMillipedes[0].ReceiveControllKey(1);
+			case '7'://forward
+			//myMillipedes[0].ReceiveControllKey(1);
+				mySphere->MoveUp(0.01);
 			break;
 			case '8'://left
-			myMillipedes[0].ReceiveControllKey(2);
+			//myMillipedes[0].ReceiveControllKey(2);
+				mySphere->MoveDown(0.01);
 			break;
-			case '9'://right
-			myMillipedes[0].ReceiveControllKey(3);
+			/*case '9'://right
+			//myMillipedes[0].ReceiveControllKey(3);
 			break;
+			*/
 		}
 	}
     
@@ -154,7 +150,7 @@ void keyboardCallback(unsigned char key, int x, int y){
 	if( key == 'c'|| key == 'C')
 	{
 		CONTROL *= -1;
-		myMillipedes[0].SetControl(CONTROL == 1?true:false);
+		//myMillipedes[0].SetControl(CONTROL == 1?true:false);
 	}
 	if( key == 'p'|| key == 'P' )
 	{

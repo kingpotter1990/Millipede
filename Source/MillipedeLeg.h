@@ -10,7 +10,7 @@
 class Terrain;
 class MillipedeRigidSection;
 class Drawer;
-
+class Sphere;
 enum LEG_STATUS {LEG_STANCE, LEG_ADJUST, LEG_SWAY_FORWARD_1, LEG_SWAY_FORWARD_2, LEG_SWAY_BACKWARD_1,LEG_SWAY_BACKWARD_2};
 
 class MillipedeLeg:public Object{
@@ -30,7 +30,7 @@ public:
 	double GetAlpha(){return m_alpha;};
 	double GetPhi(){return m_phi;};
 	double GetBeta(){return m_beta;}
-
+	Sphere* GetTipSphere(){return m_tip_sphere;}
 protected:
 	
 	void UpdateSwitchNet(double dt);
@@ -58,7 +58,7 @@ private:
 	double m_target_beta;
 	double m_target_phi;
  
-
+    Sphere* m_tip_sphere;
 	Eigen::Vector3f m_segment_0_size;
 	Eigen::Vector3f m_segment_1_size;
 	Eigen::Vector3f m_segment_2_size;
