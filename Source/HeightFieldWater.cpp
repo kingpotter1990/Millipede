@@ -9,13 +9,13 @@
 #include "Sphere.h"
 #include "HeightFieldWater.h"
 
-HFWater::HFWater(Eigen::Vector2i res, double dx){
+HFWater::HFWater(Eigen::Vector2i res, double dx, double depth){
 	m_res_x = res.x();
 	m_res_z = res.y();
 	m_size_x = m_res_x*dx;
 	m_size_z = m_res_z*dx;
 	m_dx = dx;
-
+    m_depth = depth;
 	m_height_data = new double[m_res_x*m_res_z];
 	m_velocity_data = new double[m_res_x*m_res_z];
     m_normal_data = new Eigen::Vector3f[m_res_x*m_res_z];	
@@ -28,7 +28,7 @@ HFWater::HFWater(Eigen::Vector2i res, double dx){
 void HFWater::InitWave(){
 	
 	for(int i = 0; i < m_res_x*m_res_z; i++){
-		m_height_data[i] = 0.1;//clear to 0
+		m_height_data[i] = m_depth;//clear to 0
 		m_velocity_data[i] = 0.0;
 	}
 	
@@ -266,7 +266,7 @@ void HFWater::Draw(int type, const Camera& camera, const Light& light){
 void HFWater::UpdateAll(double dt){
 
 	double up, down, left, right, center, force;
-	double c_2 = 900;
+	double c_2 = 100;
 	int index; double m_dx_2 = m_dx*m_dx;
 	for(int ix= 0; ix< m_res_x; ix++)
 		for(int iz = 0; iz< m_res_z; iz++){
@@ -294,7 +294,7 @@ void HFWater::UpdateAll(double dt){
 
 			force = c_2*(up + left +right +down - 4*center)/(m_dx_2);
 			//add damping force
-			force -= 0.5*m_velocity_data[index];
+			force -= 0.1*m_velocity_data[index];
 
 			m_velocity_data[index] += force*dt;
 
@@ -337,17 +337,18 @@ void HFWater::UpdateAll(double dt){
 						m_height_data[ix*m_res_z+iz] -= dif;
 						m_velocity_data[ix*m_res_z+iz] = 0;
 						//distribute the dif term
-						assert(ix!=0&&ix!=m_res_x-1&&iz!=0&&iz!=m_res_z-1);
-						m_height_data[ix*m_res_z+iz -1] += dif/4.0;
+						assert(ix > 1 &&ix < m_res_x - 2&&iz > 1&&iz < m_res_z-2);
+						
+						m_height_data[ix*m_res_z+iz -1] += dif/10;
 						m_velocity_data[ix*m_res_z+iz -1] = 0;
-						m_height_data[ix*m_res_z+iz +1] += dif/4.0;
+						m_height_data[ix*m_res_z+iz +1] += dif/10;
 						m_velocity_data[ix*m_res_z+iz +1] = 0;
-						m_height_data[(ix+1)*m_res_z + iz] += dif/4.0;
+						m_height_data[(ix+1)*m_res_z + iz] += dif/10;
 						m_velocity_data[(ix+1)*m_res_z+iz] = 0;
-						m_height_data[(ix-1)*m_res_z + iz] += dif/4.0;
+						m_height_data[(ix-1)*m_res_z + iz] += dif/10;
 						m_velocity_data[(ix-1)*m_res_z+iz -1] = 0;
-						//also update the velocity
-					}
+						
+						}
 						
 				}
 	}

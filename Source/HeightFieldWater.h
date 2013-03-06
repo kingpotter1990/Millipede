@@ -34,12 +34,13 @@ private:
 	double m_size_x;
 	double m_size_z;
 	double m_dx;
+	double m_depth;
 	double* m_height_data;
 	double* m_velocity_data;
     Eigen::Vector3f* m_normal_data;
 	std::vector<Sphere*> m_spheres;
 public:
-    HFWater(Eigen::Vector2i res, double dx);//Default constructor create a unit cube in center of screen
+    HFWater(Eigen::Vector2i res, double dx, double depth);//Default constructor create a unit cube in center of screen
 	virtual ~HFWater(){delete[] m_height_data; delete[] m_velocity_data;
 	delete[] m_normal_data;}
 	virtual void InitWave();

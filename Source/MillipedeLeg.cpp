@@ -8,7 +8,7 @@
 
 MillipedeLeg::MillipedeLeg(int a_l_r):m_l_r(a_l_r){
 	m_tip_sphere = new Sphere();
-	m_tip_sphere->m_Size = 0.5*Eigen::Vector3f(1,1,1);
+	m_tip_sphere->m_Size = 0.2*Eigen::Vector3f(1,1,1);
 }
 
 void MillipedeLeg::InitPhysics(Eigen::Vector3f a_body_size){
