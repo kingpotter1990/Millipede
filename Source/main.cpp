@@ -35,7 +35,10 @@ void initScene(){
 
 	myOutputFile = new std::ofstream;
 	myOutputFile->open("millipede.mel");
-
+	(*myOutputFile)<<"string $path = \"D:/TEMP/\";"<<std::endl<<
+	"string $filelist[] = `getFileList -folder $path -filespec \"*.obj\"`;"<<std::endl<<
+	"for($i=0; $i <= (`size $filelist` - 1); $i++)"<<std::endl
+		<<"sysFile -delete ($path+$filelist[$i]);"<<std::endl<<std::endl;
 	
 	reinitScene();
 
@@ -125,11 +128,9 @@ void keyboardCallback(unsigned char key, int x, int y){
 		{
 			case '7'://forward
 			//myMillipedes[0].ReceiveControllKey(1);
-				mySphere->MoveUp(0.01);
 			break;
 			case '8'://left
 			//myMillipedes[0].ReceiveControllKey(2);
-				mySphere->MoveDown(0.01);
 			break;
 			/*case '9'://right
 			//myMillipedes[0].ReceiveControllKey(3);
@@ -142,6 +143,10 @@ void keyboardCallback(unsigned char key, int x, int y){
     {
 		myOutputFile->close();
         exit(0);
+    }
+    if( key == 'o'|| key == 'O')
+    {
+		OUTPUT *= -1;
     }
     if( key == 's'|| key == 'S')
     {
@@ -260,32 +265,28 @@ void cursorCallback(int x, int y){
 void idleCallback(){
     
 	TIME = TM.GetElapsedTime() ;
-        
+        /*
 	DTIME = TIME - TIME_LAST;
 	TIME_LAST = TIME;
 
 	FRAME_TIME += DTIME;
-
+	*/
 	if(STOP == -1){
 	//only update physics
 		myWorld->Update(0.02);//The real physics time step is much smaller
-		OUTPUT_ONE_FRAME();//output one frame data
+
+		glutPostRedisplay() ; //draw new frame, the display is not real physics time
+
+		if(OUTPUT == 1){
+			OUTPUT_ONE_FRAME();//output one frame data
+		}
 	}
 
-	if(FRAME_TIME > 0.03)//33 frames per second
-	{
-		glutPostRedisplay() ; //draw new frame
-		FRAME_TIME = 0;	
-		FRAME_COUNT++;
-	}
-	
-
-
-	//printf("Physics Rate %f\r", 1.0/DTIME) ;
 }
 
 void OUTPUT_ONE_FRAME(){
 
+	FRAME_COUNT++;
 	//Terrain
 
 	//millipede
@@ -295,7 +296,7 @@ void OUTPUT_ONE_FRAME(){
 	myMillipedes[0].Output2File(myOutputFile);
 
 	(*myOutputFile)<<"//save to obj"<<std::endl;
-	(*myOutputFile)<<"file -force -options \"groups=1;ptgroups=1;materials=0;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
+	(*myOutputFile)<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
 		"-ea \"D:/TEMP/MillipedeFrame"<<FRAME_COUNT<<".obj\";"<<std::endl;
 }
 

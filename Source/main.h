@@ -41,6 +41,7 @@ std::ofstream*  myOutputFile;
 
 int STOP = -1;//stop the animation
 int CONTROL = -1;//control the millipede
+int OUTPUT = -1;//control output
 int PICK = -1;//pick mode or not
 int DRAW_TYPE = DRAW_PHONG;
 

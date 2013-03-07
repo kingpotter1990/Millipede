@@ -1,0 +1,29 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001
+#
+# Multi/Sub Scolopendra (2) to come 
+#
+newmtl head
+Ka  0.6 0.6 0.6
+Kd  0.6 0.6 0.6
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  0.0
+illum 2
+map_Kd h_diff.tga
+#bump h_norm.tga
+#disp h_disp.tga
+#
+newmtl body
+Ka  0.6 0.6 0.6
+Kd  0.6 0.6 0.6
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  0.0
+illum 2
+map_Kd b_diff.tga
+#bump b_norm.tga
+#disp b_disp.tga
+#
+# Multi/Sub Scolopendra done 
+#
+# EOF
