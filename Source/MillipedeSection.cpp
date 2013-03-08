@@ -166,7 +166,7 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream){
 	double alpha1 = 22.7721822, alpha2 = 42.6333898;
 	(*filestream)<<"//BEGIN SECTION "<< m_section_id <<std::endl;
 	
-	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2);
+	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2)/DegreesToRadians;
 	(*filestream)<<"setAttr \"s"<<m_section_id<<".translate\" "<< -m_Center.z() <<" "<<m_Center.y()<<" "<< m_Center.x()<<";"<<std::endl;
 	(*filestream)<<"setAttr \"s"<<m_section_id<<".rotate\" "<<ea.x()<<" "<<ea.y()<<" "<<ea.z()<<";"<<std::endl;
 
@@ -174,7 +174,7 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream){
 	//left
 	(*filestream)<<"setAttr \"s"<<m_section_id<<"l1"<<".rotate\" 0 0 0;"<<std::endl;
 	(*filestream)<<"select -r s"<<m_section_id<<"l1 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 "<<-m_left_leg->GetPhi()<<" 0 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 "<<m_left_leg->GetPhi()<<" 0 ;"<<std::endl;
 	(*filestream)<<"rotate -r -os 0 0 "<<m_left_leg->GetAlpha() + alpha1 <<";"<<std::endl;
 
 	(*filestream)<<"setAttr \"s"<<m_section_id<<"l2"<<".rotate\" 0 0 0;"<<std::endl;
@@ -184,7 +184,7 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream){
 	//right
 	(*filestream)<<"setAttr \"s"<<m_section_id<<"r1"<<".rotate\" 0 0 0;"<<std::endl;
 	(*filestream)<<"select -r s"<<m_section_id<<"r1 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 "<<-m_right_leg->GetPhi()<<" 0 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 "<<m_right_leg->GetPhi()<<" 0 ;"<<std::endl;
 	(*filestream)<<"rotate -r -os 0 0 "<<m_right_leg->GetAlpha()  + alpha1 <<";"<<std::endl;
 
 	(*filestream)<<"setAttr \"s"<<m_section_id<<"r2"<<".rotate\" 0 0 0;"<<std::endl;

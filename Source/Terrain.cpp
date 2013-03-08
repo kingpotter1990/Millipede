@@ -27,7 +27,7 @@ Terrain::Terrain(Eigen::Vector2f a_size, Eigen::Vector2i a_res, int n_hill, Terr
 	}else {
 		
 		if(m_terrain_type == TERRAIN_WATER){
-			m_water = new HFWater(Eigen::Vector2i(1000,1000), 0.1, 0.2);
+			m_water = new HFWater(Eigen::Vector2i(500,500), 0.1, 0.2);
 		}
 		InitBase(a_size.x(), a_size.y(), a_res.x(), a_res.y(), n_hill);
 	

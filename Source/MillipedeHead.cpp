@@ -380,7 +380,7 @@ void MillipedeHead::Output2File(std::ofstream* filestream){
 	//output for maya python script
 	(*filestream)<<"//BEGIN HEAD"<<std::endl;
 	
-	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2);
+	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2)/DegreesToRadians;
 	(*filestream)<<"select -r head ;"<<std::endl;
 	(*filestream)<<"setAttr \"head.translate\" "<<-m_Center.z() <<" "<<m_Center.y()<<" "<<m_Center.x()<<";"<<std::endl;
 	(*filestream)<<"setAttr \"head.rotate\" "<<ea.x()<<" "<<ea.y()<<" "<<ea.z()<<";"<<std::endl;
