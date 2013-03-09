@@ -128,6 +128,7 @@ void MillipedeHead::InitPhysics(double density, Eigen::Vector3f center,Eigen::Ve
 
 void MillipedeHead::InitNeuroNet(Millipede* a_root){
 	m_master = a_root;
+	m_time = 0;
 	m_terrain = m_master->m_terrain;
 	m_section_id = 0;
 	m_Drawer = m_master->m_Drawer;
@@ -219,12 +220,13 @@ void MillipedeHead::EnterMode(MILLIPEDE_STATUS a_mode){
 		m_turning_direction = TURN_RIGHT;
 		break;
 	case RANDOM_WALK:
-		m_linear_speed = 10;
-		m_turning_speed = 10 + 30*Util::getRand();
+		m_linear_speed = 15;
+		m_turning_speed = 100 + 10*Util::getRand();
 		m_current_turning_accum = 0;
-		m_turning_direction = (Util::getRand() > 0.5 ? TURN_LEFT:TURN_RIGHT); //set a new turning direction
+		m_turning_direction = (m_turning_direction != TURN_LEFT?TURN_LEFT:TURN_RIGHT);
+		//m_turning_direction = (Util::getRand() > 0.5 ? TURN_LEFT:TURN_RIGHT); //set a new turning direction
 		m_current_turning_accum = 0.0; //clear to 0
-		m_turning_obj = Util::getRand()*180; //set a new turning angle
+		m_turning_obj = 90 + Util::getRand()*10; //set a new turning angle
 		//m_turning_direction = GO_STRAIGHT;//for testing
 		break;
 	default:
@@ -354,11 +356,16 @@ void MillipedeHead::UpdatePhysics(double dt){
 
 void MillipedeHead::UpdateAll(double dt){
 
+	    m_time += dt;
 		//central controller for the head movement, which determine the movement of the entire millipede
 	
 		m_left_antenna->UpdateAll(dt);
 		m_right_antenna->UpdateAll(dt);
 
+		//update the fake leg and mouth motion parameters;
+		//from 10 to 30
+		m_fake_leg_angle = 20 + 10*sin(50*m_time);
+		m_mouth_angle = 5*sin(20*m_time);
 		//Head Target Net: sense/think then set all the parameters:
 		//turning direction, turning speed and linear speed, etc;
 		UpdateNeuroNet(dt);
@@ -381,11 +388,22 @@ void MillipedeHead::Output2File(std::ofstream* filestream){
 	(*filestream)<<"//BEGIN HEAD"<<std::endl;
 	
 	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2)/DegreesToRadians;
-	(*filestream)<<"select -r head ;"<<std::endl;
 	(*filestream)<<"setAttr \"head.translate\" "<<-m_Center.z() <<" "<<m_Center.y()<<" "<<m_Center.x()<<";"<<std::endl;
+	(*filestream)<<"select -r head ;"<<std::endl;
 	(*filestream)<<"setAttr \"head.rotate\" "<<ea.x()<<" "<<ea.y()<<" "<<ea.z()<<";"<<std::endl;
-	//no legs
+	//the fake leg 
 
+	(*filestream)<<"setAttr \"headl.rotate\" 0 55 0;"<<std::endl;
+	(*filestream)<<"select -r headl ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<m_fake_leg_angle<<";"<<std::endl;
+
+	(*filestream)<<"setAttr \"headr.rotate\" 0 55 0;"<<std::endl;
+	(*filestream)<<"select -r headr ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<m_fake_leg_angle<<";"<<std::endl;
+	
+	//mouth
+	(*filestream)<<"setAttr \"mouthl.rotate\" 0 "<<m_mouth_angle<<" 0;"<<std::endl;
+	(*filestream)<<"setAttr \"mouthr.rotate\" 0 "<<m_mouth_angle<<" 0;"<<std::endl;
 	//two antenna
 	//m_left_antenna->Output2File(filestream);
 	//m_right_antenna->Output2File(filestream);

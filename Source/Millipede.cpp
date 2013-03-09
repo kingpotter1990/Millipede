@@ -417,6 +417,8 @@ void Millipede::Output2File(std::ofstream* filestream){
     }
 
     // soft part end
+	//tail ajdustment
+	(*filestream)<<"setAttr \"tail.rotate\" -13 0 0;"<<std::endl;
     (*filestream)<<"//End Millipede\n"<<std::endl;
 /* output for povray
 

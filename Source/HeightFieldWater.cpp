@@ -409,3 +409,41 @@ void HFWater::UpdateDraw(){
 			}	
 
 }
+
+void HFWater::Output2File(std::ofstream* filestream){
+	
+	(*filestream)<<"//BEGIN WATER"<<std::endl;
+	(*filestream)<<"#declare water=mesh2{"<<std::endl;
+	int box_id;
+	(*filestream)<<"vertex_vectors{"<<m_res_x*m_res_z<<","<<std::endl;
+	for(int ix = 0; ix < m_res_x  ; ix++)
+			for(int iz = 0; iz < m_res_z ; iz++){
+			box_id = ix*m_res_z + iz;
+            (*filestream)<<"<"<<m_dx*ix - 0.5*m_size_x<<","<<m_height_data[box_id]<<","<<m_dx*iz - 0.5*m_size_z<<">,"<<std::endl;
+	}
+	(*filestream)<<"}"<<std::endl; // end vertex_vectors
+
+	(*filestream)<<"normal_vectors{"<<m_res_x*m_res_z<<","<<std::endl;
+	for(int ix = 0; ix < m_res_x  ; ix++)
+			for(int iz = 0; iz < m_res_z ; iz++){
+			box_id = ix*m_res_z + iz;
+            (*filestream)<<"<"<<m_normal_data[box_id][0]<<","<<m_normal_data[box_id][1]<<","<<m_normal_data[box_id][2]<<">,"<<std::endl;
+	}
+	(*filestream)<<"}"<<std::endl; // end normal_vectors
+	int a, b, c,d;
+	(*filestream)<<"face_indices{"<<2*(m_res_x-1)*(m_res_z-1)<<","<<std::endl;
+	for(int ix = 0; ix < m_res_x - 1; ix++)
+			for(int iz = 0; iz < m_res_z - 1; iz++){
+			a = ix*m_res_z + iz;
+			b = (ix+1)*m_res_z + iz;
+			c = (ix+1)*m_res_z + iz+1;
+			d = ix*m_res_z + iz+1;
+            (*filestream)<<"<"<<a<<","<<b<<","<<c<<">,"<<std::endl;
+            (*filestream)<<"<"<<c<<","<<d<<","<<a<<">,"<<std::endl;
+			}
+	(*filestream)<<"}"<<std::endl; // end face_indices
+
+	(*filestream)<<"}"<<std::endl; // end mesh2
+	(*filestream)<<"//END WATER"<<std::endl<<std::endl;
+
+}

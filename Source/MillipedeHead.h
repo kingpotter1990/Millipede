@@ -66,7 +66,9 @@ protected:
 	double m_turning_speed;//degree per seconds
 	double m_turning_obj;
 	double m_current_turning_accum;
-
+	double m_fake_leg_angle;
+	double m_mouth_angle;
+	double m_time;
 public:
 
 	MillipedeAntenna* m_left_antenna;

@@ -50,6 +50,7 @@ public:
 	virtual void UpdateAll(double dt);
 	virtual void UpdateNormal();
 	virtual void UpdateSpheres(std::vector<Sphere*>& a_spheres){m_spheres = a_spheres;};
+	virtual void Output2File(std::ofstream* filestream);
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 

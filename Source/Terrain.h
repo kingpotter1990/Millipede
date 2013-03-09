@@ -35,7 +35,7 @@ public:
 	void RegisterMillipede(Millipede* a_millipede);
 	void ClearMillipedes();
 	void InitSurfaceObjects();
-
+	void Output2File(std::ofstream* file);
 public:
 	double m_frictness;
 	TerrainType m_terrain_type;
