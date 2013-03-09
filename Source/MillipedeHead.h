@@ -26,9 +26,16 @@ public:
 	void Output2File(std::ofstream* filestream);
 private:
 	MillipedeHead* m_head;
-	double m_length;
-	double m_phi;//around y axis
-	double m_alpha;//around x-z axis
+	int m_n_segment;
+	double m_segment_length;//length of a segment
+	double* m_theta1;
+	double* m_theta2;
+	double m_phi;
+	double m_alpha;
+	double m_target_phi;
+	double m_target_alpha;
+	double m_rot_v_phi;
+	double m_rot_v_alpha;
 	int m_l_r;//1 left, -1 right
 public:
 	Eigen::Vector3f m_root_position;
@@ -68,7 +75,6 @@ protected:
 	double m_current_turning_accum;
 	double m_fake_leg_angle;
 	double m_mouth_angle;
-	double m_time;
 public:
 
 	MillipedeAntenna* m_left_antenna;
@@ -84,6 +90,7 @@ public:
 	double m_prev_dis_obj;
 	double m_current_height;
 	Drawer* m_Drawer;
+	double m_time;
 };
 
 #endif

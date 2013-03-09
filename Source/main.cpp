@@ -30,7 +30,7 @@ void initScene(){
 	FRAME_COUNT = 0;
     std::cout<<"Setting up the World..."<<std::endl;
 
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(200,200), 500, TERRAIN_WATER
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(20,20), 50, TERRAIN_FLAT
 		, OBSTACLE_OFF, FOOD_OFF);
 
 	myOutputFile = new std::ofstream;
@@ -71,7 +71,7 @@ void reinitScene(){
 		}
 */
 	myMillipedes = new Millipede;
-	myMillipedes->Init(Eigen::Vector3f(10,3,0),18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
+	myMillipedes->Init(Eigen::Vector3f(10,11,0),18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
 	//myMillipedes->FixHead();
 	//myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);

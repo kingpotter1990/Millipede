@@ -8,9 +8,21 @@ void MillipedeAntenna::InitNeuroNet(MillipedeHead* a_head, double a_length, int 
 	m_l_r = a_l_r;
 	m_head = a_head;
 	m_Drawer = m_head->m_Drawer;
-	m_length = a_length;
-	m_phi = 30;
-	m_alpha = 0;
+	m_n_segment = 20;
+	m_segment_length = 0.5;
+	m_theta1 = new double[m_n_segment];
+	m_theta2 = new double[m_n_segment];
+	for(int i = 0;i<m_n_segment; i++)
+	{
+		m_theta1[i] = 0;
+		m_theta2[i] = 0;
+	}
+	m_target_phi = 30;
+	m_target_alpha = 0;
+	m_rot_v_alpha = 10;
+	m_rot_v_phi = 10;
+	m_phi = 30;//base rotation
+	m_alpha = 0;//base rotation
 	m_food_sense_threshold = 0.2;
 
 	UpdateTipRootPosition();
@@ -26,7 +38,11 @@ void MillipedeAntenna::UpdateTipRootPosition(){
 	m_Drawer->RotateZ(-m_alpha);
 
 	m_root_position = m_Drawer->CurrentOrigin(); //update root position
-	m_Drawer->Translate(Eigen::Vector3f(-m_length,0,0));
+	for(int i = 0; i < m_n_segment; i++){
+		m_Drawer->RotateY(m_l_r*m_theta1[i]);
+		m_Drawer->RotateZ(m_theta2[i]);
+		m_Drawer->Translate(Eigen::Vector3f(-m_segment_length,0,0));
+	}
 	m_tip_position = m_Drawer->CurrentOrigin();//update tip position
 
 }
@@ -60,24 +76,49 @@ void MillipedeAntenna::Draw(int type, const Camera& camera, const Light& light){
 	m_Drawer->SetColor(Eigen::Vector3f(1,1,1));
 	m_Drawer->DrawSphere(type,camera,light);
 	m_Drawer->PopMatrix();
+	for(int i = 0; i < m_n_segment; i++){
+		m_Drawer->RotateY(m_l_r*m_theta1[i]);
+		m_Drawer->RotateZ(m_theta2[i]);
 
-	m_Drawer->PushMatrix();
-	m_Drawer->Translate(Eigen::Vector3f(-0.5*m_length,0,0));
-	m_Drawer->RotateY(90);
-	m_Drawer->Scale(Eigen::Vector3f(0.2,0.2,m_length));
-	m_Drawer->DrawCylinder(type, camera, light);
-	m_Drawer->PopMatrix();
+		m_Drawer->PushMatrix();
+		m_Drawer->Translate(Eigen::Vector3f(-0.5*m_segment_length,0,0));
+		m_Drawer->RotateY(90);
+		m_Drawer->Scale(Eigen::Vector3f(0.2,0.2,m_segment_length));
+		m_Drawer->DrawCylinder(type, camera, light);
+		m_Drawer->PopMatrix();
 
-	m_Drawer->Translate(Eigen::Vector3f(-m_length,0,0));
-
-	m_Drawer->Scale(Eigen::Vector3f(0.3,0.3,0.3));
-	m_Drawer->SetColor(Eigen::Vector3f(1,0,0));
-	m_Drawer->DrawSphere(type,camera,light);
+		m_Drawer->Translate(Eigen::Vector3f(-m_segment_length,0,0));
+		
+		m_Drawer->PushMatrix();
+		m_Drawer->Scale(Eigen::Vector3f(0.2,0.2,0.2));
+		m_Drawer->SetColor(Eigen::Vector3f(1,0,0));
+		m_Drawer->DrawSphere(type,camera,light);
+		m_Drawer->PopMatrix();
+	}
 
 }
 
 void MillipedeAntenna::UpdateAll(double a_dt){
-	
+	//update antennae angles
+	double omega1 = 1, omega2 = 1, k1 = 0.1, k2 = 0.1;
+	for(int i = 0; i < m_n_segment; i++){
+		m_theta1[i] = 2*sin(m_head->m_time*omega1 + k1*i);	
+		m_theta2[i] = 2*sin(m_head->m_time*omega2 + k2*i);	
+	}
+
+	m_alpha += m_rot_v_alpha*a_dt; 
+	m_phi += m_rot_v_phi*a_dt;
+
+	if((m_rot_v_phi > 0 && m_phi > m_target_phi) || (m_rot_v_phi <0 && m_phi < m_target_phi)){
+		m_target_phi = (Util::getRand() - 0.5)*30 + 30;
+		m_rot_v_phi = 50*(m_phi < m_target_phi ? 1:-1);
+	}
+
+	if((m_rot_v_alpha > 0 && m_alpha > m_target_alpha) || (m_rot_v_alpha <0 && m_alpha < m_target_alpha)){
+		m_target_alpha = (Util::getRand() - 0.5)*30;
+		m_rot_v_alpha = 50*(m_alpha < m_target_alpha ? 1:-1);
+	}
+
 	UpdateTipRootPosition();
 	
 }
@@ -100,7 +141,7 @@ void MillipedeAntenna::Output2File(std::ofstream* filestream){
 	(*filestream)<<"sphere{"<<"<"<<center[0]<<","<<center[1]<<","<<center[2]<<">"<<","<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
-	m_Drawer->Translate(Eigen::Vector3f(-m_length,0,0));
+	m_Drawer->Translate(Eigen::Vector3f(-m_segment_length*m_n_segment,0,0));
 	point_a = center;
 	point_b = m_Drawer->CurrentOrigin();
 	radius = 0.2;
