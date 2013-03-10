@@ -30,7 +30,7 @@ void initScene(){
     std::cout<<"Setting up the World..."<<std::endl;
 	myTerrainType = TERRAIN_FLAT;
 	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(20,20), 50, myTerrainType
-		, OBSTACLE_OFF, FOOD_OFF);
+		, OBSTACLE_OFF, FOOD_ON);
 
 	TerrainOutput = new std::ofstream;
 	BugOutput = new std::ofstream;
@@ -321,7 +321,6 @@ void idleCallback(){
 
 void OUTPUT_ONE_FRAME(){
 
-	FRAME_COUNT++;
 	
 	//Water
 	if(myTerrainType == TERRAIN_WATER){
@@ -336,6 +335,8 @@ void OUTPUT_ONE_FRAME(){
 	(*BugOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
 	myMillipedes[0].Output2File(BugOutput,1);//0 is for maya model, 1 is for physics
 	BugOutput->close();
+	
+	FRAME_COUNT++;
 }
 
 int main (int argc, char ** argv){

@@ -250,18 +250,22 @@ void Millipede::UpdateAll(double dt){
 			break;
 	}
 	//soft phase
-	m_head->m_next->UpdateAll(dt);
+	std::vector<MillipedeSoftSection*> temp_sections;
+	temp_sections.push_back(m_head->m_next);
 	temp_rigid_section = m_head->m_next->m_next;
 	while(1){
 		temp_soft_section = temp_rigid_section->m_next;
 		if(temp_soft_section){
-			temp_soft_section->UpdateAll(dt);
+			temp_sections.push_back(temp_soft_section);
 			temp_rigid_section = temp_soft_section->m_next;
 		}
 		else
 			break;
 	}
 
+#pragma omp parallel for
+	for(int i = 0; i< temp_sections.size(); i++)
+		temp_sections[i]->UpdateAll(dt);
 }
 
 void Millipede::UpdateTipSphere(){

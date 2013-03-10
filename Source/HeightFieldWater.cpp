@@ -9,6 +9,7 @@
 #include "World.h"
 #include "Sphere.h"
 #include "HeightFieldWater.h"
+#define NOMINMAX
 
 HFWater::HFWater(Eigen::Vector2i res, double dx, double depth){
 	m_res_x = res.x();
@@ -318,12 +319,19 @@ void HFWater::UpdateAll(double dt){
 				continue;//this is a hack
 			assert(current_sphere->m_Size[0] == current_sphere->m_Size[1] && current_sphere->m_Size[2] == current_sphere->m_Size[1]);
 			//only check the box of water that is in sphere's y direction shadow
+#ifdef WIN32
+			sx = max((current_sphere->m_Center[0] - current_sphere->m_Size[0] +  m_size_x*0.5)/m_dx - 2, (double)0);
+			sz = max((current_sphere->m_Center[2] - current_sphere->m_Size[2] +  m_size_z*0.5)/m_dx - 2, (double)0);
+
+			ex = min((current_sphere->m_Center[0] + current_sphere->m_Size[0] + m_size_x*0.5)/m_dx + 2, (double)m_res_x);
+			ez = min((current_sphere->m_Center[2] + current_sphere->m_Size[2] + m_size_z*0.5)/m_dx + 2, (double)m_res_z);
+#else
 			sx = std::max((current_sphere->m_Center[0] - current_sphere->m_Size[0] +  m_size_x*0.5)/m_dx - 2, (double)0);
 			sz = std::max((current_sphere->m_Center[2] - current_sphere->m_Size[2] +  m_size_z*0.5)/m_dx - 2, (double)0);
 
 			ex = std::min((current_sphere->m_Center[0] + current_sphere->m_Size[0] + m_size_x*0.5)/m_dx + 2, (double)m_res_x);
 			ez = std::min((current_sphere->m_Center[2] + current_sphere->m_Size[2] + m_size_z*0.5)/m_dx + 2, (double)m_res_z);
-
+#endif
 			for(int ix= sx; ix< ex; ix++)
 				for(int iz = sz; iz< ez; iz++){
 					//intersection of sphere and water column
