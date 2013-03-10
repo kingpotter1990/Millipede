@@ -37,6 +37,9 @@ private:
 	double m_rot_v_phi;
 	double m_rot_v_alpha;
 	int m_l_r;//1 left, -1 right
+	double m_timer;
+	double m_omega1;
+	double m_omega2;
 public:
 	Eigen::Vector3f m_root_position;
 	Eigen::Vector3f m_tip_position;

@@ -9,9 +9,12 @@ void MillipedeAntenna::InitNeuroNet(MillipedeHead* a_head, double a_length, int 
 	m_head = a_head;
 	m_Drawer = m_head->m_Drawer;
 	m_n_segment = 20;
-	m_segment_length = 0.5;
+	m_segment_length = 0.3;
+	m_omega1 = 400;
+	m_omega2 = 400;
 	m_theta1 = new double[m_n_segment];
 	m_theta2 = new double[m_n_segment];
+	m_timer = 0;
 	for(int i = 0;i<m_n_segment; i++)
 	{
 		m_theta1[i] = 0;
@@ -100,23 +103,36 @@ void MillipedeAntenna::Draw(int type, const Camera& camera, const Light& light){
 
 void MillipedeAntenna::UpdateAll(double a_dt){
 	//update antennae angles
-	double omega1 = 1, omega2 = 1, k1 = 0.1, k2 = 0.1;
+	m_timer += a_dt;
+
+	double k1 = 6, k2 = 6;
+	double theta1, theta2;
+
 	for(int i = 0; i < m_n_segment; i++){
-		m_theta1[i] = 2*sin(m_head->m_time*omega1 + k1*i);	
-		m_theta2[i] = 2*sin(m_head->m_time*omega2 + k2*i);	
+		theta1 = m_timer*m_omega1 - k1*i;
+		theta2 = m_timer*m_omega2 - k2*i;
+		m_theta1[i] = 2*sin(theta1*DegreesToRadians);
+		m_theta2[i] = 1*sin(theta2*DegreesToRadians);
 	}
+
+	if(m_timer*m_omega1 > 360*3){
+		m_omega1 = Util::getRand()*200 + 300;
+		m_omega2 = Util::getRand()*200 + 300;
+		m_timer = 0.0;
+	}
+
 
 	m_alpha += m_rot_v_alpha*a_dt; 
 	m_phi += m_rot_v_phi*a_dt;
 
 	if((m_rot_v_phi > 0 && m_phi > m_target_phi) || (m_rot_v_phi <0 && m_phi < m_target_phi)){
-		m_target_phi = (Util::getRand() - 0.5)*30 + 30;
-		m_rot_v_phi = 50*(m_phi < m_target_phi ? 1:-1);
+		m_target_phi = (Util::getRand() - 0.5)*60 + 30;
+		m_rot_v_phi = 80*(m_phi < m_target_phi ? 1:-1);
 	}
 
 	if((m_rot_v_alpha > 0 && m_alpha > m_target_alpha) || (m_rot_v_alpha <0 && m_alpha < m_target_alpha)){
-		m_target_alpha = (Util::getRand() - 0.5)*30;
-		m_rot_v_alpha = 50*(m_alpha < m_target_alpha ? 1:-1);
+		m_target_alpha = (Util::getRand() - 0.5)*20;
+		m_rot_v_alpha = 80*(m_alpha < m_target_alpha ? 1:-1);
 	}
 
 	UpdateTipRootPosition();
