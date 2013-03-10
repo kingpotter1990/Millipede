@@ -39,7 +39,7 @@ void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 
 	m_gamma = 0;//fixed
 
-	m_leg_rotation_velocity = 1000;
+	m_leg_rotation_velocity = 100;
 	
 	//init the previous and next and neighbor legs
 	m_prev = NULL;

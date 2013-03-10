@@ -28,7 +28,7 @@ public:
 	virtual void UpdateNeuronNet(double dt);
 	virtual void UpdatePBD(double dt);
 	virtual void UpdateAll(double dt);
-	virtual void Output2File(std::ofstream* filestream);
+	virtual void Output2File(std::ofstream* filestream, int type);
 public:
 	MillipedeLeg* m_left_leg;
 	MillipedeLeg* m_right_leg;

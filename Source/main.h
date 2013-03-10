@@ -38,7 +38,9 @@ Terrain* myTerrain = NULL;
 Millipede* myMillipedes;
 Drawer* g_Drawer;
 Sphere* mySphere = NULL;
-std::ofstream*  myOutputFile;
+std::ofstream*  TerrainOutput;
+std::ofstream*  BugOutput;
+std::ofstream*  WaterOutput;
 
 int STOP = -1;//stop the animation
 int CONTROL = -1;//control the millipede
@@ -46,6 +48,7 @@ int OUTPUT = -1;//control output
 int PICK = -1;//pick mode or not
 int DRAW_TYPE = DRAW_PHONG;
 
+TerrainType myTerrainType;
 Eigen::Vector3f START_POSITION;
 Timer TM ;
 double TIME;

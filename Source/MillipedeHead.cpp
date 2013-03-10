@@ -8,8 +8,8 @@ void MillipedeAntenna::InitNeuroNet(MillipedeHead* a_head, double a_length, int 
 	m_l_r = a_l_r;
 	m_head = a_head;
 	m_Drawer = m_head->m_Drawer;
-	m_n_segment = 20;
-	m_segment_length = 0.3;
+	m_n_segment = 28;
+	m_segment_length = new double[m_n_segment]; 
 	m_omega1 = 400;
 	m_omega2 = 400;
 	m_theta1 = new double[m_n_segment];
@@ -17,6 +17,7 @@ void MillipedeAntenna::InitNeuroNet(MillipedeHead* a_head, double a_length, int 
 	m_timer = 0;
 	for(int i = 0;i<m_n_segment; i++)
 	{
+		m_segment_length[i] = 0.2*i/(m_n_segment-1) + 0.3*(m_n_segment - 1 - i)/(m_n_segment - 1);//from 0.2 to 0.4
 		m_theta1[i] = 0;
 		m_theta2[i] = 0;
 	}
@@ -44,7 +45,7 @@ void MillipedeAntenna::UpdateTipRootPosition(){
 	for(int i = 0; i < m_n_segment; i++){
 		m_Drawer->RotateY(m_l_r*m_theta1[i]);
 		m_Drawer->RotateZ(m_theta2[i]);
-		m_Drawer->Translate(Eigen::Vector3f(-m_segment_length,0,0));
+		m_Drawer->Translate(Eigen::Vector3f(-m_segment_length[i],0,0));
 	}
 	m_tip_position = m_Drawer->CurrentOrigin();//update tip position
 
@@ -74,29 +75,17 @@ void MillipedeAntenna::Draw(int type, const Camera& camera, const Light& light){
 	m_Drawer->RotateY(m_l_r*m_phi);
 	m_Drawer->RotateZ(-m_alpha);
 
-	m_Drawer->PushMatrix();
-	m_Drawer->Scale(Eigen::Vector3f(0.2,0.2,0.2));
-	m_Drawer->SetColor(Eigen::Vector3f(1,1,1));
-	m_Drawer->DrawSphere(type,camera,light);
-	m_Drawer->PopMatrix();
 	for(int i = 0; i < m_n_segment; i++){
-		m_Drawer->RotateY(m_l_r*m_theta1[i]);
-		m_Drawer->RotateZ(m_theta2[i]);
-
 		m_Drawer->PushMatrix();
-		m_Drawer->Translate(Eigen::Vector3f(-0.5*m_segment_length,0,0));
-		m_Drawer->RotateY(90);
-		m_Drawer->Scale(Eigen::Vector3f(0.2,0.2,m_segment_length));
-		m_Drawer->DrawCylinder(type, camera, light);
-		m_Drawer->PopMatrix();
-
-		m_Drawer->Translate(Eigen::Vector3f(-m_segment_length,0,0));
-		
-		m_Drawer->PushMatrix();
-		m_Drawer->Scale(Eigen::Vector3f(0.2,0.2,0.2));
+		m_Drawer->Scale(m_segment_length[i]);
 		m_Drawer->SetColor(Eigen::Vector3f(1,0,0));
 		m_Drawer->DrawSphere(type,camera,light);
 		m_Drawer->PopMatrix();
+
+		m_Drawer->RotateY(m_l_r*m_theta1[i]);
+		m_Drawer->RotateZ(m_theta2[i]);
+		m_Drawer->Translate(Eigen::Vector3f(-m_segment_length[i],0,0));
+		
 	}
 
 }
@@ -151,26 +140,15 @@ void MillipedeAntenna::Output2File(std::ofstream* filestream){
 	m_Drawer->RotateY(m_l_r*m_phi);
 	m_Drawer->RotateZ(-m_alpha);
 
+	for(int i = 0; i < m_n_segment; i++){
 	center = m_Drawer->CurrentOrigin();
-	radius = 0.2;
+	radius = m_segment_length[i]/1.2;
 	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
 	(*filestream)<<"sphere{"<<"<"<<center[0]<<","<<center[1]<<","<<center[2]<<">"<<","<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
 
-	m_Drawer->Translate(Eigen::Vector3f(-m_segment_length*m_n_segment,0,0));
-	point_a = center;
-	point_b = m_Drawer->CurrentOrigin();
-	radius = 0.2;
-	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
-	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius/2.0<<"}"<<std::endl;
-	(*filestream)<<"//END CYLINDER "<<std::endl;
-
-	center = point_b;
-	radius = 0.2;
-	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
-	(*filestream)<<"sphere{"<<"<"<<center[0]<<","<<center[1]<<","<<center[2]<<">"<<","<<radius<<"}"<<std::endl;
-	(*filestream)<<"//END SPHERE "<<std::endl;
-
+	m_Drawer->Translate(Eigen::Vector3f(-m_segment_length[i],0,0));
+	}
 	(*filestream)<<"//END ANTENNA "<<m_l_r<<std::endl;
 }
 
@@ -439,8 +417,8 @@ void MillipedeHead::Draw(int type, const Camera& camera, const Light& light){
 	 m_right_antenna->Draw(type, camera, light);
 }
 
-void MillipedeHead::Output2File(std::ofstream* filestream){
-	
+void MillipedeHead::Output2File(std::ofstream* filestream, int type){
+	if(type == 0){	
 	//output for maya python script
 	(*filestream)<<"//BEGIN HEAD"<<std::endl;
 	
@@ -466,15 +444,12 @@ void MillipedeHead::Output2File(std::ofstream* filestream){
 	//m_right_antenna->Output2File(filestream);
 	(*filestream)<<"//END HEAD"<<std::endl;
 
-
-
-/* output for povray
+	}
+	else if(type == 1){
+	// output for povray
 	(*filestream)<<"//BEGIN HEAD"<<std::endl;
 	Cube::Output2File(filestream);
 	//no legs
-	//two antenna
-	m_left_antenna->Output2File(filestream);
-	m_right_antenna->Output2File(filestream);
 	(*filestream)<<"//END HEAD"<<std::endl;
-*/
+	}
 }

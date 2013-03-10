@@ -28,19 +28,27 @@ void initScene(){
 	//set up the world
 	myWorld = new World(51000);
     std::cout<<"Setting up the World..."<<std::endl;
-
-	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(20,20), 50, TERRAIN_FLAT
+	myTerrainType = TERRAIN_FLAT;
+	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(20,20), 50, myTerrainType
 		, OBSTACLE_OFF, FOOD_OFF);
 
-	myOutputFile = new std::ofstream;
-	//myOutputFile->open("millipede.mel");
-	myOutputFile->open("water.inc");
+	TerrainOutput = new std::ofstream;
+	BugOutput = new std::ofstream;
+	WaterOutput = new std::ofstream;
+	//output static terrain mesh
+	TerrainOutput->open("Terrain.inc");
+	myTerrain->Output2File(TerrainOutput);
+	TerrainOutput->close();
+
+	BugOutput->open("Bug.inc");
+	WaterOutput->open("Water.inc");
 	/*
-	(*myOutputFile)<<"string $path = \"D:/TEMP/\";"<<std::endl<<
+	(*BugOutput)<<"string $path = \"D:/TEMP/\";"<<std::endl<<
 	"string $filelist[] = `getFileList -folder $path -filespec \"*.obj\"`;"<<std::endl<<
 	"for($i=0; $i <= (`size $filelist` - 1); $i++)"<<std::endl
 		<<"sysFile -delete ($path+$filelist[$i]);"<<std::endl<<std::endl;
-	*/
+		*/
+
 	reinitScene();
 
 	std::cout<<"Starting Animation..."<<std::endl;
@@ -146,7 +154,8 @@ void keyboardCallback(unsigned char key, int x, int y){
     
 	if ( key == EscKey || key == 'q' || key == 'Q' ) 
     {
-		myOutputFile->close();
+		BugOutput->close();
+		WaterOutput->close();
         exit(0);
     }
     if( key == 'o'|| key == 'O')
@@ -313,36 +322,21 @@ void idleCallback(){
 void OUTPUT_ONE_FRAME(){
 
 	FRAME_COUNT++;
-	(*myOutputFile)<<"//Frame "<<FRAME_COUNT<<std::endl;
-	//Terrain
-	myTerrain->Output2File(myOutputFile);
-	OUTPUT *= -1;//output only one frame
+	
+	//Water
+	if(myTerrainType == TERRAIN_WATER){
+		(*WaterOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
+		myTerrain->m_water->Output2File(WaterOutput);
+	}
 	//millipede
-/*	
-
-	(*myOutputFile)<<"currentTime "<<FRAME_COUNT<<" ;"<<std::endl;
-	myMillipedes[0].Output2File(myOutputFile);
-	(*myOutputFile)<<"//set one key frame"<<std::endl;
-	(*myOutputFile)<<"select -r "
-		"s1 s1l1 s1l2 s1r1 s1r2 s2 s2l1 s2l2 s2r1 s2r2 s3 s3l1 s3l2 s3r1 s3r2 s4 s4l1 s4l2 s4r1 s4r2 "
-		"s5 s5l1 s5l2 s5r1 s5r2 s6 s6l1 s6l2 s6r1 s6r2 s7 s7l1 s7l2 s7r1 s7r2 s8 s8l1 s8l2 s8r1 s8r2 "
-		"s9 s9l1 s9l2 s9r1 s9r2 s10 s10l1 s10l2 s10r1 s10r2 s11 s11l1 s11l2 s11r1 s11r2 s12 s12l1 s12l2 s12r1 s12r2 "
-		"s13 s13l1 s13l2 s13r1 s13r2 s14 s14l1 s14l2 s14r1 s14r2 s15 s15l1 s15l2 s15r1 s15r2 s16 s16l1 s16l2 s16r1 s16r2 "
-		"s17 s17l1 s17l2 s17r1 s17r2 s18 s18l1 s18l2 s18r1 s18r2 s19 s19l1 s19l2 s19r1 s19r2 head headl headr mouthl mouthr tail;"<<std::endl;
-
-	(*myOutputFile)<<"setKeyframe -breakdown 0 -hierarchy none -controlPoints 0 -shape 0 {"
-		"\"s1\",\"s1l1\",\"s1l2\",\"s1r1\",\"s1r2\",\"s2\",\"s2l1\",\"s2l2\",\"s2r1\",\"s2r2\",\"s3\",\"s3l1\",\"s3l2\",\"s3r1\",\"s3r2\",\"s4\",\"s4l1\",\"s4l2\",\"s4r1\",\"s4r2\","
-		"\"s5\",\"s5l1\",\"s5l2\",\"s5r1\",\"s5r2\",\"s6\",\"s6l1\",\"s6l2\",\"s6r1\",\"s6r2\",\"s7\",\"s7l1\",\"s7l2\",\"s7r1\",\"s7r2\",\"s8\",\"s8l1\",\"s8l2\",\"s8r1\",\"s8r2\","
-		"\"s9\",\"s9l1\",\"s9l2\",\"s9r1\",\"s9r2\",\"s10\",\"s10l1\",\"s10l2\",\"s10r1\",\"s10r2\",\"s11\",\"s11l1\",\"s11l2\",\"s11r1\",\"s11r2\",\"s12\",\"s12l1\",\"s12l2\",\"s12r1\",\"s12r2\","
-		"\"s13\",\"s13l1\",\"s13l2\",\"s13r1\",\"s13r2\",\"s14\",\"s14l1\",\"s14l2\",\"s14r1\",\"s14r2\",\"s15\",\"s15l1\",\"s15l2\",\"s15r1\",\"s15r2\",\"s16\",\"s16l1\",\"s16l2\",\"s16r1\",\"s16r2\","
-		"\"s17\",\"s17l1\",\"s17l2\",\"s17r1\",\"s17r2\",\"s18\",\"s18l1\",\"s18l2\",\"s18r1\",\"s18r2\",\"s19\",\"s19l1\",\"s19l2\",\"s19r1\",\"s19r2\",\"head\",\"headl\",\"headr\",\"mouthl\",\"mouthr\",\"tail\"};"<<std::endl;
-	/*
-	(*myOutputFile)<<"//save to obj"<<std::endl;
-	(*myOutputFile)<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
-		"-ea \"D:/TEMP/MillipedeFrame"<<FRAME_COUNT<<".obj\";"<<std::endl;
-		*/
+	std::string filename = "FRAME_";
+	filename += std::to_string(FRAME_COUNT);
+	filename += ".inc";
+	BugOutput->open(filename);
+	(*BugOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
+	myMillipedes[0].Output2File(BugOutput,1);//0 is for maya model, 1 is for physics
+	BugOutput->close();
 }
-
 
 int main (int argc, char ** argv){
 

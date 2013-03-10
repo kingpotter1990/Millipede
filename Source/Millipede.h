@@ -28,7 +28,7 @@ public:
 	bool IsTailFixed();
 	void ReleaseHead();
 	void ReleaseTail();
-	void Output2File(std::ofstream* filestream);
+	void Output2File(std::ofstream* filestream, int type);
 protected:
 	void InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length);
 	void InitNeuroNet(Terrain* a_terrain);

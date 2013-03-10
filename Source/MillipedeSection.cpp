@@ -160,7 +160,8 @@ void MillipedeRigidSection::UpdatePBD(double dt){
 	UpdateFixed();
 }
 
-void MillipedeRigidSection::Output2File(std::ofstream* filestream){
+void MillipedeRigidSection::Output2File(std::ofstream* filestream, int type){
+	if(type == 0){
 	//output for maya script
 
 	double alpha1 = 22.7721822, alpha2 = 42.6333898;
@@ -192,8 +193,9 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream){
 	(*filestream)<<"rotate -r -os 0 0 "<<-m_right_leg->GetBeta() + alpha2<<" ;"<<std::endl;
 
 	(*filestream)<<"//END SECTION "<< m_section_id <<std::endl;
-	
-/* Output for povray
+	}
+	else if(type == 1){
+	// Output for povray
 	(*filestream)<<"//BEGIN RIGID ID"<<m_section_id<<std::endl;
 
 	Cube::Output2File(filestream);
@@ -201,5 +203,5 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream){
 	m_right_leg->Output2File(filestream);
 
 	(*filestream)<<"//END RIGID ID"<<m_section_id<<std::endl<<std::endl;
-*/	
+	}	
 }

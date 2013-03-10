@@ -44,8 +44,9 @@ local.properties
 
 # Output results
 Output/
-*.txt
-
+Source/*.txt
+Source/*.inc
+Source/*.mel
 #Boost
 Source/Boost/*
 

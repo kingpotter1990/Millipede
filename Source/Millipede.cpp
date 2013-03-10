@@ -409,13 +409,15 @@ void Millipede::ReleaseTail(){
 	m_tail->m_fixed = false;
 }
 
-void Millipede::Output2File(std::ofstream* filestream){
+void Millipede::Output2File(std::ofstream* filestream, int type){
 
+	(*filestream)<<"//Begin Millipede\n"<<std::endl;
+if(type == 0){
 	//output for the python script in maya
 	 // rigid part start
     //output head
-	(*filestream)<<"//Begin Millipede\n"<<std::endl;
-    m_head->Output2File(filestream);
+
+    m_head->Output2File(filestream, 0);
 
     //output each body section
     MillipedeRigidSection *temp_rigid_section;
@@ -424,7 +426,7 @@ void Millipede::Output2File(std::ofstream* filestream){
 
     //rigid phase
     while(1){
-        temp_rigid_section->Output2File(filestream);
+        temp_rigid_section->Output2File(filestream, 0);
         temp_soft_section = temp_rigid_section->m_next;
         if(temp_soft_section){
             temp_rigid_section = temp_soft_section->m_next;
@@ -436,14 +438,33 @@ void Millipede::Output2File(std::ofstream* filestream){
     // soft part end
 	//tail ajdustment
 	(*filestream)<<"setAttr \"tail.rotate\" -13 0 0;"<<std::endl;
-    (*filestream)<<"//End Millipede\n"<<std::endl;
-/* output for povray
+	(*filestream)<<"//set one key frame"<<std::endl;
+	(*filestream)<<"select -r "
+		"s1 s1l1 s1l2 s1r1 s1r2 s2 s2l1 s2l2 s2r1 s2r2 s3 s3l1 s3l2 s3r1 s3r2 s4 s4l1 s4l2 s4r1 s4r2 "
+		"s5 s5l1 s5l2 s5r1 s5r2 s6 s6l1 s6l2 s6r1 s6r2 s7 s7l1 s7l2 s7r1 s7r2 s8 s8l1 s8l2 s8r1 s8r2 "
+		"s9 s9l1 s9l2 s9r1 s9r2 s10 s10l1 s10l2 s10r1 s10r2 s11 s11l1 s11l2 s11r1 s11r2 s12 s12l1 s12l2 s12r1 s12r2 "
+		"s13 s13l1 s13l2 s13r1 s13r2 s14 s14l1 s14l2 s14r1 s14r2 s15 s15l1 s15l2 s15r1 s15r2 s16 s16l1 s16l2 s16r1 s16r2 "
+		"s17 s17l1 s17l2 s17r1 s17r2 s18 s18l1 s18l2 s18r1 s18r2 s19 s19l1 s19l2 s19r1 s19r2 head headl headr mouthl mouthr tail;"<<std::endl;
 
+	(*filestream)<<"setKeyframe -breakdown 0 -hierarchy none -controlPoints 0 -shape 0 {"
+		"\"s1\",\"s1l1\",\"s1l2\",\"s1r1\",\"s1r2\",\"s2\",\"s2l1\",\"s2l2\",\"s2r1\",\"s2r2\",\"s3\",\"s3l1\",\"s3l2\",\"s3r1\",\"s3r2\",\"s4\",\"s4l1\",\"s4l2\",\"s4r1\",\"s4r2\","
+		"\"s5\",\"s5l1\",\"s5l2\",\"s5r1\",\"s5r2\",\"s6\",\"s6l1\",\"s6l2\",\"s6r1\",\"s6r2\",\"s7\",\"s7l1\",\"s7l2\",\"s7r1\",\"s7r2\",\"s8\",\"s8l1\",\"s8l2\",\"s8r1\",\"s8r2\","
+		"\"s9\",\"s9l1\",\"s9l2\",\"s9r1\",\"s9r2\",\"s10\",\"s10l1\",\"s10l2\",\"s10r1\",\"s10r2\",\"s11\",\"s11l1\",\"s11l2\",\"s11r1\",\"s11r2\",\"s12\",\"s12l1\",\"s12l2\",\"s12r1\",\"s12r2\","
+		"\"s13\",\"s13l1\",\"s13l2\",\"s13r1\",\"s13r2\",\"s14\",\"s14l1\",\"s14l2\",\"s14r1\",\"s14r2\",\"s15\",\"s15l1\",\"s15l2\",\"s15r1\",\"s15r2\",\"s16\",\"s16l1\",\"s16l2\",\"s16r1\",\"s16r2\","
+		"\"s17\",\"s17l1\",\"s17l2\",\"s17r1\",\"s17r2\",\"s18\",\"s18l1\",\"s18l2\",\"s18r1\",\"s18r2\",\"s19\",\"s19l1\",\"s19l2\",\"s19r1\",\"s19r2\",\"head\",\"headl\",\"headr\",\"mouthl\",\"mouthr\",\"tail\"};"<<std::endl;
+/*	
+	(*BugOutput)<<"//save to obj"<<std::endl;
+	(*BugOutput)<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
+		"-ea \"D:/TEMP/MillipedeFrame"<<FRAME_COUNT<<".obj\";"<<std::endl;
+		*/
+}
+else if(type == 1){
+// output for povray
     // rigid part start
     (*filestream)<<"#declare MillipedeRigidPart = union {\n"<<std::endl;
 
     //output head
-    m_head->Output2File(filestream);
+    m_head->Output2File(filestream, 1);
 
     //output each body section
     MillipedeRigidSection *temp_rigid_section;
@@ -452,7 +473,7 @@ void Millipede::Output2File(std::ofstream* filestream){
 
     //rigid phase
     while(1){
-        temp_rigid_section->Output2File(filestream);
+        temp_rigid_section->Output2File(filestream, 1);
         temp_soft_section = temp_rigid_section->m_next;
         if(temp_soft_section){
             temp_rigid_section = temp_soft_section->m_next;
@@ -464,11 +485,16 @@ void Millipede::Output2File(std::ofstream* filestream){
     // rigid part end
     (*filestream)<<"}\n"<<std::endl;
 
+    (*filestream)<<"#declare MillipedeAntenneaPart = union { \n"<<std::endl; 
+	m_head->m_left_antenna->Output2File(filestream);
+	m_head->m_right_antenna->Output2File(filestream);
+    (*filestream)<<"}\n"<<std::endl;
+
     // soft part start
     (*filestream)<<"#declare MillipedeSoftPart = union { \n"<<std::endl;
-
     //soft phase
 	m_head->m_next->Output2File(filestream);//first soft
+	//two antenna
     temp_rigid_section = m_head->m_next->m_next;
     while(1){
         temp_soft_section = temp_rigid_section->m_next;
@@ -482,5 +508,10 @@ void Millipede::Output2File(std::ofstream* filestream){
 
     // soft part end
     (*filestream)<<"}\n"<<std::endl;
-	*/
+	
+}
+else{
+	assert(-1);
+}
+    (*filestream)<<"//End Millipede\n"<<std::endl;
 }

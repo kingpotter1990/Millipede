@@ -27,7 +27,7 @@ public:
 private:
 	MillipedeHead* m_head;
 	int m_n_segment;
-	double m_segment_length;//length of a segment
+	double* m_segment_length;//length of a segment
 	double* m_theta1;
 	double* m_theta2;
 	double m_phi;
@@ -62,7 +62,7 @@ public:
 	void EnterMode(MILLIPEDE_STATUS a_mode);
 	void ExitControl(){EnterMode(m_prev_mode);};//exit current mode
 	double GetLinearSpeed(){return m_linear_speed;};
-	void Output2File(std::ofstream* filestream);
+	void Output2File(std::ofstream* filestream, int type);
 
 protected:
 	void KeepHeadBalance(double a_dt);
