@@ -7,11 +7,17 @@ global_settings {
 
 // camera -----------------------------------------------------------
 #declare Cam0 = camera {/*ultra_wide_angle*/ angle 65 
-                        location  <0 , 15.0 ,-30.0>*0.7
-                        look_at   <0 , 0 , 0.0>}
+                        location  <0 , 15.0 ,-30.0>*0.9
+                        look_at   <0 , 0 , 0.0>
+  // focal_point < 0, 0, 0>    // pink sphere in focus
+  //   aperture 0.1
+  //    blur_samples 2     // more samples, higher quality image
+
+}
 camera{Cam0}
 // sun ---------------------------------------------------------------
 light_source{<1500,2500,-2500> color White }
+
 
 // sky ---------------------------------------------------------------------
 sky_sphere { pigment { gradient <0,1,0>
