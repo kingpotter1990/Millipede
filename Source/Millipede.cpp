@@ -384,12 +384,29 @@ void Millipede::SetControl(bool ctr){
 	else m_head->ExitControl();
 };
 
+bool Millipede::IsHeadFixed(){
+	return m_head->m_fixed;
+}
+
+bool Millipede::IsTailFixed(){
+	return m_tail->m_fixed;
+}
+
 void Millipede::FixHead(){
 	m_head->m_fixed = true;
 }
 
+void Millipede::ReleaseHead(){
+
+	m_head->m_fixed = false;
+}
+
 void Millipede::FixTail(){
 	m_tail->m_fixed = true;
+}
+
+void Millipede::ReleaseTail(){
+	m_tail->m_fixed = false;
 }
 
 void Millipede::Output2File(std::ofstream* filestream){

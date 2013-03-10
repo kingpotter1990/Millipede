@@ -6,6 +6,7 @@
 #include "Cube.h"
 #include "RigidCube.h"
 #include "Sphere.h"
+#include "MillipedeHead.h"
 #include "Millipede.h"
 #include "HeightFieldWater.h"
 #include "Terrain.h"
@@ -45,10 +46,12 @@ int OUTPUT = -1;//control output
 int PICK = -1;//pick mode or not
 int DRAW_TYPE = DRAW_PHONG;
 
+Eigen::Vector3f START_POSITION;
 Timer TM ;
 double TIME;
 double TIME_LAST;
 double DTIME;
+double SIM_TIME = 0;
 double FRAME_TIME = 0;
 int FRAME_COUNT = 0;
 GLfloat CursorX;

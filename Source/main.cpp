@@ -27,7 +27,6 @@ void initScene(){
 
 	//set up the world
 	myWorld = new World(51000);
-	FRAME_COUNT = 0;
     std::cout<<"Setting up the World..."<<std::endl;
 
 	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(20,20), 50, TERRAIN_FLAT
@@ -51,6 +50,9 @@ void initScene(){
 
 void reinitScene(){
 
+	FRAME_COUNT = 0;
+	SIM_TIME = 0.0;
+
 	//press SpaceBar to trigger
 
 	myWorld->Clear();
@@ -71,9 +73,10 @@ void reinitScene(){
 		}
 */
 	myMillipedes = new Millipede;
-	myMillipedes->Init(Eigen::Vector3f(10,11,0),18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
-	//myMillipedes->FixHead();
-	//myMillipedes->FixTail();
+	START_POSITION = Eigen::Vector3f(10,11,0);
+	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
+	myMillipedes->FixHead();
+	myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);
 	
 	//mySphere= new Sphere(Eigen::Vector3f(0,15,0), Eigen::Vector3f(3,3,3), Eigen::Vector3f(1,0,1));
@@ -154,6 +157,12 @@ void keyboardCallback(unsigned char key, int x, int y){
     {
         STOP *= -1; 
     }
+	if( key == 'h' || key == 'H'){
+		myMillipedes->ReleaseHead();
+	}
+	if( key == 't' || key == 'T'){
+		myMillipedes->ReleaseTail();
+	}
 	if( key == 'c'|| key == 'C')
 	{
 		CONTROL *= -1;
@@ -264,6 +273,19 @@ void cursorCallback(int x, int y){
 	CursorY = double(Window_Height-2*y)/(Window_Height);
 }
 
+void HackAnimation(double dt){
+	if(myMillipedes == NULL)
+		return;
+	if(myMillipedes->IsTailFixed()){
+		//sway the tail, for demonstration of physics
+		if(SIM_TIME > 2.0 && SIM_TIME < 4.0)
+			myMillipedes->m_tail->m_Center[2] =  START_POSITION[2] + 2*sin(180*SIM_TIME*DegreesToRadians); 	
+
+		if(SIM_TIME > 6.0 && SIM_TIME < 8.0)
+			myMillipedes->m_tail->m_Center[1] =  START_POSITION[1] + 2*sin(180*SIM_TIME*DegreesToRadians); 	
+	}
+
+}
 void idleCallback(){
     
 	TIME = TM.GetElapsedTime() ;
@@ -275,6 +297,8 @@ void idleCallback(){
 	*/
 	if(STOP == -1){
 	//only update physics
+		SIM_TIME += 0.02;
+		HackAnimation(0.02);
 		myWorld->Update(0.02);//The real physics time step is much smaller
 
 		glutPostRedisplay() ; //draw new frame, the display is not real physics time

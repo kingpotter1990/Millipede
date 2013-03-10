@@ -24,6 +24,10 @@ public:
 	void SetControl(bool ctr);
 	void FixHead();
 	void FixTail();
+	bool IsHeadFixed();
+	bool IsTailFixed();
+	void ReleaseHead();
+	void ReleaseTail();
 	void Output2File(std::ofstream* filestream);
 protected:
 	void InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length);
