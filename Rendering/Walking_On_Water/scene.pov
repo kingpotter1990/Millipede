@@ -1,5 +1,6 @@
 #include "colors.inc"
 #include "textures.inc"
+#include "frame1_POV_geom.inc"
 // #include "water.inc"
 global_settings { 
 //  max_trace_level 20
@@ -7,7 +8,7 @@ global_settings {
 
 // camera -----------------------------------------------------------
 #declare Cam0 = camera {/*ultra_wide_angle*/ angle 65 
-                        location  <0 , 15.0 ,-30.0>*0.9
+                        location  <0 , 15.0 ,-30.0>
                         look_at   <0 , 0 , 0.0>
   // focal_point < 0, 0, 0>    // pink sphere in focus
   //   aperture 0.1
@@ -97,4 +98,7 @@ object{
 	
 }
 
-
+object{
+      frame1_
+  rotate<0,90,0>
+      }
