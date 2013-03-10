@@ -146,7 +146,8 @@ void MillipedeAntenna::Output2File(std::ofstream* filestream){
 	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
 	(*filestream)<<"sphere{"<<"<"<<center[0]<<","<<center[1]<<","<<center[2]<<">"<<","<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
-
+	m_Drawer->RotateY(m_l_r*m_theta1[i]);
+	m_Drawer->RotateZ(m_theta2[i]);
 	m_Drawer->Translate(Eigen::Vector3f(-m_segment_length[i],0,0));
 	}
 	(*filestream)<<"//END ANTENNA "<<m_l_r<<std::endl;

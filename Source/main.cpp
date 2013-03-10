@@ -82,7 +82,8 @@ void reinitScene(){
 */
 	myMillipedes = new Millipede;
 	START_POSITION = Eigen::Vector3f(10,11,0);
-	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
+//	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
+	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(1.0,1.0,2.422),1, myTerrain);
 	myMillipedes->FixHead();
 	myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);
