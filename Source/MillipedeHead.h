@@ -30,6 +30,7 @@ private:
 	double* m_segment_length;//length of a segment
 	double* m_theta1;
 	double* m_theta2;
+	Eigen::Vector3f* m_sensor_pos;
 	double m_phi;
 	double m_alpha;
 	double m_target_phi;

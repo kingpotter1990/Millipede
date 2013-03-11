@@ -28,7 +28,7 @@ void initScene(){
 	//set up the world
 	myWorld = new World(51000);
     std::cout<<"Setting up the World..."<<std::endl;
-	myTerrainType = TERRAIN_FLAT;
+	myTerrainType = TERRAIN_TEST;
 	myTerrain = new Terrain(Eigen::Vector2f(500,500), Eigen::Vector2i(20,20), 50, myTerrainType
 		, OBSTACLE_OFF, FOOD_ON);
 
@@ -81,9 +81,8 @@ void reinitScene(){
 		}
 */
 	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(10,11,0);
-//	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
-	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(1.0,1.0,2.422),1, myTerrain);
+	START_POSITION = Eigen::Vector3f(10,6,0);
+	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.2,1.0,2.422),0.807895, myTerrain);
 	myMillipedes->FixHead();
 	myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);
