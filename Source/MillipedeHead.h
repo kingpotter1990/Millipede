@@ -23,7 +23,7 @@ public:
 	bool SenseObstacle();
 	bool SenseFood(double& intensity);
 	void Draw(int type, const Camera& camera, const Light& light);
-	void Output2File(std::ofstream* filestream);
+	void Output2File(std::ofstream* filestream, int type);
 private:
 	MillipedeHead* m_head;
 	int m_n_segment;

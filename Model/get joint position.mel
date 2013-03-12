@@ -1,0 +1,19 @@
+string $name;
+int $i;
+for($i = 0; $i < 28; $i++){
+    $name = "al" + string($i);
+    print $name;
+    print "\n";
+    float $positions[3] = `xform -ws -q -t $name`;
+    print $positions;
+    print "\n";
+}
+
+for($i = 0; $i < 28; $i++){
+    $name = "ar" + string($i);
+    print $name;
+    print "\n";
+    float $positions[3] = `xform -ws -q -t $name`;
+    print $positions;
+    print "\n";
+}

@@ -422,7 +422,8 @@ if(type == 0){
     //output head
 
     m_head->Output2File(filestream, 0);
-
+	m_head->m_left_antenna->Output2File(filestream, 0);
+	m_head->m_right_antenna->Output2File(filestream, 0);
     //output each body section
     MillipedeRigidSection *temp_rigid_section;
     MillipedeSoftSection *temp_soft_section;
@@ -490,8 +491,8 @@ else if(type == 1){
     (*filestream)<<"}\n"<<std::endl;
 
     (*filestream)<<"#declare MillipedeAntenneaPart = union { \n"<<std::endl; 
-	m_head->m_left_antenna->Output2File(filestream);
-	m_head->m_right_antenna->Output2File(filestream);
+	m_head->m_left_antenna->Output2File(filestream,1);
+	m_head->m_right_antenna->Output2File(filestream,1);
     (*filestream)<<"}\n"<<std::endl;
 
     // soft part start
