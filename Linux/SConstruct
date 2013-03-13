@@ -42,6 +42,10 @@ else:
 compile_flags.append('-Wno-deprecated')
 compile_flags.append('-fpermissive')
 compile_flags.append('-std=c++0x')
+compile_flags.append('-fopenmp')
+libs.append('gomp')
+
+
 
 #############################################################################
 #    What Really Matters
