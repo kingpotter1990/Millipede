@@ -45,6 +45,11 @@ The head's orientation-obj is from the terrain's normal. [Done]
 - Smooth Leg rotation
 - Antenna and Mouth/detail animation[Done]
 - Rendering
+	# -Rigid Deformable Coupling [For the physics]
+	# -Physics Model, hang in the sky, fall to the ground, walkin into the cave [For the physics, leg controller, leg need different color to show different phases]
+	# -Real Model of centipede, walking out from the cave, walk over cylinder surface obstacle terrain, then avoid obstacles, Then walk into water, then walking into a cave
+	# -Real Model of millipedes[optional, leave to the last] and centipedes, 10 of them, one by one, walking out from the cave, walk onto a irregular moutain terrain;
+	# -Real Model/physics model walking on sphere, on amadillo/bunny;
 
 *. Polishing of Paper
 4.1 - 4.17
