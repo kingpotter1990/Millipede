@@ -24,22 +24,27 @@ pigment{ gradient <0,1,0>
 
 plane {
   <0,1,0>, 0
-  pigment { color rgb <0.93,0.93,1> }
+  pigment{ color rgb <0.2,0.36,0.85>}
   finish {
     diffuse 0.65
-    ambient <0.2,0.2,0.22>
+    ambient <0.2,0.2,0.22>*0.2
     roughness 0.5
-    reflection 0.3}}
+    phong 3
+    reflection 0.3
+
+  
+  
+  }}
 
 fog{ fog_type 1
       distance  500
-      color  rgb <0.7,0.7,0.75>
+      color  rgb <0.7,0.7,0.75>*0
       fog_offset 0
       fog_alt    5
       turbulence 0}
 
 camera {
-  location <0,25,-5>
+  location <0,23,-5>
   look_at<0,22,0>
   
 }
@@ -67,9 +72,9 @@ mesh {
   MillipedeSoftPart
   texture {
 
-    pigment{rgbt<1,1,1,0.7>}
+    pigment{rgbt<1,1,0,0.7>}
     finish {
-      ambient 0.2
+      ambient 0.02
       brilliance 1
       crand 0
       diffuse 0.625
@@ -85,7 +90,7 @@ mesh {
         ior 1.4
         fade_color rgb<1,1,0>
         fade_distance 0.33
-        fade_power 1001
+        fade_power 3000
     }
 }
 
@@ -122,19 +127,19 @@ mesh {
 
 object {
   MillipedeRigidPart
-  texture{Chrome_Metal}
-  finish {
-    ambient 0.2
-    brilliance 1
-    crand 0
-    diffuse 0.625
-    metallic 0.01
-    phong 1
-    phong_size 0.4
-    reflection 0.01
-    roughness 0.5
-    specular 0.1  
-  }
+  texture{Silver_Metal}
+  // finish {
+  //   ambient 0.2
+  //   brilliance 1
+  //   crand 0
+  //   diffuse 0.625
+  //   metallic 0.01
+  //   phong 1
+  //   phong_size 0.4
+  //   reflection 0.01
+  //   roughness 0.5
+  //   specular 0.1  
+  // }
 }
 
 light_source{<160,100,-50> color White*0.4*0.4  // 160 100 -50 normal
