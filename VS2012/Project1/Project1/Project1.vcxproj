@@ -40,10 +40,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\Dropbox\Project\Graphics\Millipede\Source\Boost;$(IncludePath)</IncludePath>
+    <IncludePath>F:\Dropbox\Project\Graphics\Millipede\Source\Boost;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Dropbox\Project\Graphics\Millipede\Source\Boost;$(IncludePath)</IncludePath>
+    <IncludePath>F:\Dropbox\Project\Graphics\Millipede\Source\Boost;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
