@@ -60,7 +60,7 @@ Current Issues:
 mode when one leg is in stance mode, also by updating the keep section balanced code]
 2. Legs not in wave pattern, no consideration for collision of legs, etc
 [Plan to solve by applying leg relative rotation diff constraint]
-[Partially Solved by restricting diff_phase with previous stance leg when entering stance mode]
+[Partially Solved by restricting diff_phase with previous stance leg when entering stance mode][SOLVED]
 Some neighboring legs would move in the same phase, not resulting in wave pattern[SOVLED]
 
 Possible solution: When a leg enter stance, it will expect the posterior leg to enter stance soon,so that leg is expected to be at certain position,

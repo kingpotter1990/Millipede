@@ -38,10 +38,13 @@ Terrain* myTerrain = NULL;
 Millipede* myMillipedes;
 Drawer* g_Drawer;
 Sphere* mySphere = NULL;
+RigidCube* myRigidCube;
+Deformable3D* myJello;
 std::ofstream*  TerrainOutput;
 std::ofstream*  BugOutputPov;
 std::ofstream*  BugOutputMaya;
 std::ofstream*  WaterOutput;
+std::ofstream*  RideOutput;
 
 int STOP = -1;//stop the animation
 int CONTROL = -1;//control the millipede
@@ -65,6 +68,8 @@ GLfloat CursorY;//Curosr Position
 
 void initScene();
 void reinitScene();
+void initRideScene1();
+void initRideScene2();
 void drawScene();
 void keyboardCallback(unsigned char key, int x, int y);
 void specialCallback(int key, int x, int y);

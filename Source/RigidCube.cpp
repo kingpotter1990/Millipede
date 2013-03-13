@@ -82,11 +82,19 @@ void RigidCube::SetEdges(){
 void RigidCube::UpdateAll(double dt){
 		UpdatePhysics(dt);//actually the draw is also updated
 }
+
 void RigidCube::UpdatePhysics(double dt){
 	//first apply forces from connected nodes, plus gravity
 	//update orientation and position of the rigid cube (in the draw, the matrix is generated based on the center, orientation and )
 	//update the position of the fixed nodes using rigid body dynamics
 	//update the velocity of the fixed nodes 
+	if(m_fixed)
+	{
+		m_velocity *= 0;
+		m_avelocity *= 0;
+		return;
+	}
+
 	HandleCollision();
 	//udpate the force and torque on this cube
 	m_force = Eigen::Vector3f(0,-1.0,0.0)*m_mass*GRAVITY_CONSTANT;
@@ -100,21 +108,16 @@ void RigidCube::UpdatePhysics(double dt){
 		m_torque += (m_Trans.linear()*m_fixed_r[i]).cross(temp_elastic_force);
 	}
 
-	if(!m_fixed){
-		//forward euler update states
-		m_velocity += m_force*dt/m_mass;
-		m_Center += m_velocity*dt;
-		Eigen::Matrix3f avelocity_star;
-		avelocity_star<< 0, -m_avelocity[2], m_avelocity[1],
+	
+	//forward euler update states
+	m_velocity += m_force*dt/m_mass;
+	m_Center += m_velocity*dt;
+	Eigen::Matrix3f avelocity_star;
+	avelocity_star<< 0, -m_avelocity[2], m_avelocity[1],
 						m_avelocity[2],0,-m_avelocity[0],
 						-m_avelocity[1],m_avelocity[0],0;
-		m_rotation += avelocity_star*m_rotation*dt;
-		m_avelocity += dt*(m_rotation*m_inertia_inverse*m_rotation.transpose())*m_torque;
-	}else{
-		m_velocity *= 0;
-		m_avelocity *= 0;
-	}
-
+	m_rotation += avelocity_star*m_rotation*dt;
+	m_avelocity += dt*(m_rotation*m_inertia_inverse*m_rotation.transpose())*m_torque;
 	//now update the matrixes
 	m_Trans.setIdentity();
 	m_Trans.translate(m_Center);
@@ -167,7 +170,7 @@ void RigidCube::HandleCollision(){
 	Eigen::Vector3f collision_surface_normal;
 	Eigen::Vector3f edge_velocity;
 	double IMPULSE;
-	double epsilon = 0.8;//the impulse coeeficient between 0~1
+	double epsilon = 0.6;//the impulse coeeficient between 0~1
 	Eigen::Vector3f temp;
 	Eigen::Vector3f temp_r;
 	Eigen::Matrix3f temp_I;
@@ -273,4 +276,17 @@ bool RigidCube::CheckCollision(const Eigen::Vector3f& a_point, Eigen::Vector3f& 
 	}//end for
 	return false;
 	
+}
+
+void RigidCube::RotateY(double degree){
+	
+
+	//now update the matrixes
+	m_Trans.rotate(Eigen::AngleAxisf(degree*DegreesToRadians, Eigen::Vector3f::UnitY()));
+	m_TransBack = m_Trans.inverse();
+
+	//feedback from rigid body dynamics to the elastic body nodes
+	//udpate the position and velocity of the fixed nodes
+	UpdateFixed();
+
 }

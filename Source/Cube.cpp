@@ -165,7 +165,7 @@ void Cube::Output2File(std::ofstream* filestream){
 	
 	// output for povray
 	g_Drawer->SetIdentity();
-	g_Drawer->Scale(Eigen::Vector3f(0.99,1,1));
+	g_Drawer->Scale(Eigen::Vector3f(1,1,1)*0.995);
 
 	(*filestream)<<"//BEGIN CUBE"<<std::endl;
 	(*filestream)<<"mesh2{"<<std::endl;

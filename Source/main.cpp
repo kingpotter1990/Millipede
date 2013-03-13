@@ -28,30 +28,219 @@ void initScene(){
 	//set up the world
 	myWorld = new World(51000);
     std::cout<<"Setting up the World..."<<std::endl;
-	myTerrainType = TERRAIN_TEST;
+	myTerrainType = TERRAIN_FLAT;
 	myTerrain = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
-		, OBSTACLE_ON, FOOD_ON);
+		, OBSTACLE_OFF, FOOD_OFF);
 
 	TerrainOutput = new std::ofstream;
 	BugOutputPov = new std::ofstream;
 	BugOutputMaya = new std::ofstream;
 	WaterOutput = new std::ofstream;
+	RideOutput = new std::ofstream;
 	//output static terrain mesh
 	TerrainOutput->open("Terrain.inc");
 	myTerrain->Output2File(TerrainOutput);
 	TerrainOutput->close();
 
 	BugOutputMaya->open("Bug.mel");
-	WaterOutput->open("Water.inc");
+	RideOutput->open("Ride.inc");
 	
 	(*BugOutputMaya)<<"string $path = \"D:/TEMP/\";"<<std::endl<<
 	"string $filelist[] = `getFileList -folder $path -filespec \"*.obj\"`;"<<std::endl<<
 	"for($i=0; $i <= (`size $filelist` - 1); $i++)"<<std::endl
 		<<"sysFile -delete ($path+$filelist[$i]);"<<std::endl<<std::endl;
 
-	reinitScene();
+	//reinitScene();
+
+	initRideScene2();
 
 	std::cout<<"Starting Animation..."<<std::endl;
+
+
+}
+
+void initRideScene1(){
+	
+	FRAME_COUNT = 0;
+	SIM_TIME = 0.0;
+
+	//press SpaceBar to trigger
+
+	myWorld->Clear();
+	myWorld->Add_Object(myTerrain);
+
+	Deformable3D* myJello;
+	myJello = new Deformable3D[6];
+	RigidCube* myRigidCube;
+	myRigidCube= new RigidCube[7];
+
+	myJello[0].Init(Eigen::Vector3i(5,5,5),1,2000,0.4,10,Eigen::Vector3f(-2,25,-2),Eigen::Vector3f(4.0,2.0,4.0), Eigen::Vector3f(1.0,0,0));
+	myJello[1].Init(Eigen::Vector3i(5,5,5),1,2000,0.4,10,Eigen::Vector3f(-1.5,21,-1.5),Eigen::Vector3f(3.0,2.0,3.0), Eigen::Vector3f(1.0,0,0));
+	myJello[2].Init(Eigen::Vector3i(5,5,5),1,2000,0.4,10,Eigen::Vector3f(-1,17,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[3].Init(Eigen::Vector3i(5,5,5),1,2000,0.4,10,Eigen::Vector3f(-1,13,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[4].Init(Eigen::Vector3i(5,5,5),1,2000,0.4,10,Eigen::Vector3f(-1.5,9,-1.5),Eigen::Vector3f(3.0,2.0,3.0), Eigen::Vector3f(1.0,0,0));
+	myJello[5].Init(Eigen::Vector3i(5,5,5),1,2000,0.4,10,Eigen::Vector3f(-2,5,-2),Eigen::Vector3f(4.0,2.0,4.0), Eigen::Vector3f(1.0,0,0));
+    
+	myRigidCube[0].Init(1, Eigen::Vector3f(0,28,0),Eigen::Vector3f(5.0,2.0,5.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[1].Init(1, Eigen::Vector3f(0,24,0),Eigen::Vector3f(4.0,2.0,4.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[2].Init(1, Eigen::Vector3f(0,20,0),Eigen::Vector3f(3.0,2.0,3.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[3].Init(1, Eigen::Vector3f(0,16,0),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[4].Init(1, Eigen::Vector3f(0,12,0),Eigen::Vector3f(3.0,2.0,3.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[5].Init(1, Eigen::Vector3f(0,8,0),Eigen::Vector3f(4.0,2.0,4.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[6].Init(1, Eigen::Vector3f(0,4,0),Eigen::Vector3f(5.0,2.0,5.0),Eigen::Vector3f(0.0,1.0,0.0));
+
+	//manuly couple up the deformable and rigid parts
+    myRigidCube[0].AttachNodes(myJello[0].m_Mesh->GetTopNodes());
+    myRigidCube[1].AttachNodes(myJello[0].m_Mesh->GetBottomNodes());
+    myRigidCube[1].AttachNodes(myJello[1].m_Mesh->GetTopNodes());
+    myRigidCube[2].AttachNodes(myJello[1].m_Mesh->GetBottomNodes());
+    myRigidCube[2].AttachNodes(myJello[2].m_Mesh->GetTopNodes());
+    myRigidCube[3].AttachNodes(myJello[2].m_Mesh->GetBottomNodes());
+    myRigidCube[3].AttachNodes(myJello[3].m_Mesh->GetTopNodes());
+    myRigidCube[4].AttachNodes(myJello[3].m_Mesh->GetBottomNodes());
+    myRigidCube[4].AttachNodes(myJello[4].m_Mesh->GetTopNodes());
+    myRigidCube[5].AttachNodes(myJello[4].m_Mesh->GetBottomNodes());
+    myRigidCube[5].AttachNodes(myJello[5].m_Mesh->GetTopNodes());
+    myRigidCube[6].AttachNodes(myJello[5].m_Mesh->GetBottomNodes());
+
+    //set up the World
+    myWorld->Add_Object(&myJello[0]);
+    myWorld->Add_Object(&myJello[1]);
+    myWorld->Add_Object(&myJello[2]);
+    myWorld->Add_Object(&myJello[3]);
+    myWorld->Add_Object(&myJello[4]);
+    myWorld->Add_Object(&myJello[5]);
+	myWorld->Add_Object(&myRigidCube[0]);
+	myWorld->Add_Object(&myRigidCube[1]);
+	myWorld->Add_Object(&myRigidCube[2]);
+	myWorld->Add_Object(&myRigidCube[3]);
+	myWorld->Add_Object(&myRigidCube[4]);
+	myWorld->Add_Object(&myRigidCube[5]);
+	myWorld->Add_Object(&myRigidCube[6]);
+
+
+	TIME_LAST = TM.GetElapsedTime() ;
+	DTIME = 0.0;
+	FRAME_TIME = 0.0;
+
+
+}
+
+void initRideScene2(){
+	
+	FRAME_COUNT = 0;
+	SIM_TIME = 0.0;
+
+	//press SpaceBar to trigger
+
+	myWorld->Clear();
+	myWorld->Add_Object(myTerrain);
+
+	if(myJello)
+		delete[] myJello;
+	if(myRigidCube)
+		delete[] myRigidCube;
+
+	myJello = new Deformable3D[12];
+	myRigidCube= new RigidCube[13];
+	//central strip
+	myJello[0].Init(Eigen::Vector3i(5,5,5),1,300,0.4,10,Eigen::Vector3f(-2,25,-2),Eigen::Vector3f(4.0,2.0,4.0), Eigen::Vector3f(1.0,0,0));
+	myJello[1].Init(Eigen::Vector3i(5,5,5),1,300,0.4,10,Eigen::Vector3f(-1.5,21,-1.5),Eigen::Vector3f(3.0,2.0,3.0), Eigen::Vector3f(1.0,0,0));
+	myJello[2].Init(Eigen::Vector3i(5,5,5),1,300,0.4,10,Eigen::Vector3f(-1,17,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[3].Init(Eigen::Vector3i(5,5,5),1,300,0.4,10,Eigen::Vector3f(-1,13,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	//left
+	myJello[4].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-3.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[5].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-7.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+    //right
+	myJello[6].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(1.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[7].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(5.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+    //back
+	myJello[8].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-1,19,-3.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[9].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-1,19,-7.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	//front
+	myJello[10].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-1,19,1.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[11].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-1,19,5.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+
+	myRigidCube[0].Init(1, Eigen::Vector3f(0,28,0),Eigen::Vector3f(5.0,2.0,5.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[1].Init(1, Eigen::Vector3f(0,24,0),Eigen::Vector3f(4.0,2.0,4.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[2].Init(1, Eigen::Vector3f(0,20,0),Eigen::Vector3f(3.0,2.0,3.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[3].Init(1, Eigen::Vector3f(0,16,0),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[4].Init(1, Eigen::Vector3f(0,12,0),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+
+	myRigidCube[5].Init(1, Eigen::Vector3f(-4.5,20,0),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[6].Init(1, Eigen::Vector3f(-8.5,20,0),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+
+	myRigidCube[7].Init(1, Eigen::Vector3f(4.5,20,0),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[8].Init(1, Eigen::Vector3f(8.5,20,0),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+
+	myRigidCube[9].Init(1, Eigen::Vector3f(0,20,-4.5),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[10].Init(1, Eigen::Vector3f(0,20,-8.5),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+
+	myRigidCube[11].Init(1, Eigen::Vector3f(0,20,4.5),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+	myRigidCube[12].Init(1, Eigen::Vector3f(0,20,8.5),Eigen::Vector3f(2.0,2.0,2.0),Eigen::Vector3f(0.0,1.0,0.0));
+
+	//manuly couple up the deformable and rigid parts
+    myRigidCube[0].AttachNodes(myJello[0].m_Mesh->GetTopNodes());
+    myRigidCube[1].AttachNodes(myJello[0].m_Mesh->GetBottomNodes());
+    myRigidCube[1].AttachNodes(myJello[1].m_Mesh->GetTopNodes());
+    myRigidCube[2].AttachNodes(myJello[1].m_Mesh->GetBottomNodes());
+    myRigidCube[2].AttachNodes(myJello[2].m_Mesh->GetTopNodes());
+    myRigidCube[3].AttachNodes(myJello[2].m_Mesh->GetBottomNodes());
+    myRigidCube[3].AttachNodes(myJello[3].m_Mesh->GetTopNodes());
+    myRigidCube[4].AttachNodes(myJello[3].m_Mesh->GetBottomNodes());
+
+	myRigidCube[2].AttachNodes(myJello[4].m_Mesh->GetRightNodes());
+	myRigidCube[5].AttachNodes(myJello[4].m_Mesh->GetLeftNodes());
+	myRigidCube[5].AttachNodes(myJello[5].m_Mesh->GetRightNodes());
+	myRigidCube[6].AttachNodes(myJello[5].m_Mesh->GetLeftNodes());
+
+	myRigidCube[2].AttachNodes(myJello[6].m_Mesh->GetLeftNodes());
+	myRigidCube[7].AttachNodes(myJello[6].m_Mesh->GetRightNodes());
+	myRigidCube[7].AttachNodes(myJello[7].m_Mesh->GetLeftNodes());
+	myRigidCube[8].AttachNodes(myJello[7].m_Mesh->GetRightNodes());
+
+
+	myRigidCube[2].AttachNodes(myJello[8].m_Mesh->GetFrontNodes());
+	myRigidCube[9].AttachNodes(myJello[8].m_Mesh->GetBackNodes());
+	myRigidCube[9].AttachNodes(myJello[9].m_Mesh->GetFrontNodes());
+	myRigidCube[10].AttachNodes(myJello[9].m_Mesh->GetBackNodes());
+
+	myRigidCube[2].AttachNodes(myJello[10].m_Mesh->GetBackNodes());
+	myRigidCube[11].AttachNodes(myJello[10].m_Mesh->GetFrontNodes());
+	myRigidCube[11].AttachNodes(myJello[11].m_Mesh->GetBackNodes());
+	myRigidCube[12].AttachNodes(myJello[11].m_Mesh->GetFrontNodes());
+
+	myRigidCube[0].m_fixed = true;
+    //set up the World
+    myWorld->Add_Object(&myJello[0]);
+    myWorld->Add_Object(&myJello[1]);
+    myWorld->Add_Object(&myJello[2]);
+    myWorld->Add_Object(&myJello[3]);
+    myWorld->Add_Object(&myJello[4]);
+    myWorld->Add_Object(&myJello[5]);
+    myWorld->Add_Object(&myJello[6]);
+    myWorld->Add_Object(&myJello[7]);
+    myWorld->Add_Object(&myJello[8]);
+    myWorld->Add_Object(&myJello[9]);
+    myWorld->Add_Object(&myJello[10]);
+    myWorld->Add_Object(&myJello[11]);
+	myWorld->Add_Object(&myRigidCube[0]);
+	myWorld->Add_Object(&myRigidCube[1]);
+	myWorld->Add_Object(&myRigidCube[2]);
+	myWorld->Add_Object(&myRigidCube[3]);
+	myWorld->Add_Object(&myRigidCube[4]);
+	myWorld->Add_Object(&myRigidCube[5]);
+	myWorld->Add_Object(&myRigidCube[6]);
+	myWorld->Add_Object(&myRigidCube[7]);
+	myWorld->Add_Object(&myRigidCube[8]);
+	myWorld->Add_Object(&myRigidCube[9]);
+	myWorld->Add_Object(&myRigidCube[10]);
+	myWorld->Add_Object(&myRigidCube[11]);
+	myWorld->Add_Object(&myRigidCube[12]);
+
+	TIME_LAST = TM.GetElapsedTime() ;
+	DTIME = 0.0;
+	FRAME_TIME = 0.0;
 
 
 }
@@ -197,8 +386,9 @@ void keyboardCallback(unsigned char key, int x, int y){
         
     //reset the scene and camera
     if ( key == SpaceKey) {
-        reinitScene();
-        glutSwapBuffers();
+        //reinitScene();
+        initRideScene2();
+		glutSwapBuffers();
     }
 }
 
@@ -296,6 +486,41 @@ void HackAnimation(double dt){
 	}
 
 }
+
+void HackAnimation2(double dt){
+
+	double physics_time_step = 1/3000.0;
+	int num_division = int (dt/physics_time_step);
+	//#pragma omp parallel for
+	for(int j =0 ;j<num_division; j++)
+	{
+		if(SIM_TIME > 2.0 && SIM_TIME < 5.0)
+		myRigidCube[0].RotateY(physics_time_step*50);
+		for (int i = 0; i<myWorld->List_of_Object.size(); i++)
+	      myWorld->List_of_Object[i]->UpdateAll(physics_time_step);
+	}
+
+	if(OUTPUT == 1){
+		std::string filename = "FRAME_";
+		filename += std::to_string(FRAME_COUNT);
+		filename += "Ride.inc";
+		RideOutput->open(filename);
+		(*RideOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
+		(*RideOutput)<<"#declare RigidPart = union {\n"<<std::endl;
+		for(int i = 0; i < 12; i++)
+			myJello[i].Output2File(RideOutput);
+		(*RideOutput)<<"}\n"<<std::endl;
+
+		(*RideOutput)<<"#declare SoftPart = union { \n"<<std::endl;
+		for(int i = 0; i < 13; i++)
+			myRigidCube[1].Output2File(RideOutput);
+		(*RideOutput)<<"}\n"<<std::endl;
+
+		RideOutput->close();
+		FRAME_COUNT++;
+	}
+}
+
 void idleCallback(){
     
 	TIME = TM.GetElapsedTime() ;
@@ -307,15 +532,16 @@ void idleCallback(){
 	*/
 	if(STOP == -1){
 	//only update physics
-		SIM_TIME += 0.02;
-		HackAnimation(0.02);
-		myWorld->Update(0.02);//The real physics time step is much smaller
+		SIM_TIME += 0.01;
+		HackAnimation2(0.01);
+		//myWorld->Update(0.02);//The real physics time step is much smaller
 
 		glutPostRedisplay() ; //draw new frame, the display is not real physics time
-
+		/*
 		if(OUTPUT == 1){
 			OUTPUT_ONE_FRAME();//output one frame data
 		}
+		*/
 	}
 
 }

@@ -32,7 +32,7 @@ public:
 	Eigen::Vector3f m_torque;
 
 	virtual void Init(double density, Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f color);
-
+	virtual void RotateY(double degree);
 	virtual void UpdateAll(double dt);
 	virtual void UpdatePhysics(double dt);
 	virtual void UdpateDraw(){};
