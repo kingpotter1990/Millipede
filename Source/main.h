@@ -39,7 +39,8 @@ Millipede* myMillipedes;
 Drawer* g_Drawer;
 Sphere* mySphere = NULL;
 std::ofstream*  TerrainOutput;
-std::ofstream*  BugOutput;
+std::ofstream*  BugOutputPov;
+std::ofstream*  BugOutputMaya;
 std::ofstream*  WaterOutput;
 
 int STOP = -1;//stop the animation

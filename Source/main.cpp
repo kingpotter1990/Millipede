@@ -33,21 +33,21 @@ void initScene(){
 		, OBSTACLE_ON, FOOD_ON);
 
 	TerrainOutput = new std::ofstream;
-	BugOutput = new std::ofstream;
+	BugOutputPov = new std::ofstream;
+	BugOutputMaya = new std::ofstream;
 	WaterOutput = new std::ofstream;
 	//output static terrain mesh
 	TerrainOutput->open("Terrain.inc");
 	myTerrain->Output2File(TerrainOutput);
 	TerrainOutput->close();
 
-	BugOutput->open("Bug.inc");
+	BugOutputMaya->open("Bug.mel");
 	WaterOutput->open("Water.inc");
-	/*
-	(*BugOutput)<<"string $path = \"D:/TEMP/\";"<<std::endl<<
+	
+	(*BugOutputMaya)<<"string $path = \"D:/TEMP/\";"<<std::endl<<
 	"string $filelist[] = `getFileList -folder $path -filespec \"*.obj\"`;"<<std::endl<<
 	"for($i=0; $i <= (`size $filelist` - 1); $i++)"<<std::endl
 		<<"sysFile -delete ($path+$filelist[$i]);"<<std::endl<<std::endl;
-		*/
 
 	reinitScene();
 
@@ -81,8 +81,9 @@ void reinitScene(){
 		}
 */
 	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(50,6,0);
-	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.2,1.918,2.422),0.807895, myTerrain);
+	START_POSITION = Eigen::Vector3f(40,6,0);
+	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.3,1.39,2.422),0.707895, myTerrain);
+	//myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.8,1.0,2.0),0.8, myTerrain);
 	myMillipedes->FixHead();
 	myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);
@@ -154,8 +155,8 @@ void keyboardCallback(unsigned char key, int x, int y){
     
 	if ( key == EscKey || key == 'q' || key == 'Q' ) 
     {
-		BugOutput->close();
-		WaterOutput->close();
+		(*BugOutputMaya)<<"playbackOptions -min 1 -max "<< FRAME_COUNT - 1<<";"<<std::endl;
+		BugOutputMaya->close();
         exit(0);
     }
     if( key == 'o'|| key == 'O')
@@ -320,22 +321,31 @@ void idleCallback(){
 }
 
 void OUTPUT_ONE_FRAME(){
-
-	
 	//Water
 	if(myTerrainType == TERRAIN_WATER){
+		//millipede
+		std::string filename = "FRAME_";
+		filename += std::to_string(FRAME_COUNT);
+		filename += "Water.inc";
 		(*WaterOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
 		myTerrain->m_water->Output2File(WaterOutput);
+		WaterOutput->close();
 	}
 	//millipede
+	//Physics Model for Pov
+	/*
 	std::string filename = "FRAME_";
 	filename += std::to_string(FRAME_COUNT);
-	filename += ".inc";
-	BugOutput->open(filename);
-	(*BugOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
-	myMillipedes[0].Output2File(BugOutput,1);//0 is for maya model, 1 is for physics
-	BugOutput->close();
-	
+	filename += "Bug.inc";
+	BugOutputPov->open(filename);
+	(*BugOutputPov)<<"//Frame "<<FRAME_COUNT<<std::endl;
+	myMillipedes[0].Output2File(BugOutputPov,1);//0 is for maya model, 1 is for physics
+	BugOutputPov->close();
+	*/
+	//mel script file
+	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
+	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
+	(*BugOutputMaya) <<"//End Frame"<<FRAME_COUNT<<";"<<std::endl;
 	FRAME_COUNT++;
 }
 

@@ -169,7 +169,7 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream, int type){
 	
 	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2)/DegreesToRadians;
 	(*filestream)<<"setAttr \"s"<<m_section_id<<".translate\" "<< -m_Center.z() <<" "<<m_Center.y()<<" "<< m_Center.x()<<";"<<std::endl;
-	(*filestream)<<"setAttr \"s"<<m_section_id<<".rotate\" "<<ea.x()<<" "<<ea.y()<<" "<<ea.z()<<";"<<std::endl;
+	(*filestream)<<"setAttr \"s"<<m_section_id<<".rotate\" "<<-ea.z()<<" "<<ea.y()<<" "<<ea.x()<<";"<<std::endl;
 
 	//output leg rotations
 	//left
