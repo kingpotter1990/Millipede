@@ -1,190 +1,152 @@
+#version 3.7;
+
+#include "colors.inc"
+#include "glass.inc"
+#include "textures.inc"
 #include "metals.inc"
 #include "glass.inc"
 #include "woods.inc"
 #include "textures.inc"
 #include "colors.inc"
-#include "@@@"
+#include "t.inc"
 
-global_settings {
-  //radiosity{  }
-  max_trace_level 20
-  photons {    spacing 0.008}
+#default{ finish{ ambient 0.2 diffuse 0.6 }}
+
+global_settings {   max_trace_level 20   assumed_gamma 1.9 }
+
+sky_sphere{
+pigment{ gradient <0,1,0>
+          color_map{
+          [0.1 color rgb<0.2,0.2,0.53>]
+          [0.8 color rgb<0.1,0.25,0.85>]
+          [1.0 color rgb<0.1,0.25,0.85>]}}}
+
+plane {
+  <0,1,0>, 0
+  pigment { color rgb <0.93,0.93,1> }
+  finish {
+    diffuse 0.65
+    ambient <0.2,0.2,0.22>
+    roughness 0.5
+    reflection 0.3}}
+
+fog{ fog_type 1
+      distance  500
+      color  rgb <0.7,0.7,0.75>
+      fog_offset 0
+      fog_alt    5
+      turbulence 0}
+
+camera {
+  location <25,25,-50>
+  look_at <25,10,0>
+  angle 40
 }
 
-// camera -----------------------------------------------------------
-#declare Cam0 = camera {/*ultra_wide_angle*/ angle 65 
-                        location  <0 , 14 ,26>
-                        look_at   <0 , 5 , 0.0>
-  // focal_point < 0, 0, 0>    // pink sphere in focus
-  //   aperture 0.1
-  //    blur_samples 2     // more samples, higher quality image
-
-}
-camera{Cam0}
-
-// sun ---------------------------------------------------------------
-light_source{
-  <1500,2500,-2500> 
-  color White 
-  photons {
-      reflection on
-      refraction on
-    }
-}
-
-
-// sky ---------------------------------------------------------------------
-sky_sphere { pigment { gradient <0,1,0>
-                       color_map { [0.00 rgb <0.6,0.7,1.0>]
-                                   [0.35 rgb <0.0,0.1,0.8>]
-                                   [0.65 rgb <0.0,0.1,0.8>]
-                                   [1.00 rgb <0.6,0.7,1.0>] 
-                                 } 
-
-                     } // end of pigment
-           } //end of skysphere -------------------------------------
-
-
-// ground  ---------------------------------------------------
-#declare pool_bottom_xmin=-200;
-#declare pool_bottom_xmax=200;
-#declare pool_bottom_ymin=0;
-#declare pool_bottom_ymax=0;
-#declare pool_bottom_zmin=-50;
-#declare pool_bottom_zmax=50;
-box {  <pool_bottom_xmin,pool_bottom_ymin,pool_bottom_zmin>,<pool_bottom_xmax,pool_bottom_ymax,pool_bottom_zmax>
-pigment { checker rgb <0, 0, 0> rgb <1, 1, 1.0> scale 4 }
- 		finish { reflection 0.5 ambient 0.1 diffuse 0.8}
-}
-
-object {
-  MillipedeAntenneaPart
-
+mesh {
+  MillipedeSoftPart
   texture {
-        pigment { color rgbf <1, 0, 0, 0.77>      }
-      finish  { ambient 0.1 diffuse 0.30 brilliance 0.6767 phong 0.68
-         phong_size 80 specular 0.05 roughness 0.135 reflection 0.05}
-  }
-  interior{ior 1.69 }
-}
-
-object {
-   MillipedeRigidPart
-
-  texture { Chrome_Metal }
-  finish { ambient 0.0 brilliance 1.2 phong 0.4 }
-}
-
-object {
-   MillipedeSoftPart
-
-texture {
-    pigment{rgbt<0.4,0.4,0.4,0.9>}
+    pigment { color rgbt <1, 1, 0, 0.4> }
     finish {
-      phong 1 phong_size 30
-      reflection{0.01, 0.7 fresnel}}}
-
-  interior {
-    ior 1.4
-
-    fade_color rgb<1,1,0>
-    fade_distance 0.1
-    fade_power 1001}  
-
-   photons {
-    target
-    reflection on
-    refraction on}
+      ambient 0.2
+      brilliance 1
+      crand 0
+      diffuse 0.625
+      metallic 0.01
+      phong 1
+      phong_size 0.4
+      reflection 0.01
+      roughness 0.5
+      specular 0.1  }}
+  interior_texture {
+    pigment { color rgbt <1, 1, 0,0.2> }
+    finish { 
+      ambient 0.25
+      brilliance 1
+      crand 0
+      diffuse 0.625
+      metallic 0.01
+      phong 0.5
+      phong_size 1
+      reflection 0.1
+      roughness 0.2
+      specular 0.1}}
+  interior { ior 1.4}
 }
 
+object {
+  merge{     MillipedeAntenneaPart   }
+  texture {
+    pigment { color rgb <1, 130/255, 171/255> }
+    finish {
+      ambient 0.2
+      brilliance 1
+      crand 0
+      diffuse 0.625
+      metallic 0.01
+      phong 1
+      phong_size 0.4
+      reflection 0.01
+      roughness 0.5
+      specular 0.1  }}
+  interior_texture {
+    pigment { color rgb <1, 130/255, 171/255> }
+    finish { 
+      ambient 0.25
+      brilliance 1
+      crand 0
+      diffuse 0.625
+      metallic 0.01
+      phong 0.5
+      phong_size 1
+      reflection 0.1
+      roughness 0.2
+      specular 0.1}}
+  interior {     ior 1.4   }
+}
 
-// ////////////////////////////////
-// /////// bottle /////////////////
-// ////////////////////////////////
-// #declare glas_green_tx=
-// texture
-// {
-//   pigment
-//   {
-//     color rgbt<0.1,0.6,0.5,0.9>
-//   }
-//   finish
-//   {
-//     specular 0.2
-//     phong_size 200
-//     phong 0.3
-//     reflection 0.3
-//   }
-// }
-// ////////////////////////////////
-// #declare bottle_outside=
-// merge
-// {
-//   difference
-//   {
-//     cylinder{<0,1.3,0>,<0,2,0>,0.4}
-//     torus{1.2,1.0 scale <1,1,1> translate y*1.9 }
-//   }
-//   difference
-//   {
-//     cylinder{<0,0,0>,<0,1,0>,0.5}
-//     sphere{<0,0,0>,0.2 scale <1,0.9,1>}
-//   }
-//   torus{0.2,0.05 scale <1,2,1> translate y*2.0 sturm}
-//   torus{0.35,0.15 scale <1,1,1> sturm}
-//   sphere{<0,1,0>,0.5 scale <1,1,1>}
-//   translate y*0.15
-// }
+object {
+  MillipedeRigidPart
+  texture{Chrome_Metal}
+  finish {
+    ambient 0.2
+    brilliance 1
+    crand 0
+    diffuse 0.625
+    metallic 0.01
+    phong 1
+    phong_size 0.4
+    reflection 0.01
+    roughness 0.5
+    specular 0.1  
+  }
+}
 
-// #declare bottle_inside=
-// merge
-// {
-//   difference
-//   {
-//     cylinder{<0,1.3,0>,<0,2,0>,0.4}
-//     torus{1.2,1.0 scale <1,1,1> translate y*1.9 }
-//   }
-//   difference
-//   {
-//     cylinder{<0,0,0>,<0,1,0>,0.5}
-//     sphere{<0,0,0>,0.0 scale <1,0.5,1>}
-//   }
-//   cylinder{<0,1,0>,<0,2.5,0>,0.2}
-//   torus{0.4,0.1 scale <1,0.5,1> sturm}
-//   sphere{<0,1,0>,0.5 scale <1,1,1>}
-//   translate y*0.05
-// }
-
-// #declare bottle=
-// difference
-// { 
-//   object {bottle_outside}
-//   object {bottle_inside scale<0.75,0.9,0.75>translate y*0.25}
-//   interior{caustics 0.2 ior 1.45}
-//   texture{glas_green_tx}
-//   scale<1,1.5,1>
-// }
-// ////////////////////////////////
-// ////////////////////////////////
-// object{bottle scale 2}
-
-
-// #declare DIE = difference {
-//   superellipsoid {  <0.1, 0.1> }
-// texture {
-//       // pigment { color rgbf <0.334, 0.375, 1.0, 0.77>      }
-//         pigment { color rgbf <1, 0, 0, 0.77>      }
-//       finish  { ambient 0.1 diffuse 0.30 brilliance 0.6767 phong 0.68
-//          phong_size 80 specular 0.05 roughness 0.135 reflection 0.05}
-// }
-// interior{ior 1.69 }
+light_source{<160,100,-50> color White*0.4*0.4  // 160 100 -50 normal
+  area_light <10, 0, 0>, <0, 0, 10>, 10, 10
+  adaptive 1
+  photons {
+    reflection on
+    refraction on
+  }
+  jitter}
+light_source{<2800,2500,-700> color White*0.5 parallel point_at 0 shadowless}
+light_source{ <0,40,0>   color rgb <0.4,0.4,0.4>*0.9
+              spotlight
+              point_at<0,0,0>
+              radius 0  // hotspot
+              tightness 0
+              falloff 0
+              translate< 0, 0, 0>
+              shadowless}
+light_source{ <-40,30,-100>   color rgb <0.2,0.2,0.2>*0.9
+              spotlight
+              point_at<0,0,0>
+              radius 0  // hotspot
+              tightness 1
+              falloff 1
+              translate< 0.1, 0.1, 0.1>
+              shadowless}
 
 
-//   scale 0.5
-// }
-
-// object{DIE
-// scale 2
-// translate<3,3,-3>
-// }
 
