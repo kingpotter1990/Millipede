@@ -16,14 +16,6 @@
 
 #ifndef Object_Types_
 
-#define NoType 0
-#define TypeCube 1
-#define TypeSphere 2
-#define TypeCloth 3
-#define TypeDeformable3D 4
-#define TypeRide 5
-#define TypeRigidCube 6
-
 #endif
 
 World::World(double hardness){
@@ -52,7 +44,7 @@ void World::Remove_Object(std::string name){
 
 void World::Draw(int type, const Camera& camera, const Light& light){
 	for (unsigned int i = 0; i<List_of_Object.size(); i++) {
-       List_of_Object[i]->Draw(type,camera, light);
+	       List_of_Object[i]->Draw(type,camera, light);
     }
 }
 
