@@ -37,7 +37,7 @@ public:
 	virtual void UpdatePhysics(double dt);
 	virtual void UdpateDraw(){};
 	virtual void SetEdges();
-	virtual void AttachNodes(std::vector<Node*> & a_list_nodes);
+	virtual void AttachNodes(const std::vector<Node*>  a_list_nodes);
 	virtual void AttachNode(Node* a_node);
 	virtual void HandleCollision();
 	virtual bool CheckCollision(const Eigen::Vector3f& a_point, Eigen::Vector3f& a_normal);

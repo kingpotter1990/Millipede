@@ -8,12 +8,16 @@
 #include "woods.inc"
 #include "textures.inc"
 #include "colors.inc"
-#include "t.inc"
+#include "@@@"
 
 
 #default{ finish{ ambient 0.2 diffuse 0.6 }}
 
-global_settings {   max_trace_level 20   }
+global_settings {   max_trace_level 20  assumed_gamma 2.2 
+  // photons {
+  //   spacing 0.003 // 0.1 normal
+  // }
+}
 
 sky_sphere{
 pigment{ gradient <0,1,0>
@@ -23,7 +27,7 @@ pigment{ gradient <0,1,0>
           [1.0 color rgb<0.1,0.25,0.85>]}}}
 
 plane {
-  <0,1,0>, 0
+  <0,1,0>, 6
   pigment{ color rgb <0.2,0.36,0.85>}
   finish {
     diffuse 0.65
@@ -44,32 +48,13 @@ fog{ fog_type 1
       turbulence 0}
 
 camera {
-  location <0,23,-5>
-  look_at<0,22,0>
+  location <13,25,-18>*1.3
+  look_at<0,16,0>
   
 }
 
-difference{
-  cylinder  { <0,0,0>,<10,0,0>,3}
-  cylinder  { <-1,0,0>,<11,0,0>,2}
-  pigment { color rgb <0,1,0> }
-  finish {
-    ambient 0.1 
-    brilliance 1
-    crand 0
-    diffuse 0.825
-    metallic 1
-    phong 1
-    phong_size 0.4
-    reflection 0.01
-    roughness 0.5
-    specular 0.1  
-  }
-
-}
-
 mesh {
-  MillipedeSoftPart
+  SoftPart
   texture {
 
     pigment{rgbt<1,1,0,0.7>}
@@ -92,6 +77,12 @@ mesh {
         fade_distance 0.33
         fade_power 3000
     }
+      photons {
+      target
+      reflection on
+      refraction on
+    }
+
 }
 
 // object {
@@ -126,30 +117,33 @@ mesh {
 // }
 
 object {
-  MillipedeRigidPart
+  RigidPart
   texture{Silver_Metal}
-  // finish {
-  //   ambient 0.2
-  //   brilliance 1
-  //   crand 0
-  //   diffuse 0.625
-  //   metallic 0.01
-  //   phong 1
-  //   phong_size 0.4
-  //   reflection 0.01
-  //   roughness 0.5
-  //   specular 0.1  
-  // }
+  finish {
+    ambient 0.1
+    brilliance 0.1
+    crand 0
+    diffuse 0.34
+    metallic 0.01
+    phong 1
+    phong_size 0.4
+    reflection 0.3
+    roughness 0.5
+    specular 0.1  
+  }
 }
 
-light_source{<160,100,-50> color White*0.4*0.4  // 160 100 -50 normal
-  area_light <10, 0, 0>, <0, 0, 10>, 10, 10
+light_source{<160,100,-50> color White*0.6 // 160 100 -50 normal
+  // area_light <10, 0, 0>, <0, 0, 10>, 100, 100
   adaptive 1
-  photons {
-    reflection on
-    refraction on
-  }
+    photons {
+      reflection on
+      refraction on
+    }
+  // circular
+  // orient
   jitter}
+
 light_source{<2800,2500,-700> color White*0.5 parallel point_at 0 shadowless}
 light_source{ <0,40,0>   color rgb <0.4,0.4,0.4>*0.9
               spotlight

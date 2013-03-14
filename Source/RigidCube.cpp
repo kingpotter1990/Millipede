@@ -146,9 +146,9 @@ void RigidCube::UpdateFixed(){
 
 }
 
-void RigidCube::AttachNodes(std::vector<Node*> & a_list_nodes){
+void RigidCube::AttachNodes(const std::vector<Node*> a_list_nodes){
     
-    std::vector<Node*>::iterator iter;
+    std::vector<Node*>::const_iterator iter;
     for(iter = a_list_nodes.begin(); iter != a_list_nodes.end(); iter++)
     {
         (*iter)->m_Fixed = true;

@@ -90,27 +90,27 @@ void initRideScene1(){
 	myRigidCube[6].Init(1, Eigen::Vector3f(0,4,0),Eigen::Vector3f(5.0,2.0,5.0),Eigen::Vector3f(0.0,1.0,0.0));
 
 	//manuly couple up the deformable and rigid parts
-    myRigidCube[0].AttachNodes(myJello[0].m_Mesh->GetTopNodes());
-    myRigidCube[1].AttachNodes(myJello[0].m_Mesh->GetBottomNodes());
-    myRigidCube[1].AttachNodes(myJello[1].m_Mesh->GetTopNodes());
-    myRigidCube[2].AttachNodes(myJello[1].m_Mesh->GetBottomNodes());
-    myRigidCube[2].AttachNodes(myJello[2].m_Mesh->GetTopNodes());
-    myRigidCube[3].AttachNodes(myJello[2].m_Mesh->GetBottomNodes());
-    myRigidCube[3].AttachNodes(myJello[3].m_Mesh->GetTopNodes());
-    myRigidCube[4].AttachNodes(myJello[3].m_Mesh->GetBottomNodes());
-    myRigidCube[4].AttachNodes(myJello[4].m_Mesh->GetTopNodes());
-    myRigidCube[5].AttachNodes(myJello[4].m_Mesh->GetBottomNodes());
-    myRigidCube[5].AttachNodes(myJello[5].m_Mesh->GetTopNodes());
-    myRigidCube[6].AttachNodes(myJello[5].m_Mesh->GetBottomNodes());
+        myRigidCube[0].AttachNodes(myJello[0].m_Mesh->GetTopNodes());
+        myRigidCube[1].AttachNodes(myJello[0].m_Mesh->GetBottomNodes());
+        myRigidCube[1].AttachNodes(myJello[1].m_Mesh->GetTopNodes());
+        myRigidCube[2].AttachNodes(myJello[1].m_Mesh->GetBottomNodes());
+        myRigidCube[2].AttachNodes(myJello[2].m_Mesh->GetTopNodes());
+        myRigidCube[3].AttachNodes(myJello[2].m_Mesh->GetBottomNodes());
+        myRigidCube[3].AttachNodes(myJello[3].m_Mesh->GetTopNodes());
+        myRigidCube[4].AttachNodes(myJello[3].m_Mesh->GetBottomNodes());
+        myRigidCube[4].AttachNodes(myJello[4].m_Mesh->GetTopNodes());
+        myRigidCube[5].AttachNodes(myJello[4].m_Mesh->GetBottomNodes());
+        myRigidCube[5].AttachNodes(myJello[5].m_Mesh->GetTopNodes());
+        myRigidCube[6].AttachNodes(myJello[5].m_Mesh->GetBottomNodes());
 
     //set up the World
-    myWorld->Add_Object(&myJello[0]);
-    myWorld->Add_Object(&myJello[1]);
-    myWorld->Add_Object(&myJello[2]);
-    myWorld->Add_Object(&myJello[3]);
-    myWorld->Add_Object(&myJello[4]);
-    myWorld->Add_Object(&myJello[5]);
-	myWorld->Add_Object(&myRigidCube[0]);
+        myWorld->Add_Object(&myJello[0]);
+        myWorld->Add_Object(&myJello[1]);
+        myWorld->Add_Object(&myJello[2]);
+        myWorld->Add_Object(&myJello[3]);
+        myWorld->Add_Object(&myJello[4]);
+        myWorld->Add_Object(&myJello[5]);
+        myWorld->Add_Object(&myRigidCube[0]);
 	myWorld->Add_Object(&myRigidCube[1]);
 	myWorld->Add_Object(&myRigidCube[2]);
 	myWorld->Add_Object(&myRigidCube[3]);
@@ -144,22 +144,22 @@ void initRideScene2(){
 	myJello = new Deformable3D[12];
 	myRigidCube= new RigidCube[13];
 	//central strip
-	myJello[0].Init(Eigen::Vector3i(5,5,5),1,300,0.4,10,Eigen::Vector3f(-2,25,-2),Eigen::Vector3f(4.0,2.0,4.0), Eigen::Vector3f(1.0,0,0));
-	myJello[1].Init(Eigen::Vector3i(5,5,5),1,300,0.4,10,Eigen::Vector3f(-1.5,21,-1.5),Eigen::Vector3f(3.0,2.0,3.0), Eigen::Vector3f(1.0,0,0));
-	myJello[2].Init(Eigen::Vector3i(5,5,5),1,300,0.4,10,Eigen::Vector3f(-1,17,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
-	myJello[3].Init(Eigen::Vector3i(5,5,5),1,300,0.4,10,Eigen::Vector3f(-1,13,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[0].Init(Eigen::Vector3i(8,8,8),1,300,0.4,10,Eigen::Vector3f(-2,25,-2),Eigen::Vector3f(4.0,2.0,4.0), Eigen::Vector3f(1.0,0,0));
+	myJello[1].Init(Eigen::Vector3i(8,8,8),1,300,0.4,10,Eigen::Vector3f(-1.5,21,-1.5),Eigen::Vector3f(3.0,2.0,3.0), Eigen::Vector3f(1.0,0,0));
+	myJello[2].Init(Eigen::Vector3i(8,8,8),1,300,0.4,10,Eigen::Vector3f(-1,17,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[3].Init(Eigen::Vector3i(8,8,8),1,300,0.4,10,Eigen::Vector3f(-1,13,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
 	//left
-	myJello[4].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-3.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
-	myJello[5].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-7.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[4].Init(Eigen::Vector3i(8,8,8),1,1000,0.4,10,Eigen::Vector3f(-3.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[5].Init(Eigen::Vector3i(8,8,8),1,1000,0.4,10,Eigen::Vector3f(-7.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
     //right
-	myJello[6].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(1.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
-	myJello[7].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(5.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[6].Init(Eigen::Vector3i(8,8,8),1,1000,0.4,10,Eigen::Vector3f(1.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[7].Init(Eigen::Vector3i(8,8,8),1,1000,0.4,10,Eigen::Vector3f(5.5,19,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
     //back
-	myJello[8].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-1,19,-3.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
-	myJello[9].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-1,19,-7.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[8].Init(Eigen::Vector3i(8,8,8),1,1000,0.4,10,Eigen::Vector3f(-1,19,-3.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[9].Init(Eigen::Vector3i(8,8,8),1,1000,0.4,10,Eigen::Vector3f(-1,19,-7.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
 	//front
-	myJello[10].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-1,19,1.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
-	myJello[11].Init(Eigen::Vector3i(5,5,5),1,1000,0.4,10,Eigen::Vector3f(-1,19,5.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[10].Init(Eigen::Vector3i(8,8,8),1,1000,0.4,10,Eigen::Vector3f(-1,19,1.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[11].Init(Eigen::Vector3i(8,8,8),1,1000,0.4,10,Eigen::Vector3f(-1,19,5.5),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
 
 	myRigidCube[0].Init(1, Eigen::Vector3f(0,28,0),Eigen::Vector3f(5.0,2.0,5.0),Eigen::Vector3f(0.0,1.0,0.0));
 	myRigidCube[1].Init(1, Eigen::Vector3f(0,24,0),Eigen::Vector3f(4.0,2.0,4.0),Eigen::Vector3f(0.0,1.0,0.0));
@@ -495,25 +495,25 @@ void HackAnimation2(double dt){
 	for(int j =0 ;j<num_division; j++)
 	{
 		if(SIM_TIME > 2.0 && SIM_TIME < 5.0)
-		myRigidCube[0].RotateY(physics_time_step*50);
+		myRigidCube[0].RotateY(physics_time_step*80);
 		for (int i = 0; i<myWorld->List_of_Object.size(); i++)
 	      myWorld->List_of_Object[i]->UpdateAll(physics_time_step);
 	}
 
-	if(OUTPUT == 1){
+	if(OUTPUT==1){
 		std::string filename = "FRAME_";
 		filename += std::to_string(FRAME_COUNT);
-		filename += "Ride.inc";
+		filename += ".inc";
 		RideOutput->open(filename);
 		(*RideOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
-		(*RideOutput)<<"#declare RigidPart = union {\n"<<std::endl;
+		(*RideOutput)<<"#declare SoftPart = union {\n"<<std::endl;
 		for(int i = 0; i < 12; i++)
 			myJello[i].Output2File(RideOutput);
 		(*RideOutput)<<"}\n"<<std::endl;
 
-		(*RideOutput)<<"#declare SoftPart = union { \n"<<std::endl;
+		(*RideOutput)<<"#declare RigidPart = union { \n"<<std::endl;
 		for(int i = 0; i < 13; i++)
-			myRigidCube[1].Output2File(RideOutput);
+			myRigidCube[i].Output2File(RideOutput);
 		(*RideOutput)<<"}\n"<<std::endl;
 
 		RideOutput->close();
