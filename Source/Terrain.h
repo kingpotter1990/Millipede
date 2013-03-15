@@ -71,11 +71,12 @@ protected:
 	Eigen::Vector3f* m_normal_data;//per node
 
 	SurfaceMesh* m_surface_mesh;//for spherical terrain 
-protected:	
+public:	
 
 	std::vector<Object*> m_obstacles;
 	std::vector<Object*> m_surface_objects;
 	std::vector<Sphere*> m_foods;
+	std::vector<double> m_food_phase; //this is for animation purpose
 	std::vector<Millipede*> m_millipedes;//registered millipedes on the terrain
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW

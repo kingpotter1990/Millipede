@@ -50,7 +50,7 @@ void World::Draw(int type, const Camera& camera, const Light& light){
 
 
 void World::Update(double dt){
-	double physics_time_step = 1/5000.0;
+	double physics_time_step = 1/3000.0;
 	int num_division = int (dt/physics_time_step);
 	//#pragma omp parallel for
 	for (int i = 0; i<List_of_Object.size(); i++) {

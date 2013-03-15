@@ -1,5 +1,3 @@
-//Begin Food
-//End Food
 //Begin Surface Obstacles
 
 //End Surface Obstacles

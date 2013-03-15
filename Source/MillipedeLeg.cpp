@@ -13,7 +13,7 @@ MillipedeLeg::MillipedeLeg(int a_l_r):m_l_r(a_l_r){
 
 void MillipedeLeg::InitPhysics(Eigen::Vector3f a_body_size){
 	
-	double l0 = 0.0;double l1 = Eigen::Vector2f(1.411,0.275).norm();
+	double l0 = 0.000;double l1 = Eigen::Vector2f(1.411,0.275).norm();
 	double l2 = 0.5*Eigen::Vector2f(1.49,0.682).norm(); double l3 = l2;
 	m_segment_0_size = Eigen::Vector3f(0.3,0.3,l0);
 	m_segment_1_size = Eigen::Vector3f(0.3,0.3,l1);
@@ -580,19 +580,21 @@ void MillipedeLeg::Output2File(std::ofstream* filestream){
 	//segment 0
 	center = m_root_position;
 	radius = m_segment_0_size[0]*0.6;
+	/*
 	(*filestream)<<"//BEGIN SPHERE "<<std::endl;
 	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END SPHERE "<<std::endl;
-
+	*/
 	m_Drawer->Translate(Eigen::Vector3f(0.0,-m_segment_0_size[2],0.0));
 
 	point_a = m_root_position;
 	point_b = m_Drawer->CurrentOrigin();
 	radius = m_segment_0_size[0]*0.5;
+	/*
 	(*filestream)<<"//BEGIN CYLINDER "<<std::endl;
 	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
 	(*filestream)<<"//END CYLINDER "<<std::endl;
-
+	*/
 	//segment 1
 	center = point_b;
 	radius = m_segment_0_size[0]*0.5;

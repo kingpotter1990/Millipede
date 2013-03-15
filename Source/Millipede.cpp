@@ -501,6 +501,75 @@ else if(type == 1){
 	m_head->m_right_antenna->Output2File(filestream,1);
     (*filestream)<<"}\n"<<std::endl;
 
+    (*filestream)<<"#declare LegForward = union { \n"<<std::endl; 
+	 temp_rigid_section = m_head->m_next->m_next;
+    //rigid phase
+    while(1){
+		if(temp_rigid_section->m_left_leg->m_leg_state == LEG_SWAY_FORWARD_1 || temp_rigid_section->m_left_leg->m_leg_state == LEG_SWAY_FORWARD_2)
+			temp_rigid_section->m_left_leg->Output2File(filestream);
+		if(temp_rigid_section->m_right_leg->m_leg_state == LEG_SWAY_FORWARD_1 || temp_rigid_section->m_right_leg->m_leg_state == LEG_SWAY_FORWARD_2)
+			temp_rigid_section->m_right_leg->Output2File(filestream);
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+    (*filestream)<<"}\n"<<std::endl;
+
+    (*filestream)<<"#declare LegBackward = union { \n"<<std::endl; 
+	temp_rigid_section = m_head->m_next->m_next;
+    //rigid phase
+    while(1){
+		if(temp_rigid_section->m_left_leg->m_leg_state == LEG_SWAY_BACKWARD_1 || temp_rigid_section->m_left_leg->m_leg_state == LEG_SWAY_BACKWARD_2)
+			temp_rigid_section->m_left_leg->Output2File(filestream);
+		if(temp_rigid_section->m_right_leg->m_leg_state == LEG_SWAY_BACKWARD_1 || temp_rigid_section->m_right_leg->m_leg_state == LEG_SWAY_BACKWARD_2)
+			temp_rigid_section->m_right_leg->Output2File(filestream);
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+    (*filestream)<<"}\n"<<std::endl;
+
+    (*filestream)<<"#declare LegStance = union { \n"<<std::endl; 
+	  //rigid phase
+    while(1){
+		if(temp_rigid_section->m_left_leg->m_leg_state == LEG_STANCE)
+			temp_rigid_section->m_left_leg->Output2File(filestream);
+		if(temp_rigid_section->m_right_leg->m_leg_state == LEG_STANCE)
+			temp_rigid_section->m_right_leg->Output2File(filestream);
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+    (*filestream)<<"}\n"<<std::endl;
+
+    (*filestream)<<"#declare LegAdjust = union { \n"<<std::endl;
+	  //rigid phase
+     while(1){
+		if(temp_rigid_section->m_left_leg->m_leg_state == LEG_ADJUST)
+			temp_rigid_section->m_left_leg->Output2File(filestream);
+		if(temp_rigid_section->m_right_leg->m_leg_state == LEG_ADJUST)
+			temp_rigid_section->m_right_leg->Output2File(filestream);
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+    (*filestream)<<"}\n"<<std::endl;
+
+//	m_left_leg->Output2File(filestream);
+//	m_right_leg->Output2File(filestream);
+
     // soft part start
     (*filestream)<<"#declare MillipedeSoftPart = union { \n"<<std::endl;
     //soft phase
@@ -520,6 +589,14 @@ else if(type == 1){
     // soft part end
     (*filestream)<<"}\n"<<std::endl;
 	
+}
+else if(type == 2){
+	//for the gram
+	for(int i = 0; i < m_num_section; i++){
+		//output for each sectioh
+		(*filestream)<<"";
+		
+	}
 }
 else{
 	assert(-1);

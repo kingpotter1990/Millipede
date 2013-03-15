@@ -199,8 +199,6 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream, int type){
 	(*filestream)<<"//BEGIN RIGID ID"<<m_section_id<<std::endl;
 
 	Cube::Output2File(filestream);
-	m_left_leg->Output2File(filestream);
-	m_right_leg->Output2File(filestream);
 
 	(*filestream)<<"//END RIGID ID"<<m_section_id<<std::endl<<std::endl;
 	}	

@@ -30,7 +30,7 @@ void initScene(){
     std::cout<<"Setting up the World..."<<std::endl;
 	myTerrainType = TERRAIN_FLAT;
 	myTerrain = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
-		, OBSTACLE_OFF, FOOD_OFF);
+		, OBSTACLE_OFF, FOOD_ON);
 
 	TerrainOutput = new std::ofstream;
 	BugOutputPov = new std::ofstream;
@@ -50,9 +50,9 @@ void initScene(){
 	"for($i=0; $i <= (`size $filelist` - 1); $i++)"<<std::endl
 		<<"sysFile -delete ($path+$filelist[$i]);"<<std::endl<<std::endl;
 
-	//reinitScene();
+	reinitScene();
 
-	initRideScene1();
+	//initRideScene1();
 
 	std::cout<<"Starting Animation..."<<std::endl;
 
@@ -72,12 +72,12 @@ void initRideScene1(){
 	myJello = new Deformable3D[6];
 	myRigidCube= new RigidCube[7];
 
-	myJello[0].Init(Eigen::Vector3i(10,10,10),1,2000,0.4,5,Eigen::Vector3f(-2,15,-2),Eigen::Vector3f(4.0,2.0,4.0), Eigen::Vector3f(1.0,0,0));
-	myJello[1].Init(Eigen::Vector3i(10,10,10),1,2000,0.4,5,Eigen::Vector3f(-1.5,11,-1.5),Eigen::Vector3f(3.0,2.0,3.0), Eigen::Vector3f(1.0,0,0));
-	myJello[2].Init(Eigen::Vector3i(10,10,10),1,2000,0.4,5,Eigen::Vector3f(-1,7,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
-	myJello[3].Init(Eigen::Vector3i(10,10,10),1,2000,0.4,5,Eigen::Vector3f(-1,27,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
-	myJello[4].Init(Eigen::Vector3i(10,10,10),1,2000,0.4,5,Eigen::Vector3f(-1.5,23,-1.5),Eigen::Vector3f(3.0,2.0,3.0), Eigen::Vector3f(1.0,0,0));
-	myJello[5].Init(Eigen::Vector3i(10,10,10),1,2000,0.4,5,Eigen::Vector3f(-2,19,-2),Eigen::Vector3f(4.0,2.0,4.0), Eigen::Vector3f(1.0,0,0));
+	myJello[0].Init(Eigen::Vector3i(10,10,10),1,1000,0.4,20,Eigen::Vector3f(-2,15,-2),Eigen::Vector3f(4.0,2.0,4.0), Eigen::Vector3f(1.0,1,0));
+	myJello[1].Init(Eigen::Vector3i(10,10,10),1,1000,0.4,20,Eigen::Vector3f(-1.5,11,-1.5),Eigen::Vector3f(3.0,2.0,3.0), Eigen::Vector3f(1.0,0,1));
+	myJello[2].Init(Eigen::Vector3i(10,10,10),1,1000,0.4,20,Eigen::Vector3f(-1,7,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[3].Init(Eigen::Vector3i(10,10,10),1,1000,0.4,20,Eigen::Vector3f(-1,27,-1),Eigen::Vector3f(2.0,2.0,2.0), Eigen::Vector3f(1.0,0,0));
+	myJello[4].Init(Eigen::Vector3i(10,10,10),1,1000,0.4,20,Eigen::Vector3f(-1.5,23,-1.5),Eigen::Vector3f(3.0,2.0,3.0), Eigen::Vector3f(1.0,0,1));
+	myJello[5].Init(Eigen::Vector3i(10,10,10),1,1000,0.4,20,Eigen::Vector3f(-2,19,-2),Eigen::Vector3f(4.0,2.0,4.0), Eigen::Vector3f(1.0,1,0));
     
 	myRigidCube[0].Init(1, Eigen::Vector3f(0,18,0),Eigen::Vector3f(5.0,2.0,5.0),Eigen::Vector3f(0.0,1.0,0.0));
 	myRigidCube[1].Init(1, Eigen::Vector3f(0,14,0),Eigen::Vector3f(4.0,2.0,4.0),Eigen::Vector3f(0.0,1.0,0.0));
@@ -268,9 +268,9 @@ void reinitScene(){
 		}
 */
 	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(40,7,0);
-	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.3,1.39,2.422),0.707895, myTerrain);
-	//myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.8,1.0,2.0),0.8, myTerrain);
+	START_POSITION = Eigen::Vector3f(0,8,0);
+	//myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.2,1.39,2.422),0.707895, myTerrain);
+	myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.4,1.0,2.0),0.8, myTerrain);
 	myMillipedes->FixHead();
 	myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);
@@ -278,7 +278,7 @@ void reinitScene(){
 	//mySphere= new Sphere(Eigen::Vector3f(0,15,0), Eigen::Vector3f(3,3,3), Eigen::Vector3f(1,0,1));
 	//myWorld->Add_Object(mySphere);
 	//set up the clock
-	TIME_LAST = TM.GetElapsedTime() ;
+	TIME_LAST = TM.GetElapsedTime();
 	DTIME = 0.0;
 	FRAME_TIME = 0.0;
 
@@ -384,8 +384,8 @@ void keyboardCallback(unsigned char key, int x, int y){
         
     //reset the scene and camera
     if ( key == SpaceKey) {
-        //reinitScene();
-        initRideScene1();
+        reinitScene();
+        //initRideScene1();
 		glutSwapBuffers();
     }
 }
@@ -474,20 +474,41 @@ void cursorCallback(int x, int y){
 void HackAnimation(double dt){
 	if(myMillipedes == NULL)
 		return;
-	if(myMillipedes->IsTailFixed()){
-		//sway the tail, for demonstration of physics
-		if(SIM_TIME > 2.0 && SIM_TIME < 4.0)
-			myMillipedes->m_tail->m_Center[2] =  START_POSITION[2] + 2*sin(180*SIM_TIME*DegreesToRadians); 	
+	double physics_time_step = 1/3000.0;
+	int num_division = int (dt/physics_time_step);
+	//#pragma omp parallel for
+	for(int j =0 ;j<num_division; j++)
+	{
+		for (int i = 0; i<myWorld->List_of_Object.size(); i++)
+	      myWorld->List_of_Object[i]->UpdateAll(physics_time_step);
 
-		if(SIM_TIME > 6.0 && SIM_TIME < 8.0)
-			myMillipedes->m_tail->m_Center[1] =  START_POSITION[1] + 2*sin(180*SIM_TIME*DegreesToRadians); 	
+		SIM_TIME += physics_time_step;
+		if(myMillipedes->IsTailFixed()){
+			//sway the tail, for demonstration of physics
+			if(SIM_TIME > 2.0 && SIM_TIME < 4.0)
+				myMillipedes->m_tail->m_Center[2] =  START_POSITION[2] + 3*sin(180*SIM_TIME*DegreesToRadians); 	
+
+			if(SIM_TIME > 6.0 && SIM_TIME < 8.0)
+				myMillipedes->m_tail->m_Center[1] =  START_POSITION[1] + 3*sin(180*SIM_TIME*DegreesToRadians); 	
+		}
 	}
+	
+	if(SIM_TIME > 10.0 && SIM_TIME < 12.0) 
+		myMillipedes->m_tail->m_fixed = false;
+
+	if(SIM_TIME > 14.0)
+		myMillipedes->m_head->m_fixed = false;
+
+	if(OUTPUT == 1){
+		OUTPUT_ONE_FRAME();//output one frame data
+	}
+	
 
 }
 
 void HackAnimation2(double dt){
 
-	double physics_time_step = 1/3000.0;
+	double physics_time_step = 1/4000.0;
 	int num_division = int (dt/physics_time_step);
 	//#pragma omp parallel for
 	for(int j =0 ;j<num_division; j++)
@@ -502,9 +523,17 @@ void HackAnimation2(double dt){
 		filename += ".inc";
 		RideOutput->open(filename);
 		(*RideOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
-		(*RideOutput)<<"#declare SoftPart = union {\n"<<std::endl;
-		for(int i = 0; i < 6; i++)
-			myJello[i].Output2File(RideOutput);
+		(*RideOutput)<<"#declare SoftPart1 = union {\n"<<std::endl;
+			myJello[0].Output2File(RideOutput);
+			myJello[5].Output2File(RideOutput);
+		(*RideOutput)<<"}\n"<<std::endl;
+		(*RideOutput)<<"#declare SoftPart2 = union {\n"<<std::endl;
+			myJello[1].Output2File(RideOutput);
+			myJello[4].Output2File(RideOutput);
+		(*RideOutput)<<"}\n"<<std::endl;
+		(*RideOutput)<<"#declare SoftPart3 = union {\n"<<std::endl;
+			myJello[2].Output2File(RideOutput);
+			myJello[3].Output2File(RideOutput);
 		(*RideOutput)<<"}\n"<<std::endl;
 
 		(*RideOutput)<<"#declare RigidPart = union { \n"<<std::endl;
@@ -528,16 +557,11 @@ void idleCallback(){
 	*/
 	if(STOP == -1){
 	//only update physics
-		SIM_TIME += 0.01;
-		HackAnimation2(0.01);
+		HackAnimation(0.05);
 		//myWorld->Update(0.02);//The real physics time step is much smaller
 
 		glutPostRedisplay() ; //draw new frame, the display is not real physics time
-		/*
-		if(OUTPUT == 1){
-			OUTPUT_ONE_FRAME();//output one frame data
-		}
-		*/
+		
 	}
 
 }
@@ -555,19 +579,49 @@ void OUTPUT_ONE_FRAME(){
 	}
 	//millipede
 	//Physics Model for Pov
-	/*
-	std::string filename = "FRAME_";
+	
+	std::string filename = "BUG_";
 	filename += std::to_string(FRAME_COUNT);
-	filename += "Bug.inc";
+	filename += ".inc";
 	BugOutputPov->open(filename);
 	(*BugOutputPov)<<"//Frame "<<FRAME_COUNT<<std::endl;
+	(*BugOutputPov)<<"//Begin Food"<<std::endl;
+	(*BugOutputPov)<<"#declare Food = union {\n"<<std::endl;
+	Eigen::Vector3f tmp_center;double a,d;
+	a = 2,d = a/sqrt(2);
+	for(int i = 0; i < myTerrain->m_foods.size(); i++){
+		tmp_center = myTerrain->m_foods[i]->m_Center;
+		(*BugOutputPov)<<"mesh2{"<<std::endl;
+
+		(*BugOutputPov)<<"vertex_vectors{"<<std::endl;
+		(*BugOutputPov)<<"6,"<<std::endl;
+		(*BugOutputPov)<<"<"<< tmp_center[0] - a/2.0 <<","<< tmp_center[1] <<","<< tmp_center[2] + a/2 <<">,"<<std::endl;
+		(*BugOutputPov)<<"<"<< tmp_center[0] + a/2.0 <<","<< tmp_center[1] <<","<< tmp_center[2] + a/2 <<">,"<<std::endl;
+		(*BugOutputPov)<<"<"<< tmp_center[0] + a/2.0 <<","<< tmp_center[1] <<","<< tmp_center[2] - a/2 <<">,"<<std::endl;
+		(*BugOutputPov)<<"<"<< tmp_center[0] - a/2.0 <<","<< tmp_center[1] <<","<< tmp_center[2] - a/2 <<">,"<<std::endl;
+		(*BugOutputPov)<<"<"<< tmp_center[0]<<","<< tmp_center[1] + d <<","<< tmp_center[2]<<">"<<std::endl;
+		(*BugOutputPov)<<"<"<< tmp_center[0]<<","<< tmp_center[1] - d <<","<< tmp_center[2]<<">"<<std::endl;
+		(*BugOutputPov)<<"}"<<std::endl; // end vertex_vectors
+
+		(*BugOutputPov)<<"face_indices{"<<std::endl;
+		(*BugOutputPov)<<"8,"<<std::endl;
+        (*BugOutputPov)<<"<0,1,4>,<1,2,4>,<2,3,4>,<3,0,4>,<5,1,0>,<5,2,1>,<5,3,2>,<5,0,3>"<<std::endl;
+		(*BugOutputPov)<<"}"<<std::endl; // end face indices 
+
+		(*BugOutputPov)<<"}"<<std::endl<<std::endl; // end mesh2
+
+	}
+	(*BugOutputPov)<<"}\n"<<std::endl;
+
+	(*BugOutputPov)<<"//End Food"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputPov,1);//0 is for maya model, 1 is for physics
 	BugOutputPov->close();
-	*/
+
 	//mel script file
-	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
+/*	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
 	(*BugOutputMaya) <<"//End Frame"<<FRAME_COUNT<<";"<<std::endl;
+	*/
 	FRAME_COUNT++;
 }
 

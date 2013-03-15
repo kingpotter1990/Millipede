@@ -92,9 +92,8 @@ void RigidCube::UpdatePhysics(double dt){
 	{
 		m_velocity *= 0;
 		m_avelocity *= 0;
-		return;
 	}
-
+	else{
 	HandleCollision();
 	//udpate the force and torque on this cube
 	m_force = Eigen::Vector3f(0,-1.0,0.0)*m_mass*GRAVITY_CONSTANT;
@@ -118,6 +117,7 @@ void RigidCube::UpdatePhysics(double dt){
 						-m_avelocity[1],m_avelocity[0],0;
 	m_rotation += avelocity_star*m_rotation*dt;
 	m_avelocity += dt*(m_rotation*m_inertia_inverse*m_rotation.transpose())*m_torque;
+	}//end else
 	//now update the matrixes
 	m_Trans.setIdentity();
 	m_Trans.translate(m_Center);
@@ -280,7 +280,6 @@ bool RigidCube::CheckCollision(const Eigen::Vector3f& a_point, Eigen::Vector3f& 
 
 void RigidCube::RotateY(double degree){
 	
-
 	//now update the matrixes
 	m_Trans.rotate(Eigen::AngleAxisf(degree*DegreesToRadians, Eigen::Vector3f::UnitY()));
 	m_TransBack = m_Trans.inverse();
