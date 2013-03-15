@@ -34,6 +34,7 @@ void initScene(){
 
 	TerrainOutput = new std::ofstream;
 	BugOutputPov = new std::ofstream;
+	BugOutputGraph = new std::ofstream;
 	BugOutputMaya = new std::ofstream;
 	WaterOutput = new std::ofstream;
 	RideOutput = new std::ofstream;
@@ -617,6 +618,12 @@ void OUTPUT_ONE_FRAME(){
 	myMillipedes[0].Output2File(BugOutputPov,1);//0 is for maya model, 1 is for physics
 	BugOutputPov->close();
 
+	filename = "GRAPH_";
+	filename += std::to_string(FRAME_COUNT);
+	filename += ".inc";
+	BugOutputGraph->open(filename);
+	myMillipedes[0].Output2File(BugOutputPov,2);//0 is for maya model, 1 is for physics, 2 is for diagram of leg state
+	BugOutputGraph->close();
 	//mel script file
 /*	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics

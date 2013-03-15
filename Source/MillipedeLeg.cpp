@@ -25,6 +25,7 @@ void MillipedeLeg::InitPhysics(Eigen::Vector3f a_body_size){
 void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 
 	m_root = a_root;
+	m_history_length = 2.0;
 	m_Drawer = m_root->m_Drawer;
 
 	m_extreme_phi = 30;
@@ -390,10 +391,25 @@ void MillipedeLeg::UpdateAll(double a_dt){
 	UpdateNeuronNet(a_dt);
 }
 
+void MillipedeLeg::RecordSwitch(){
+	LegStateTransition temp_trans;
+	temp_trans.m_next_state = m_leg_state;
+	
+	if(m_history_state.size() == 0)
+		temp_trans.m_prev_state = m_leg_state;
+	else
+		temp_trans.m_prev_state = m_history_state.back().m_next_state;
+	temp_trans.m_time_stamp = m_root->m_timer;
+	m_history_state.push(temp_trans);
+	if(m_history_state.front().m_time_stamp + m_history_length < m_root->m_timer)
+		m_history_state.pop();
+
+}
+
 void MillipedeLeg::EnterStance(){
 	//ground contact on the left leg
 	m_leg_state = LEG_STANCE;
-
+	RecordSwitch();
 	if(m_next){
 		m_next->EnterAdjust();
 	}
@@ -410,7 +426,7 @@ void MillipedeLeg::EnterAdjust(){
 	m_target_beta = m_extreme_beta/2;
 
 	m_leg_state = LEG_ADJUST;
-
+	RecordSwitch();
 	UpdateSpeedNet();
 
 
@@ -425,7 +441,7 @@ void MillipedeLeg::EnterSwayBackward1(){
 	m_target_beta = m_extreme_beta/2;
 
 	m_leg_state = LEG_SWAY_BACKWARD_1;
-
+	RecordSwitch();
 	UpdateSpeedNet();
 }
 
@@ -441,7 +457,7 @@ void MillipedeLeg::EnterSwayForward1(){
 	m_target_beta = m_extreme_beta/2;
 
 	m_leg_state = LEG_SWAY_FORWARD_1;
-
+	RecordSwitch();
 	UpdateSpeedNet();
 } 
 
@@ -454,7 +470,7 @@ void MillipedeLeg::EnterSwayBackward2(){
 	m_target_beta = m_extreme_beta/2;
 
 	m_leg_state = LEG_SWAY_BACKWARD_2;
-
+	RecordSwitch();
 	UpdateSpeedNet();
 }
 
@@ -470,7 +486,7 @@ void MillipedeLeg::EnterSwayForward2(){
 	m_target_beta = m_extreme_beta/2;
 	
 	m_leg_state = LEG_SWAY_FORWARD_2;
-
+	RecordSwitch();
 	UpdateSpeedNet();
 } 
 

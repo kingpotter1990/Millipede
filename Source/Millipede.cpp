@@ -1,3 +1,4 @@
+#include <queue>
 #include "Millipede.h"
 #include "MillipedeHead.h"
 #include "MillipedeLeg.h"
@@ -591,12 +592,96 @@ else if(type == 1){
 	
 }
 else if(type == 2){
-	//for the gram
-	for(int i = 0; i < m_num_section; i++){
-		//output for each sectioh
-		(*filestream)<<"";
+    MillipedeRigidSection *temp_rigid_section;    MillipedeSoftSection *temp_soft_section;    temp_rigid_section = m_head->m_next->m_next;	//for the graph	 temp_rigid_section = m_head->m_next->m_next;
+	 double start_time, end_time;
+	 double ratio_a = 0, ratio_b = 0;
+	 double shift_x = 1, shift_y = 20, bar_width = 2.0, bar_height = 0.5, bar_dist_x = 0.5, bar_dist_y = 0.2;
+	 Eigen::Vector3f lower_left, upper_right;
+	 std::queue<LegStateTransition> copy_history_state;
+	 LegStateTransition cur_trans;
+	 //rigid phase
+    while(1){
+		//output for each section, each leg
+		(*filestream)<<"//LEFT"<<std::endl;
+		end_time = temp_rigid_section->m_timer;
+		start_time = end_time - temp_rigid_section->m_left_leg->m_history_length;//record 2 second;
+		copy_history_state = temp_rigid_section->m_left_leg->m_history_state;
+		while(!copy_history_state.empty()){
+			  cur_trans = copy_history_state.front();
+			  copy_history_state.pop();
+			  ratio_a = ratio_b;
+			  ratio_b = (cur_trans.m_time_stamp - start_time)/(end_time - start_time);
+			  assert(ratio_b>=0);
+			  //Output a box based on ratio_a and ratio_b;
+			  lower_left[0] = shift_x + bar_width*ratio_a;
+			  lower_left[1] = shift_y + bar_height;
+			  lower_left[2] = 0;
+			
+			  upper_right[0] = shift_x + bar_width*ratio_b;
+			  upper_right[1] = shift_y + bar_height;
+			  upper_right[2] = 0;
+		}
+		ratio_a = ratio_b;
+		ratio_b = 1;
+		//Output the last box;
+
+		lower_left[0] = shift_x + bar_width*ratio_a;
+		lower_left[1] = shift_y + bar_height;
+		lower_left[2] = 0;
+			
+		upper_right[0] = shift_x + bar_width*ratio_b;
+		upper_right[1] = shift_y + bar_height;
+		upper_right[2] = 0;
+
+		(*filestream)<<"//END LEFT"<<std::endl;
+
+		(*filestream)<<"//RIGHT"<<std::endl;
+		shift_x += bar_dist_x + bar_width;
+		copy_history_state = temp_rigid_section->m_right_leg->m_history_state;
+		while(!copy_history_state.empty()){
+			  cur_trans = copy_history_state.front();
+			  copy_history_state.pop();
+			  ratio_a = ratio_b;
+			  ratio_b = (cur_trans.m_time_stamp - start_time)/(end_time - start_time);
+			  assert(ratio_b>=0);
+			  //Output a box based on ratio_a and ratio_b;
+			  lower_left[0] = shift_x + bar_width*ratio_a;
+			  lower_left[1] = shift_y + bar_height;
+			  lower_left[2] = 0;
+			
+			  upper_right[0] = shift_x + bar_width*ratio_b;
+			  upper_right[1] = shift_y + bar_height;
+			  upper_right[2] = 0;
+		}
+		ratio_a = ratio_b;
+		ratio_b = 1;
+		//Output the last box;
+
+		lower_left[0] = shift_x + bar_width*ratio_a;
+		lower_left[1] = shift_y + bar_height;
+		lower_left[2] = 0;
+
+		upper_right[0] = shift_x + bar_width*ratio_b;
+		upper_right[1] = shift_y + bar_height;
+		upper_right[2] = 0;
+
+		(*filestream)<<"//END RIGHT"<<std::endl;
 		
+		shift_x -= bar_dist_x + bar_width;
+		shift_y -= bar_dist_y + bar_height;
+
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+ 
+
+		
+	
 	}
+	
 }
 else{
 	assert(-1);

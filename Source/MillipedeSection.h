@@ -2,6 +2,7 @@
 #ifndef MILLIPEDE_SECTION_H_
 #define MILLIPEDE_SECTION_H_
 
+#include <queue>
 #include "RigidCube.h"
 #include "3DDeformable.h"
 
@@ -13,7 +14,6 @@ class Terrain;
 class Drawer;
 
 enum SECTION_STATUS {LEG_SUPPORTED, NOT_SUPPORTED};
-
 class MillipedeRigidSection:public RigidCube{
 	//rigid section is rigid in physics
 	//has two pairs of leg for millipede
@@ -34,7 +34,6 @@ public:
 	MillipedeLeg* m_right_leg;
 
 	SECTION_STATUS m_body_state;
-
 	MillipedeSoftSection* m_next;
 	MillipedeSoftSection* m_prev;
 
@@ -47,6 +46,7 @@ public:
 	double m_current_height;
 	Eigen::Vector3f m_linear_speed;
 
+	double m_timer;
 	Drawer* m_Drawer;
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW

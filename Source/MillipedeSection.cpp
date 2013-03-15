@@ -26,6 +26,7 @@ void MillipedeRigidSection::InitPhysics(double density, Eigen::Vector3f center,E
 void MillipedeRigidSection::InitNeuroNet(Millipede* a_root, int a_id){
 
 	//determine the leg rotation speed from the global speed parameter
+	m_timer = 0.0;
 	m_master = a_root;
 	m_Drawer = m_master->m_Drawer;
 	m_terrain = m_master->m_terrain;
@@ -98,7 +99,7 @@ void MillipedeRigidSection::UpdateNeuronNet(double a_dt){
 void MillipedeRigidSection::UpdateAll(double dt){
 
 	//update nueronet
-
+	m_timer += dt;
 	UpdateNeuronNet(dt);
 
 	m_left_leg->UpdateAll(dt);

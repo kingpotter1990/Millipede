@@ -3,7 +3,7 @@
 #define MILLIPEDE_LEG_H_
 
 #include <string>
-
+#include <queue>
 #include "Utility.h" 
 #include "Object.h"
 
@@ -13,6 +13,11 @@ class Drawer;
 class Sphere;
 enum LEG_STATUS {LEG_STANCE, LEG_ADJUST, LEG_SWAY_FORWARD_1, LEG_SWAY_FORWARD_2, LEG_SWAY_BACKWARD_1,LEG_SWAY_BACKWARD_2};
 
+struct LegStateTransition{
+	LEG_STATUS m_next_state;
+	LEG_STATUS m_prev_state;
+	double m_time_stamp;	
+};
 class MillipedeLeg:public Object{
     
 public:
@@ -37,7 +42,7 @@ protected:
 	void UpdateSwingNet(double dt);
 	void UpdateStanceNet(double dt);
 	void UpdateSpeedNet();
-
+	void RecordSwitch();
 	void EnterStance();
 	void EnterAdjust();
 	void EnterSwayForward1();
@@ -83,7 +88,8 @@ public:
 
 	MillipedeRigidSection* m_root;//where the leg is attached to
 	LEG_STATUS m_leg_state;
-
+	std::queue<LegStateTransition> m_history_state;
+	double m_history_length;
 	Eigen::Vector3f m_tip_position;//
 	Eigen::Vector3f m_root_position;//root position of the leg, in the rigid cube's cos(after translation and rotation)
 

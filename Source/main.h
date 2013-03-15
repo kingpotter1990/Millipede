@@ -42,6 +42,7 @@ RigidCube* myRigidCube;
 Deformable3D* myJello;
 std::ofstream*  TerrainOutput;
 std::ofstream*  BugOutputPov;
+std::ofstream*  BugOutputGraph;
 std::ofstream*  BugOutputMaya;
 std::ofstream*  WaterOutput;
 std::ofstream*  RideOutput;
