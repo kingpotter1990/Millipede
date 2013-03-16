@@ -25,7 +25,7 @@ void MillipedeLeg::InitPhysics(Eigen::Vector3f a_body_size){
 void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 
 	m_root = a_root;
-	m_history_length = 2.0;
+	m_history_length = 1.0;
 	m_Drawer = m_root->m_Drawer;
 
 	m_extreme_phi = 30;
@@ -303,9 +303,11 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 				EnterSwayForward2();
 			
 			break;
-
-
 	}
+
+	//recording leg status	
+	if(m_history_state.front().m_time_stamp + m_history_length < m_root->m_timer)
+		m_history_state.pop();
 }
 
 void MillipedeLeg::UpdateSwingNet(double a_dt){
@@ -401,8 +403,6 @@ void MillipedeLeg::RecordSwitch(){
 		temp_trans.m_prev_state = m_history_state.back().m_next_state;
 	temp_trans.m_time_stamp = m_root->m_timer;
 	m_history_state.push(temp_trans);
-	if(m_history_state.front().m_time_stamp + m_history_length < m_root->m_timer)
-		m_history_state.pop();
 
 }
 

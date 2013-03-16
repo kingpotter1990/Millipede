@@ -264,7 +264,7 @@ void Millipede::UpdateAll(double dt){
 			break;
 	}
 
-#pragma omp parallel for
+//#pragma omp parallel for
 	for(int i = 0; i< temp_sections.size(); i++)
 		temp_sections[i]->UpdateAll(dt);
 }
@@ -413,6 +413,37 @@ void Millipede::FixTail(){
 void Millipede::ReleaseTail(){
 	m_tail->m_fixed = false;
 }
+
+struct leg_state_box{
+	double l_x;
+	double l_y;
+	double r_x;
+	double r_y;
+}
+;
+typedef std::vector<leg_state_box> BoxVec;
+
+struct StateTable{
+	void Insert(LEG_STATUS state, leg_state_box box){
+	  switch(state){
+		  case LEG_SWAY_FORWARD_1:
+		  case LEG_SWAY_FORWARD_2:
+			  swf.push_back(box);
+		  case LEG_SWAY_BACKWARD_1:
+		  case LEG_SWAY_BACKWARD_2:
+			  swb.push_back(box);
+		  case LEG_STANCE:
+			  sta.push_back(box);
+		  case LEG_ADJUST:
+			  adj.push_back(box);
+		  }
+
+	};
+	BoxVec swf;
+	BoxVec swb;
+	BoxVec sta;
+	BoxVec adj;
+};
 
 void Millipede::Output2File(std::ofstream* filestream, int type){
 
@@ -595,47 +626,46 @@ else if(type == 2){
     MillipedeRigidSection *temp_rigid_section;    MillipedeSoftSection *temp_soft_section;    temp_rigid_section = m_head->m_next->m_next;	//for the graph	 temp_rigid_section = m_head->m_next->m_next;
 	 double start_time, end_time;
 	 double ratio_a = 0, ratio_b = 0;
-	 double shift_x = 1, shift_y = 20, bar_width = 2.0, bar_height = 0.5, bar_dist_x = 0.5, bar_dist_y = 0.2;
-	 Eigen::Vector3f lower_left, upper_right;
+	 double shift_x = 1, shift_y = 20, bar_width = 3, bar_height = 0.4, bar_dist_x = 0.5, bar_dist_y = 0.2;
 	 std::queue<LegStateTransition> copy_history_state;
 	 LegStateTransition cur_trans;
+	 StateTable statetable;
+	 leg_state_box temp_box;
 	 //rigid phase
     while(1){
 		//output for each section, each leg
-		(*filestream)<<"//LEFT"<<std::endl;
+		ratio_a = 0; 
+		ratio_b = 0;
 		end_time = temp_rigid_section->m_timer;
 		start_time = end_time - temp_rigid_section->m_left_leg->m_history_length;//record 2 second;
 		copy_history_state = temp_rigid_section->m_left_leg->m_history_state;
-		while(!copy_history_state.empty()){
+		while(copy_history_state.size()>0){
 			  cur_trans = copy_history_state.front();
 			  copy_history_state.pop();
 			  ratio_a = ratio_b;
 			  ratio_b = (cur_trans.m_time_stamp - start_time)/(end_time - start_time);
 			  assert(ratio_b>=0);
 			  //Output a box based on ratio_a and ratio_b;
-			  lower_left[0] = shift_x + bar_width*ratio_a;
-			  lower_left[1] = shift_y + bar_height;
-			  lower_left[2] = 0;
+			  temp_box.l_x = shift_x + bar_width*ratio_a;
+			  temp_box.l_y = shift_y;
+			  temp_box.r_x = shift_x + bar_width*ratio_b;
+			  temp_box.r_y = shift_y + bar_height;
 			
-			  upper_right[0] = shift_x + bar_width*ratio_b;
-			  upper_right[1] = shift_y + bar_height;
-			  upper_right[2] = 0;
+			  statetable.Insert(cur_trans.m_prev_state, temp_box);
 		}
 		ratio_a = ratio_b;
 		ratio_b = 1;
 		//Output the last box;
-
-		lower_left[0] = shift_x + bar_width*ratio_a;
-		lower_left[1] = shift_y + bar_height;
-		lower_left[2] = 0;
+		temp_box.l_x = shift_x + bar_width*ratio_a;
+		temp_box.l_y = shift_y;
+		temp_box.r_x = shift_x + bar_width*ratio_b;
+		temp_box.r_y = shift_y + bar_height;
 			
-		upper_right[0] = shift_x + bar_width*ratio_b;
-		upper_right[1] = shift_y + bar_height;
-		upper_right[2] = 0;
-
-		(*filestream)<<"//END LEFT"<<std::endl;
-
-		(*filestream)<<"//RIGHT"<<std::endl;
+		statetable.Insert(temp_rigid_section->m_left_leg->m_leg_state, temp_box);
+		
+		//right
+		ratio_a = 0;
+		ratio_b = 0;
 		shift_x += bar_dist_x + bar_width;
 		copy_history_state = temp_rigid_section->m_right_leg->m_history_state;
 		while(!copy_history_state.empty()){
@@ -645,28 +675,24 @@ else if(type == 2){
 			  ratio_b = (cur_trans.m_time_stamp - start_time)/(end_time - start_time);
 			  assert(ratio_b>=0);
 			  //Output a box based on ratio_a and ratio_b;
-			  lower_left[0] = shift_x + bar_width*ratio_a;
-			  lower_left[1] = shift_y + bar_height;
-			  lower_left[2] = 0;
+			  temp_box.l_x = shift_x + bar_width*ratio_a;
+			  temp_box.l_y = shift_y;
+			  temp_box.r_x = shift_x + bar_width*ratio_b;
+			  temp_box.r_y = shift_y + bar_height;
 			
-			  upper_right[0] = shift_x + bar_width*ratio_b;
-			  upper_right[1] = shift_y + bar_height;
-			  upper_right[2] = 0;
+			  statetable.Insert(cur_trans.m_prev_state, temp_box);
 		}
 		ratio_a = ratio_b;
 		ratio_b = 1;
 		//Output the last box;
-
-		lower_left[0] = shift_x + bar_width*ratio_a;
-		lower_left[1] = shift_y + bar_height;
-		lower_left[2] = 0;
-
-		upper_right[0] = shift_x + bar_width*ratio_b;
-		upper_right[1] = shift_y + bar_height;
-		upper_right[2] = 0;
-
-		(*filestream)<<"//END RIGHT"<<std::endl;
-		
+		temp_box.l_x = shift_x + bar_width*ratio_a;
+		temp_box.l_y = shift_y;
+		temp_box.r_x = shift_x + bar_width*ratio_b;
+		temp_box.r_y = shift_y + bar_height;
+			
+		statetable.Insert(temp_rigid_section->m_right_leg->m_leg_state, temp_box);
+	
+		//move to the next column
 		shift_x -= bar_dist_x + bar_width;
 		shift_y -= bar_dist_y + bar_height;
 
@@ -676,15 +702,50 @@ else if(type == 2){
         }
         else
             break;
- 
+	
+	}//end looping all rigid section
 
-		
-	
+	//output the statetable;
+	(*filestream)<<"//Output Diagram"<<std::endl;
+	(*filestream)<<"#declare SWF = object{" <<std::endl<<"union{"<<std::endl;
+	for(int i = 0;i < statetable.swf.size();i++){
+		(*filestream)<<"box{"<<std::endl;
+		(*filestream)<<"<"<<statetable.swf[i].l_x <<","<<statetable.swf[i].l_y<<","<<"0"<<">,"<<std::endl;
+		(*filestream)<<"<"<<statetable.swf[i].r_x <<","<<statetable.swf[i].r_y<<","<<"0"<<">"<<std::endl;
+		(*filestream)<<"}"<<std::endl;
 	}
+	(*filestream)<<"}"<<std::endl<<"}"<<std::endl;
 	
+	(*filestream)<<"#declare SWB = object{" <<std::endl<<"union{"<<std::endl;
+	for(int i = 0;i < statetable.swb.size();i++){
+		(*filestream)<<"box{"<<std::endl;
+		(*filestream)<<"<"<<statetable.swb[i].l_x <<","<<statetable.swb[i].l_y<<","<<"0"<<">,"<<std::endl;
+		(*filestream)<<"<"<<statetable.swb[i].r_x <<","<<statetable.swb[i].r_y<<","<<"0"<<">"<<std::endl;
+		(*filestream)<<"}"<<std::endl;
+	}
+	(*filestream)<<"}"<<std::endl<<"}"<<std::endl;
+	
+	(*filestream)<<"#declare STA = object{" <<std::endl<<"union{"<<std::endl;
+	for(int i = 0;i < statetable.sta.size();i++){
+		(*filestream)<<"box{"<<std::endl;
+		(*filestream)<<"<"<<statetable.sta[i].l_x <<","<<statetable.sta[i].l_y<<","<<"0"<<">,"<<std::endl;
+		(*filestream)<<"<"<<statetable.sta[i].r_x <<","<<statetable.sta[i].r_y<<","<<"0"<<">"<<std::endl;
+		(*filestream)<<"}"<<std::endl;
+	}
+	(*filestream)<<"}"<<std::endl<<"}"<<std::endl;
+	
+	(*filestream)<<"#declare ADJ = object{" <<std::endl<<"union{"<<std::endl;
+	for(int i = 0;i < statetable.adj.size();i++){
+		(*filestream)<<"box{"<<std::endl;
+		(*filestream)<<"<"<<statetable.adj[i].l_x <<","<<statetable.adj[i].l_y<<","<<"0"<<">,"<<std::endl;
+		(*filestream)<<"<"<<statetable.adj[i].r_x <<","<<statetable.adj[i].r_y<<","<<"0"<<">"<<std::endl;
+		(*filestream)<<"}"<<std::endl;
+	}
+	(*filestream)<<"}"<<std::endl<<"}" <<std::endl;
+
 }
 else{
 	assert(-1);
 }
-    (*filestream)<<"//End Millipede\n"<<std::endl;
+    (*filestream)<<std::endl<<"//End Millipede\n"<<std::endl;
 }

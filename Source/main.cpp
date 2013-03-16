@@ -622,7 +622,7 @@ void OUTPUT_ONE_FRAME(){
 	filename += std::to_string(FRAME_COUNT);
 	filename += ".inc";
 	BugOutputGraph->open(filename);
-	myMillipedes[0].Output2File(BugOutputPov,2);//0 is for maya model, 1 is for physics, 2 is for diagram of leg state
+	myMillipedes[0].Output2File(BugOutputGraph,2);//0 is for maya model, 1 is for physics, 2 is for diagram of leg state
 	BugOutputGraph->close();
 	//mel script file
 /*	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
