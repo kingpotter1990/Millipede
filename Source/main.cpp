@@ -487,17 +487,17 @@ void HackAnimation(double dt){
 		if(myMillipedes->IsTailFixed()){
 			//sway the tail, for demonstration of physics
 			if(SIM_TIME > 2.0 && SIM_TIME < 4.0)
-				myMillipedes->m_tail->m_Center[2] =  START_POSITION[2] + 3*sin(180*SIM_TIME*DegreesToRadians); 	
+				myMillipedes->m_tail->m_Center[2] =  START_POSITION[2] + 2*sin(180*SIM_TIME*DegreesToRadians); 	
 
-			if(SIM_TIME > 6.0 && SIM_TIME < 8.0)
-				myMillipedes->m_tail->m_Center[1] =  START_POSITION[1] + 3*sin(180*SIM_TIME*DegreesToRadians); 	
+			if(SIM_TIME > 5.0 && SIM_TIME < 7.0)
+				myMillipedes->m_tail->m_Center[1] =  START_POSITION[1] + 2*sin(180*SIM_TIME*DegreesToRadians); 	
 		}
 	}
 	
-	if(SIM_TIME > 10.0 && SIM_TIME < 12.0) 
+	if(SIM_TIME > 9.4) 
 		myMillipedes->m_tail->m_fixed = false;
 
-	if(SIM_TIME > 14.0)
+	if(SIM_TIME > 11.3)
 		myMillipedes->m_head->m_fixed = false;
 
 	if(OUTPUT == 1){

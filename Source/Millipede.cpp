@@ -92,11 +92,11 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 	temp_position[2] = 0.25*a_rigid_size[2];
 	m_tail_sl = new Deformable3D;
 	Eigen::Vector3f tail_s_size = Eigen::Vector3f(a_rigid_size[0]*6,a_rigid_size[1]*0.3,a_rigid_size[2]*0.25);
-	m_tail_sl->Init(Eigen::Vector3i(9,2,2),1.0,5000,0.4,20,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
+	m_tail_sl->Init(Eigen::Vector3i(9,2,2),1.0,4000,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
 	
 	temp_position[2] = -a_rigid_size[2]*0.5;
 	m_tail_sr = new Deformable3D;
-	m_tail_sr->Init(Eigen::Vector3i(9,2,2),1.0,5000,0.4,20,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
+	m_tail_sr->Init(Eigen::Vector3i(9,2,2),1.0,4000,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
 	
 	m_tail->AttachNodes(m_tail_sl->m_Mesh->GetLeftNodes());
 	m_tail->AttachNodes(m_tail_sr->m_Mesh->GetLeftNodes());
@@ -470,13 +470,17 @@ struct StateTable{
 		  case LEG_SWAY_FORWARD_1:
 		  case LEG_SWAY_FORWARD_2:
 			  swf.push_back(box);
+			  break;
 		  case LEG_SWAY_BACKWARD_1:
 		  case LEG_SWAY_BACKWARD_2:
 			  swb.push_back(box);
+			  break;
 		  case LEG_STANCE:
 			  sta.push_back(box);
+			  break;
 		  case LEG_ADJUST:
 			  adj.push_back(box);
+			  break;
 		  }
 
 	};
@@ -664,7 +668,11 @@ else if(type == 1){
 	
 }
 else if(type == 2){
-    MillipedeRigidSection *temp_rigid_section;    MillipedeSoftSection *temp_soft_section;    temp_rigid_section = m_head->m_next->m_next;	//for the graph	 temp_rigid_section = m_head->m_next->m_next;
+    MillipedeRigidSection *temp_rigid_section;
+    MillipedeSoftSection *temp_soft_section;
+    temp_rigid_section = m_head->m_next->m_next;
+	//for the graph
+	 temp_rigid_section = m_head->m_next->m_next;
 	 double start_time, end_time;
 	 double ratio_a = 0, ratio_b = 0;
 	 double shift_x = 1, shift_y = 20, bar_width = 3, bar_height = 0.4, bar_dist_x = 0.5, bar_dist_y = 0.2;

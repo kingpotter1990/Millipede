@@ -274,6 +274,10 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 			}
 			else if(dif.norm() < 2*m_leg_rotation_velocity*a_dt)
 					EnterSwayBackward1();
+			if(m_prev){
+				if(m_phi - m_prev->m_phi > 30)
+				EnterSwayForward1();//stay in the midpoint until bigger then 30 diff
+			}
 			break;
 			
         case LEG_SWAY_BACKWARD_1:
@@ -295,7 +299,10 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 				EnterSwayForward1();
 				//m_neig->EnterSwayForward1();
 			}
-
+			if(m_next){
+				if(m_next->m_phi - m_phi > 30)
+				EnterSwayForward1();
+			}
 			break;                
 
 		case LEG_ADJUST:
@@ -306,8 +313,9 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 	}
 
 	//recording leg status	
-	if(m_history_state.front().m_time_stamp + m_history_length < m_root->m_timer)
-		m_history_state.pop();
+	if(m_history_state.size() > 0)
+		if(m_history_state.front().m_time_stamp + m_history_length < m_root->m_timer)
+			m_history_state.pop();
 }
 
 void MillipedeLeg::UpdateSwingNet(double a_dt){
