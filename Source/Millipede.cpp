@@ -6,6 +6,7 @@
 #include "Terrain.h"
 #include "HeightFieldWater.h"
 #include "Drawer.h"
+#include "3DDeformable.h"
 
 Millipede::Millipede(){
 	m_type = TypeMixed;
@@ -87,6 +88,34 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 	m_tail->SetColor(Eigen::Vector3f(0,0,1));
 	m_tail->m_next = NULL;
 
+	temp_position[0] += a_rigid_size[0]*0.5;
+	temp_position[2] = 0.25*a_rigid_size[2];
+	m_tail_sl = new Deformable3D;
+	Eigen::Vector3f tail_s_size = Eigen::Vector3f(a_rigid_size[0]*6,a_rigid_size[1]*0.3,a_rigid_size[2]*0.25);
+	m_tail_sl->Init(Eigen::Vector3i(9,2,2),1.0,5000,0.4,20,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
+	
+	temp_position[2] = -a_rigid_size[2]*0.5;
+	m_tail_sr = new Deformable3D;
+	m_tail_sr->Init(Eigen::Vector3i(9,2,2),1.0,5000,0.4,20,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
+	
+	m_tail->AttachNodes(m_tail_sl->m_Mesh->GetLeftNodes());
+	m_tail->AttachNodes(m_tail_sr->m_Mesh->GetLeftNodes());
+
+	Eigen::Vector3f tail_c_size = tail_s_size;
+	tail_c_size[0] = tail_c_size[1];
+	temp_position[0] += tail_s_size[0] + tail_c_size[0]*0.5;
+	temp_position[1] += tail_s_size[1]*0.5;
+	temp_position[2] = 0.375*a_rigid_size[2];
+	m_tail_cl = new RigidCube;
+	m_tail_cl->Init(1,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
+	
+	temp_position[2] = -0.375*a_rigid_size[2];
+	m_tail_cr = new RigidCube;
+	m_tail_cr->Init(1,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
+
+	m_tail_cl->AttachNodes(m_tail_sl->m_Mesh->GetRightNodes());
+	m_tail_cr->AttachNodes(m_tail_sr->m_Mesh->GetRightNodes());
+	//connect the rigid and soft sections
 	//connect the rigid and soft sections
 	MillipedeRigidSection *temp_rigid_section;
 	MillipedeSoftSection *temp_soft_section;
@@ -192,7 +221,10 @@ void Millipede::SetWorld(World* a_world){
 		else
 			break;
 	}
-
+	m_tail_sl->SetWorld(a_world);
+	m_tail_sr->SetWorld(a_world);
+	m_tail_cl->SetWorld(a_world);
+	m_tail_cr->SetWorld(a_world);
 }
 
 void Millipede::Draw(int type, const Camera& camera, const Light& light){
@@ -218,6 +250,10 @@ void Millipede::Draw(int type, const Camera& camera, const Light& light){
 			break;
 	}
 
+	m_tail_sl->Draw(type, camera, light);
+	m_tail_sr->Draw(type, camera, light);
+	m_tail_cl->Draw(type, camera, light);
+	m_tail_cr->Draw(type, camera, light);
 	//draw the bounding box
 	/*
 	m_Drawer->SetIdentity();
@@ -267,6 +303,11 @@ void Millipede::UpdateAll(double dt){
 //#pragma omp parallel for
 	for(int i = 0; i< temp_sections.size(); i++)
 		temp_sections[i]->UpdateAll(dt);
+
+	m_tail_sl->UpdateAll(dt);
+	m_tail_sr->UpdateAll(dt);
+	m_tail_cl->UpdateAll(dt);
+	m_tail_cr->UpdateAll(dt);
 }
 
 void Millipede::UpdateTipSphere(){

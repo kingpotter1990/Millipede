@@ -11,6 +11,8 @@ class MillipedeHead;
 class Terrain;
 class Drawer;
 class Sphere;
+class Deformable3D;
+class RigidCube;
 class Millipede:public Object{
 
 public:
@@ -45,6 +47,11 @@ public:
 	MillipedeRigidSection* m_tail;
 	std::vector<Sphere*> m_tip_spheres;//For interacting with water;
 	Drawer* m_Drawer;
+
+	Deformable3D* m_tail_sl;
+	Deformable3D* m_tail_sr;
+	RigidCube* m_tail_cl;
+	RigidCube* m_tail_cr;
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
