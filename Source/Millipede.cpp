@@ -27,7 +27,7 @@ void Millipede::Init(Eigen::Vector3f a_position, int a_num_section, Eigen::Vecto
 void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length){
 
     Eigen::Vector3i soft_resolution(3,3,3);
-    double youngs_modulus = 2000;
+    double youngs_modulus = 1500;
 
 	assert(a_num_section >=3);//Need to be at least this lenght
 
@@ -88,15 +88,15 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 	m_tail->SetColor(Eigen::Vector3f(0,0,1));
 	m_tail->m_next = NULL;
 
-	temp_position[0] += a_rigid_size[0]*0.5;
-	temp_position[2] = 0.25*a_rigid_size[2];
 	m_tail_sl = new Deformable3D;
-	Eigen::Vector3f tail_s_size = Eigen::Vector3f(a_rigid_size[0]*6,a_rigid_size[1]*0.3,a_rigid_size[2]*0.25);
-	m_tail_sl->Init(Eigen::Vector3i(9,2,2),1.0,4000,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
+	Eigen::Vector3f tail_s_size = Eigen::Vector3f(a_rigid_size[0]*6,a_rigid_size[1]*0.3,a_rigid_size[1]*0.3);
+	temp_position[0] += a_rigid_size[0]*0.5;
+	temp_position[2] = 0.3*a_rigid_size[2] - tail_s_size[2];
+	m_tail_sl->Init(Eigen::Vector3i(4,2,2),1.0,1500,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
 	
-	temp_position[2] = -a_rigid_size[2]*0.5;
+	temp_position[2] = -0.3*a_rigid_size[2];
 	m_tail_sr = new Deformable3D;
-	m_tail_sr->Init(Eigen::Vector3i(9,2,2),1.0,4000,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
+	m_tail_sr->Init(Eigen::Vector3i(4,2,2),1.0,1500,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
 	
 	m_tail->AttachNodes(m_tail_sl->m_Mesh->GetLeftNodes());
 	m_tail->AttachNodes(m_tail_sr->m_Mesh->GetLeftNodes());
@@ -105,13 +105,13 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 	tail_c_size[0] = tail_c_size[1];
 	temp_position[0] += tail_s_size[0] + tail_c_size[0]*0.5;
 	temp_position[1] += tail_s_size[1]*0.5;
-	temp_position[2] = 0.375*a_rigid_size[2];
+	temp_position[2] = 0.3*a_rigid_size[2] - 0.5*tail_s_size[2];
 	m_tail_cl = new RigidCube;
-	m_tail_cl->Init(1,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
+	m_tail_cl->Init(2,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
 	
-	temp_position[2] = -0.375*a_rigid_size[2];
+	temp_position[2] = -0.3*a_rigid_size[2] + 0.5*tail_s_size[2];
 	m_tail_cr = new RigidCube;
-	m_tail_cr->Init(1,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
+	m_tail_cr->Init(2,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
 
 	m_tail_cl->AttachNodes(m_tail_sl->m_Mesh->GetRightNodes());
 	m_tail_cr->AttachNodes(m_tail_sr->m_Mesh->GetRightNodes());
@@ -300,7 +300,7 @@ void Millipede::UpdateAll(double dt){
 			break;
 	}
 
-//#pragma omp parallel for
+#pragma omp parallel for
 	for(int i = 0; i< temp_sections.size(); i++)
 		temp_sections[i]->UpdateAll(dt);
 
@@ -570,6 +570,8 @@ else if(type == 1){
             break;
     }
 
+	m_tail_cl->Output2File(filestream);
+	m_tail_cr->Output2File(filestream);
     // rigid part end
     (*filestream)<<"}\n"<<std::endl;
 
@@ -577,6 +579,11 @@ else if(type == 1){
 	m_head->m_left_antenna->Output2File(filestream,1);
 	m_head->m_right_antenna->Output2File(filestream,1);
     (*filestream)<<"}\n"<<std::endl;
+
+    (*filestream)<<"#declare MillipedeTailPart = union { \n"<<std::endl; 
+	m_tail_sl->Output2File(filestream);
+	m_tail_sr->Output2File(filestream);
+	(*filestream)<<"}\n"<<std::endl;
 
     (*filestream)<<"#declare LegForward = union { \n"<<std::endl; 
 	 temp_rigid_section = m_head->m_next->m_next;
@@ -613,6 +620,7 @@ else if(type == 1){
     (*filestream)<<"}\n"<<std::endl;
 
     (*filestream)<<"#declare LegStance = union { \n"<<std::endl; 
+    temp_rigid_section = m_head->m_next->m_next;
 	  //rigid phase
     while(1){
 		if(temp_rigid_section->m_left_leg->m_leg_state == LEG_STANCE)
@@ -629,6 +637,7 @@ else if(type == 1){
     (*filestream)<<"}\n"<<std::endl;
 
     (*filestream)<<"#declare LegAdjust = union { \n"<<std::endl;
+    temp_rigid_section = m_head->m_next->m_next;
 	  //rigid phase
      while(1){
 		if(temp_rigid_section->m_left_leg->m_leg_state == LEG_ADJUST)

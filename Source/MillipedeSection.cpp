@@ -128,7 +128,7 @@ void MillipedeRigidSection::UpdatePBD(double dt){
 
 	m_Center += 10*dt*(m_height_obj - m_current_height)*m_orient_obj;//balance of height	
 	//Minimize the distance to previous section to minimum;
-	m_linear_speed = 50*prev_link_vector.normalized()*(prev_link_vector.norm() - m_prev_dis_obj);
+	m_linear_speed = 150*prev_link_vector.normalized()*(prev_link_vector.norm() - m_prev_dis_obj);
 	m_Center += dt*m_linear_speed;
 
 	//keep the balance of lean in x rotation

@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "3DDeformable.h"
 #include "Cube.h"
+#include "Cylinder.h"
 #include "RigidCube.h"
 #include "Sphere.h"
 #include "MillipedeHead.h"

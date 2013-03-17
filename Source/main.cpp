@@ -28,7 +28,7 @@ void initScene(){
 	//set up the world
 	myWorld = new World(51000);
     std::cout<<"Setting up the World..."<<std::endl;
-	myTerrainType = TERRAIN_FLAT;
+	myTerrainType = TERRAIN_TEST;
 	myTerrain = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
 		, OBSTACLE_OFF, FOOD_ON);
 
@@ -497,7 +497,7 @@ void HackAnimation(double dt){
 	if(SIM_TIME > 9.4) 
 		myMillipedes->m_tail->m_fixed = false;
 
-	if(SIM_TIME > 11.3)
+	if(SIM_TIME > 11.6)
 		myMillipedes->m_head->m_fixed = false;
 
 	if(OUTPUT == 1){
@@ -509,7 +509,7 @@ void HackAnimation(double dt){
 
 void HackAnimation2(double dt){
 
-	double physics_time_step = 1/4000.0;
+	double physics_time_step = 1/3000.0;
 	int num_division = int (dt/physics_time_step);
 	//#pragma omp parallel for
 	for(int j =0 ;j<num_division; j++)
@@ -558,7 +558,7 @@ void idleCallback(){
 	*/
 	if(STOP == -1){
 	//only update physics
-		HackAnimation(0.05);
+		HackAnimation(0.02);
 		//myWorld->Update(0.02);//The real physics time step is much smaller
 
 		glutPostRedisplay() ; //draw new frame, the display is not real physics time
@@ -588,8 +588,16 @@ void OUTPUT_ONE_FRAME(){
 	(*BugOutputPov)<<"//Frame "<<FRAME_COUNT<<std::endl;
 	(*BugOutputPov)<<"//Begin Food"<<std::endl;
 	(*BugOutputPov)<<"#declare Food = union {\n"<<std::endl;
-	Eigen::Vector3f tmp_center;double a,d;
-	a = 2,d = a/sqrt(2);
+	Eigen::Vector3f center;double a,d;
+	
+	for(int i = 0; i < myTerrain->m_foods.size(); i++){
+		center = myTerrain->m_foods[i]->m_Center;
+		(*BugOutputPov)<<"//BEGIN SPHERE "<<std::endl;
+		(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<0.6<<"}"<<std::endl;
+		(*BugOutputPov)<<"//END SPHERE "<<std::endl;
+		
+	}/*
+	a = 2,d = a;
 	for(int i = 0; i < myTerrain->m_foods.size(); i++){
 		tmp_center = myTerrain->m_foods[i]->m_Center;
 		(*BugOutputPov)<<"mesh2{"<<std::endl;
@@ -606,24 +614,54 @@ void OUTPUT_ONE_FRAME(){
 
 		(*BugOutputPov)<<"face_indices{"<<std::endl;
 		(*BugOutputPov)<<"8,"<<std::endl;
-        (*BugOutputPov)<<"<0,1,4>,<1,2,4>,<2,3,4>,<3,0,4>,<5,1,0>,<5,2,1>,<5,3,2>,<5,0,3>"<<std::endl;
+        (*BugOutputPov)<<"<0,4,1>,<1,4,2>,<2,4,3>,<3,4,0>,<5,0,1>,<5,1,2>,<5,2,3>,<5,3,0>"<<std::endl;
 		(*BugOutputPov)<<"}"<<std::endl; // end face indices 
 
 		(*BugOutputPov)<<"}"<<std::endl<<std::endl; // end mesh2
 
 	}
+	*/
 	(*BugOutputPov)<<"}\n"<<std::endl;
 
 	(*BugOutputPov)<<"//End Food"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputPov,1);//0 is for maya model, 1 is for physics
+	myMillipedes[0].Output2File(BugOutputPov,2);//0 is for maya model, 1 is for physics, 2 diagram of leg state
+
+		//Surface Obstacles
+	(*BugOutputPov)<<"//Begin Surface Obstacles\n"<<std::endl;
+	(*BugOutputPov)<<"#declare SurfaceObstacle = merge {\n"<<std::endl;
+	Eigen::Vector3f point_a, point_b;
+	Cylinder* temp_cylinder;
+	double radius;
+	for(int i = 0; i < myTerrain->m_surface_objects.size(); i ++){
+		switch (myTerrain->m_surface_objects[i]->m_type)
+		{
+		case TypeCube:
+			(*BugOutputPov)<<"//Cube\n"<<std::endl;
+			break;
+		case TypeSphere:
+			(*BugOutputPov)<<"//Sphere\n"<<std::endl;
+			break;
+		case TypeCylinder:
+			(*BugOutputPov)<<"//Cylinder\n"<<std::endl;
+			temp_cylinder = dynamic_cast<Cylinder*>(myTerrain->m_surface_objects[i]);
+			point_a = temp_cylinder->m_Center;
+			point_a[2] += 0.5*temp_cylinder->m_Size[2];
+			point_b = temp_cylinder->m_Center;
+			point_b[2] -= 0.5*temp_cylinder->m_Size[2];
+			radius = temp_cylinder->m_Size[0]/2;
+			(*BugOutputPov)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
+			break;
+		default:
+			break;
+		}
+	}
+	(*BugOutputPov)<<"}\n"<<std::endl;
+
+	(*BugOutputPov)<<"//End Surface Obstacles\n"<<std::endl;
+
 	BugOutputPov->close();
 
-	filename = "GRAPH_";
-	filename += std::to_string(FRAME_COUNT);
-	filename += ".inc";
-	BugOutputGraph->open(filename);
-	myMillipedes[0].Output2File(BugOutputGraph,2);//0 is for maya model, 1 is for physics, 2 is for diagram of leg state
-	BugOutputGraph->close();
 	//mel script file
 /*	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics

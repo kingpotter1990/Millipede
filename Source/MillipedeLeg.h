@@ -88,6 +88,7 @@ public:
 
 	MillipedeRigidSection* m_root;//where the leg is attached to
 	LEG_STATUS m_leg_state;
+	LEG_STATUS m_prev_leg_state;
 	std::queue<LegStateTransition> m_history_state;
 	double m_history_length;
 	Eigen::Vector3f m_tip_position;//

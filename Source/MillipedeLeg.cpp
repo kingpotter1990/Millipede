@@ -97,6 +97,7 @@ void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 		EnterSwayBackward1();
 	}
 
+	m_prev_leg_state = m_leg_state;
 	UpdateRootPosition();
 	UpdateTipPosition();//the order is important;
 }
@@ -404,11 +405,7 @@ void MillipedeLeg::UpdateAll(double a_dt){
 void MillipedeLeg::RecordSwitch(){
 	LegStateTransition temp_trans;
 	temp_trans.m_next_state = m_leg_state;
-	
-	if(m_history_state.size() == 0)
-		temp_trans.m_prev_state = m_leg_state;
-	else
-		temp_trans.m_prev_state = m_history_state.back().m_next_state;
+	temp_trans.m_prev_state = m_prev_leg_state;
 	temp_trans.m_time_stamp = m_root->m_timer;
 	m_history_state.push(temp_trans);
 
@@ -416,8 +413,10 @@ void MillipedeLeg::RecordSwitch(){
 
 void MillipedeLeg::EnterStance(){
 	//ground contact on the left leg
+	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_STANCE;
-	RecordSwitch();
+	if(m_prev_leg_state != LEG_STANCE)
+		RecordSwitch();
 	if(m_next){
 		m_next->EnterAdjust();
 	}
@@ -430,11 +429,13 @@ void MillipedeLeg::EnterAdjust(){
 	//ajustable to form different size wave
 	//change the m_target_phi to change the dif phase of stanced legs
 	m_target_phi = m_extreme_phi*0.8;
-	m_target_alpha = m_extreme_alpha*0.2;
+	m_target_alpha = m_extreme_alpha*0.1;
 	m_target_beta = m_extreme_beta/2;
 
+	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_ADJUST;
-	RecordSwitch();
+	if(m_prev_leg_state != LEG_ADJUST)
+		RecordSwitch();
 	UpdateSpeedNet();
 
 
@@ -445,11 +446,13 @@ void MillipedeLeg::EnterSwayBackward1(){
 		return;
 	//lifting Down
 	m_target_phi = 0;
-	m_target_alpha = - m_extreme_alpha;
+	m_target_alpha = -m_extreme_alpha;
 	m_target_beta = m_extreme_beta/2;
 
+	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_SWAY_BACKWARD_1;
-	RecordSwitch();
+	if(m_prev_leg_state != LEG_SWAY_BACKWARD_1 && m_prev_leg_state != LEG_SWAY_BACKWARD_2)
+		RecordSwitch();
 	UpdateSpeedNet();
 }
 
@@ -461,11 +464,13 @@ void MillipedeLeg::EnterSwayForward1(){
 	
 	//Lifting Up
 	m_target_phi = m_phi;
-	m_target_alpha = m_extreme_alpha;
+	m_target_alpha = m_extreme_alpha*0.5;
 	m_target_beta = m_extreme_beta/2;
 
+	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_SWAY_FORWARD_1;
-	RecordSwitch();
+	if(m_prev_leg_state != LEG_SWAY_FORWARD_1 && m_prev_leg_state != LEG_SWAY_FORWARD_2)
+		RecordSwitch();
 	UpdateSpeedNet();
 } 
 
@@ -477,8 +482,10 @@ void MillipedeLeg::EnterSwayBackward2(){
 	m_target_alpha = 0;
 	m_target_beta = m_extreme_beta/2;
 
+	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_SWAY_BACKWARD_2;
-	RecordSwitch();
+	if(m_prev_leg_state != LEG_SWAY_BACKWARD_1 && m_prev_leg_state != LEG_SWAY_BACKWARD_2)
+		RecordSwitch();
 	UpdateSpeedNet();
 }
 
@@ -493,8 +500,10 @@ void MillipedeLeg::EnterSwayForward2(){
 	m_target_alpha = 0;
 	m_target_beta = m_extreme_beta/2;
 	
+	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_SWAY_FORWARD_2;
-	RecordSwitch();
+	if(m_prev_leg_state != LEG_SWAY_FORWARD_1 && m_prev_leg_state != LEG_SWAY_FORWARD_2)
+		RecordSwitch();
 	UpdateSpeedNet();
 } 
 
