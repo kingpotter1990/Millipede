@@ -28,9 +28,9 @@ void initScene(){
 	//set up the world
 	myWorld = new World(51000);
     std::cout<<"Setting up the World..."<<std::endl;
-	myTerrainType = TERRAIN_TEST;
+	myTerrainType = TERRAIN_WATER;
 	myTerrain = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
-		, OBSTACLE_OFF, FOOD_ON);
+		, OBSTACLE_ON, FOOD_ON);
 
 	TerrainOutput = new std::ofstream;
 	BugOutputPov = new std::ofstream;
@@ -269,11 +269,11 @@ void reinitScene(){
 		}
 */
 	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(0,8,0);
-	//myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.2,1.39,2.422),0.707895, myTerrain);
-	myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.4,1.0,2.0),0.8, myTerrain);
-	myMillipedes->FixHead();
-	myMillipedes->FixTail();
+	START_POSITION = Eigen::Vector3f(0,3,0);
+	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.2,1.39,2.422),0.707895, myTerrain);
+	//myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.4,1.0,2.0),0.8, myTerrain);
+	//myMillipedes->FixHead();
+	//myMillipedes->FixTail();
 	myWorld->Add_Object(myMillipedes);
 	
 	//mySphere= new Sphere(Eigen::Vector3f(0,15,0), Eigen::Vector3f(3,3,3), Eigen::Vector3f(1,0,1));
@@ -477,28 +477,15 @@ void HackAnimation(double dt){
 		return;
 	double physics_time_step = 1/3000.0;
 	int num_division = int (dt/physics_time_step);
-	//#pragma omp parallel for
+	
 	for(int j =0 ;j<num_division; j++)
 	{
 		for (int i = 0; i<myWorld->List_of_Object.size(); i++)
 	      myWorld->List_of_Object[i]->UpdateAll(physics_time_step);
 
 		SIM_TIME += physics_time_step;
-		if(myMillipedes->IsTailFixed()){
-			//sway the tail, for demonstration of physics
-			if(SIM_TIME > 2.0 && SIM_TIME < 4.0)
-				myMillipedes->m_tail->m_Center[2] =  START_POSITION[2] + 2*sin(180*SIM_TIME*DegreesToRadians); 	
-
-			if(SIM_TIME > 5.0 && SIM_TIME < 7.0)
-				myMillipedes->m_tail->m_Center[1] =  START_POSITION[1] + 2*sin(180*SIM_TIME*DegreesToRadians); 	
-		}
-	}
 	
-	if(SIM_TIME > 9.4) 
-		myMillipedes->m_tail->m_fixed = false;
-
-	if(SIM_TIME > 11.6)
-		myMillipedes->m_head->m_fixed = false;
+	}
 
 	if(OUTPUT == 1){
 		OUTPUT_ONE_FRAME();//output one frame data

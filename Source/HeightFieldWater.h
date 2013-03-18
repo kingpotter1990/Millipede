@@ -14,6 +14,7 @@
 #include "Object.h"
 
 class Sphere;
+class Terrain;
 class HFWater:public Object{
     
 protected:
@@ -36,16 +37,20 @@ private:
 	double m_dx;
 	double m_depth;
 	double* m_height_data;
+	bool* m_obstacle_data;
 	double* m_velocity_data;
     Eigen::Vector3f* m_normal_data;
 	std::vector<Sphere*> m_spheres;
+	Terrain* m_terrain;
 public:
-    HFWater(Eigen::Vector2i res, double dx, double depth);//Default constructor create a unit cube in center of screen
+    HFWater(Terrain* terrain, Eigen::Vector2i res, double dx, double depth);//Default constructor create a unit cube in center of screen
 	virtual ~HFWater(){delete[] m_height_data; delete[] m_velocity_data;
 	delete[] m_normal_data;}
 	virtual void InitWave();
     virtual void InitDraw();//Init the vertexs and color data on GPU, Init the shader program, link the shader program with the buffer data
     virtual void Draw(int type, const Camera& camera, const Light& light);//Update data on GPU's buffer and draw the vertexs, rotate clockwise around z with speed
+	virtual bool IsOutBorder(int idx, int idz);
+	virtual void InitInsideBorderMap();
 	virtual void UpdateDraw();
 	virtual void UpdateAll(double dt);
 	virtual void UpdateNormal();

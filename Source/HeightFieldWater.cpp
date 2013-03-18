@@ -8,10 +8,12 @@
 #include <algorithm>
 #include "World.h"
 #include "Sphere.h"
+#include "Terrain.h"
 #include "HeightFieldWater.h"
 #define NOMINMAX
 
-HFWater::HFWater(Eigen::Vector2i res, double dx, double depth){
+HFWater::HFWater(Terrain* terrain, Eigen::Vector2i res, double dx, double depth){
+	m_terrain = terrain;
 	m_res_x = res.x();
 	m_res_z = res.y();
 	m_size_x = m_res_x*dx;
@@ -20,9 +22,9 @@ HFWater::HFWater(Eigen::Vector2i res, double dx, double depth){
     m_depth = depth;
 	m_height_data = new double[m_res_x*m_res_z];
 	m_velocity_data = new double[m_res_x*m_res_z];
+	m_obstacle_data = new bool[m_res_x*m_res_z];
     m_normal_data = new Eigen::Vector3f[m_res_x*m_res_z];	
 	m_NTrianglePoints = 6*(m_res_x-1)*(m_res_z-1);
-
 	InitWave();
 	InitDraw();
 }
@@ -265,31 +267,58 @@ void HFWater::Draw(int type, const Camera& camera, const Light& light){
 
 }
 
+void HFWater::InitInsideBorderMap(){
+	int count = 0;
+	for(int ix= 0; ix< m_res_x; ix++)
+		for(int iz = 0; iz< m_res_z; iz++){
+			Eigen::Vector3f point(m_dx*ix - 0.5*m_size_x,0.02,m_dx*iz - 0.5*m_size_z);
+			if(m_terrain->TestInsideObstacle(point)){
+				m_obstacle_data[ix*m_res_z + iz] = true;
+				count ++;
+			}
+			else
+				m_obstacle_data[ix*m_res_z + iz] = false;
+		}
+	std::cout<<"Init Water Inside Border Map Done "<<count<<std::endl;
+}
+
+bool HFWater::IsOutBorder(int idx, int idz){
+	//test agains rectangle borders;
+	if(idx < 0 || idx > m_res_x - 1||idz < 0||idz > m_res_z - 1)
+		return true;
+	
+	return m_obstacle_data[idx*m_res_z + idz];
+
+}
 void HFWater::UpdateAll(double dt){
 
 	double up, down, left, right, center, force;
 	double c_2 = 100;
 	int index; double m_dx_2 = m_dx*m_dx;
+
+//#pragma omp parallel for
 	for(int ix= 0; ix< m_res_x; ix++)
 		for(int iz = 0; iz< m_res_z; iz++){
+			if(IsOutBorder(ix, iz))
+				continue; //no update for out border, inside obstacle points 
 			index = ix*m_res_z + iz;
 			center = m_height_data[index];
-			if(ix == 0)
+			if(IsOutBorder(ix-1,iz))
 				up = m_height_data[index];
 			else
 				up = m_height_data[index - m_res_z];
 
-			if(ix == m_res_x - 1)
+			if(IsOutBorder(ix+1,iz))
 				down = m_height_data[index];
 			else
 				down = m_height_data[index + m_res_z];
 
-			if(iz == 0)
+			if(IsOutBorder(ix,iz-1))
 				left = m_height_data[index];
 			else
 				left = m_height_data[index - 1];
 
-			if(iz == m_res_z - 1)
+			if(IsOutBorder(ix,iz+1))
 				right = m_height_data[index];
 			else
 				right = m_height_data[index + 1];
@@ -414,7 +443,7 @@ void HFWater::UpdateDraw(){
 			m_TriangleColors[6*box_id + 4] = fabs(vd)*red + green; 
 			m_TriangleColors[6*box_id + 5] = fabs(va)*red + green; 
 
-			
+			 
 			}	
 
 }
