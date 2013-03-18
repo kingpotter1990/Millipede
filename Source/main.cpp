@@ -504,12 +504,13 @@ void HackAnimation(double dt){
 		OUTPUT_ONE_FRAME();//output one frame data
 	}
 	
-
+	if(SIM_TIME > 45.0)
+		exit(1);
 }
 
 void HackAnimation2(double dt){
 
-	double physics_time_step = 1/3000.0;
+	double physics_time_step = 1/4000.0;
 	int num_division = int (dt/physics_time_step);
 	//#pragma omp parallel for
 	for(int j =0 ;j<num_division; j++)
@@ -558,7 +559,7 @@ void idleCallback(){
 	*/
 	if(STOP == -1){
 	//only update physics
-		HackAnimation(0.02);
+		HackAnimation(0.01);
 		//myWorld->Update(0.02);//The real physics time step is much smaller
 
 		glutPostRedisplay() ; //draw new frame, the display is not real physics time
@@ -593,7 +594,7 @@ void OUTPUT_ONE_FRAME(){
 	for(int i = 0; i < myTerrain->m_foods.size(); i++){
 		center = myTerrain->m_foods[i]->m_Center;
 		(*BugOutputPov)<<"//BEGIN SPHERE "<<std::endl;
-		(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<0.6<<"}"<<std::endl;
+		(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<myTerrain->m_foods[i]->m_Size[0]/2<<"}"<<std::endl;
 		(*BugOutputPov)<<"//END SPHERE "<<std::endl;
 		
 	}/*

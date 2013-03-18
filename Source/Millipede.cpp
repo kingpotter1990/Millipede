@@ -88,33 +88,25 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 	m_tail->SetColor(Eigen::Vector3f(0,0,1));
 	m_tail->m_next = NULL;
 
-	m_tail_sl = new Deformable3D;
-	Eigen::Vector3f tail_s_size = Eigen::Vector3f(a_rigid_size[0]*6,a_rigid_size[1]*0.3,a_rigid_size[1]*0.3);
-	temp_position[0] += a_rigid_size[0]*0.5;
-	temp_position[2] = 0.3*a_rigid_size[2] - tail_s_size[2];
-	m_tail_sl->Init(Eigen::Vector3i(4,2,2),1.0,1500,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
+	//Hack Tail parts
+	m_tail_soft = new Deformable3D;
+	Eigen::Vector3f tail_s_size = Eigen::Vector3f(a_rigid_size[0],a_rigid_size[1]*0.7,a_rigid_size[2]*0.7);
+	temp_position[0] += 0.5*a_rigid_size[0];
+	temp_position[1] -= 0.5*tail_s_size[1]; 
+	temp_position[2] = -0.5*tail_s_size[2];
+	m_tail_soft->Init(Eigen::Vector3i(3,3,3),1.0,2000,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
 	
-	temp_position[2] = -0.3*a_rigid_size[2];
-	m_tail_sr = new Deformable3D;
-	m_tail_sr->Init(Eigen::Vector3i(4,2,2),1.0,1500,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
-	
-	m_tail->AttachNodes(m_tail_sl->m_Mesh->GetLeftNodes());
-	m_tail->AttachNodes(m_tail_sr->m_Mesh->GetLeftNodes());
+	m_tail->AttachNodes(m_tail_soft->m_Mesh->GetLeftNodes());
 
 	Eigen::Vector3f tail_c_size = tail_s_size;
-	tail_c_size[0] = tail_c_size[1];
+	tail_c_size[0] = 0.5*tail_c_size[1];
 	temp_position[0] += tail_s_size[0] + tail_c_size[0]*0.5;
 	temp_position[1] += tail_s_size[1]*0.5;
-	temp_position[2] = 0.3*a_rigid_size[2] - 0.5*tail_s_size[2];
-	m_tail_cl = new RigidCube;
-	m_tail_cl->Init(2,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
+	temp_position[2] = 0;
+	m_tail_rigid = new RigidCube;
+	m_tail_rigid->Init(2,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
 	
-	temp_position[2] = -0.3*a_rigid_size[2] + 0.5*tail_s_size[2];
-	m_tail_cr = new RigidCube;
-	m_tail_cr->Init(2,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
-
-	m_tail_cl->AttachNodes(m_tail_sl->m_Mesh->GetRightNodes());
-	m_tail_cr->AttachNodes(m_tail_sr->m_Mesh->GetRightNodes());
+	m_tail_rigid->AttachNodes(m_tail_soft->m_Mesh->GetRightNodes());
 	//connect the rigid and soft sections
 	//connect the rigid and soft sections
 	MillipedeRigidSection *temp_rigid_section;
@@ -128,6 +120,13 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 	//attach the right face with the next rigid section
 	temp_nodes = temp_soft_section->m_Mesh->GetRightNodes();
 	temp_rigid_section->AttachNodes(temp_nodes);
+
+	m_tail_alpha_l = 10;
+	m_tail_alpha_r = 10;
+
+	m_tail_l0 = 1.0;
+	m_tail_l1 = 1.5;
+	m_tail_l2 = 1.2;
 
 	//loop through the nodes, init force with gravity, add collision force with the ground
 	while(1){
@@ -151,6 +150,10 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 }
 
 void Millipede::InitNeuroNet(Terrain* a_terrain){
+
+	m_timer = 0.0;m_tail_omega = 30;
+	m_tail_target_l = m_tail_alpha_l;
+	m_tail_target_r = m_tail_alpha_r;
 	assert(a_terrain != NULL);
 	m_terrain = a_terrain;
 	
@@ -221,10 +224,8 @@ void Millipede::SetWorld(World* a_world){
 		else
 			break;
 	}
-	m_tail_sl->SetWorld(a_world);
-	m_tail_sr->SetWorld(a_world);
-	m_tail_cl->SetWorld(a_world);
-	m_tail_cr->SetWorld(a_world);
+	m_tail_soft->SetWorld(a_world);
+	m_tail_rigid->SetWorld(a_world);
 }
 
 void Millipede::Draw(int type, const Camera& camera, const Light& light){
@@ -250,10 +251,10 @@ void Millipede::Draw(int type, const Camera& camera, const Light& light){
 			break;
 	}
 
-	m_tail_sl->Draw(type, camera, light);
-	m_tail_sr->Draw(type, camera, light);
-	m_tail_cl->Draw(type, camera, light);
-	m_tail_cr->Draw(type, camera, light);
+	m_tail_soft->Draw(type, camera, light);
+	m_tail_rigid->Draw(type, camera, light);
+
+	DrawTail(type, camera, light);
 	//draw the bounding box
 	/*
 	m_Drawer->SetIdentity();
@@ -266,6 +267,8 @@ void Millipede::Draw(int type, const Camera& camera, const Light& light){
 }
 
 void Millipede::UpdateAll(double dt){
+
+	m_timer += dt;
 
 	UpdateBoundingBox();
 
@@ -304,10 +307,182 @@ void Millipede::UpdateAll(double dt){
 	for(int i = 0; i< temp_sections.size(); i++)
 		temp_sections[i]->UpdateAll(dt);
 
-	m_tail_sl->UpdateAll(dt);
-	m_tail_sr->UpdateAll(dt);
-	m_tail_cl->UpdateAll(dt);
-	m_tail_cr->UpdateAll(dt);
+	m_tail_soft->UpdateAll(dt);
+	m_tail_rigid->UpdateAll(dt);
+
+	UpdateTailTipRootPos();
+	//update tail movement;
+	m_tail_alpha_l += m_tail_omega*(m_tail_alpha_l < m_tail_target_l ? 1: -1)*dt; 
+	m_tail_alpha_r += m_tail_omega*(m_tail_alpha_r < m_tail_target_r ? 1: -1)*dt; 
+
+	if(fabs(m_tail_alpha_l - m_tail_target_l) < 2*dt*m_tail_omega){
+		m_tail_target_l = Util::getRand()*20;
+	}
+	if(fabs(m_tail_alpha_r - m_tail_target_r) < 2*dt*m_tail_omega){
+		m_tail_target_r = Util::getRand()*20;
+	}
+
+	//collision detection
+	if(m_head->m_terrain->TestInside(m_tail_l_tip)){
+		m_tail_target_l = m_tail_alpha_l + 10;
+	}
+
+	if(m_head->m_terrain->TestInside(m_tail_r_tip)){
+		m_tail_target_r = m_tail_alpha_r + 10;
+	}
+}
+
+
+void Millipede::UpdateTailTipRootPos(){
+	//root
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_tail_rigid->m_Center);
+	m_Drawer->Rotate(m_tail_rigid->m_rotation);
+
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_rigid->m_Size[0]/2, 0, m_tail_rigid->m_Size[2]/2));
+	m_tail_l_root = m_Drawer->CurrentOrigin();
+	//tip	
+	m_Drawer->RotateY(-15);
+	m_Drawer->RotateZ(m_tail_alpha_l);
+
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l0,0,0));
+	m_Drawer->RotateZ(-15);
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l1,0,0));
+	m_Drawer->RotateZ(-20);
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l2,0,0));
+	
+	m_tail_l_tip = m_Drawer->CurrentOrigin();
+
+	//root
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_tail_rigid->m_Center);
+	m_Drawer->Rotate(m_tail_rigid->m_rotation);
+
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_rigid->m_Size[0]/2, 0, -m_tail_rigid->m_Size[2]/2));
+	m_tail_r_root = m_Drawer->CurrentOrigin();
+	//tip	
+	m_Drawer->RotateY(15);
+	m_Drawer->RotateZ(m_tail_alpha_r);
+
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l0,0,0));
+	m_Drawer->RotateZ(-15);
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l1,0,0));
+	m_Drawer->RotateZ(-20);
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l2,0,0));
+	
+	m_tail_r_tip = m_Drawer->CurrentOrigin();
+}
+
+void Millipede::DrawTail(int type, const Camera& camera, const Light& light){
+	m_Drawer->SetColor(Eigen::Vector3f(1,0,0));
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_tail_rigid->m_Center);
+	m_Drawer->Rotate(m_tail_rigid->m_rotation);
+
+
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_rigid->m_Size[0]/2, 0, m_tail_rigid->m_Size[2]/2));
+	m_tail_l_root = m_Drawer->CurrentOrigin();
+	
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(0.2);
+	m_Drawer->DrawSphere(type, camera, light);
+	m_Drawer->PopMatrix();
+
+
+	m_Drawer->RotateY(-15);
+	m_Drawer->RotateZ(m_tail_alpha_l);
+
+	m_Drawer->Translate(Eigen::Vector3f(0.5*m_tail_l0,0,0));
+	m_Drawer->PushMatrix();
+	m_Drawer->RotateY(90);
+	m_Drawer->Scale(Eigen::Vector3f(0.4,0.4,m_tail_l0));
+	m_Drawer->DrawCylinder(type, camera, light);
+	m_Drawer->PopMatrix();
+
+	m_Drawer->Translate(Eigen::Vector3f(0.5*m_tail_l0,0,0));
+	
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(0.2);
+	m_Drawer->DrawSphere(type, camera, light);
+	m_Drawer->PopMatrix();
+
+	m_Drawer->RotateZ(-15);
+
+	m_Drawer->Translate(Eigen::Vector3f(0.5*m_tail_l1,0,0));
+	m_Drawer->PushMatrix();
+	m_Drawer->RotateY(90);
+	m_Drawer->Scale(Eigen::Vector3f(0.3,0.3,m_tail_l1));
+	m_Drawer->DrawCylinder(type, camera, light);
+	m_Drawer->PopMatrix();
+
+	m_Drawer->Translate(Eigen::Vector3f(0.5*m_tail_l1,0,0));
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(0.15);
+	m_Drawer->DrawSphere(type, camera, light);
+	m_Drawer->PopMatrix();
+
+	m_Drawer->RotateZ(-20);
+	m_Drawer->Translate(Eigen::Vector3f(0.5*m_tail_l2,0,0));
+	m_Drawer->PushMatrix();
+	m_Drawer->RotateY(-90);
+	m_Drawer->Scale(Eigen::Vector3f(0.2,0.2,m_tail_l2));
+	m_Drawer->DrawCone(type, camera, light);
+	m_Drawer->PopMatrix();
+
+	//right
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_tail_rigid->m_Center);
+	m_Drawer->Rotate(m_tail_rigid->m_rotation);
+
+
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_rigid->m_Size[0]/2, 0, -m_tail_rigid->m_Size[2]/2));
+	m_tail_l_root = m_Drawer->CurrentOrigin();
+	
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(0.2);
+	m_Drawer->DrawSphere(type, camera, light);
+	m_Drawer->PopMatrix();
+
+
+	m_Drawer->RotateY(15);
+	m_Drawer->RotateZ(m_tail_alpha_r);
+
+	m_Drawer->Translate(Eigen::Vector3f(0.5*m_tail_l0,0,0));
+	m_Drawer->PushMatrix();
+	m_Drawer->RotateY(90);
+	m_Drawer->Scale(Eigen::Vector3f(0.4,0.4,m_tail_l0));
+	m_Drawer->DrawCylinder(type, camera, light);
+	m_Drawer->PopMatrix();
+
+	m_Drawer->Translate(Eigen::Vector3f(0.5*m_tail_l0,0,0));
+	
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(0.2);
+	m_Drawer->DrawSphere(type, camera, light);
+	m_Drawer->PopMatrix();
+
+	m_Drawer->RotateZ(-15);
+
+	m_Drawer->Translate(Eigen::Vector3f(0.5*m_tail_l1,0,0));
+	m_Drawer->PushMatrix();
+	m_Drawer->RotateY(90);
+	m_Drawer->Scale(Eigen::Vector3f(0.3,0.3,m_tail_l1));
+	m_Drawer->DrawCylinder(type, camera, light);
+	m_Drawer->PopMatrix();
+
+	m_Drawer->Translate(Eigen::Vector3f(0.5*m_tail_l1,0,0));
+	m_Drawer->PushMatrix();
+	m_Drawer->Scale(0.15);
+	m_Drawer->DrawSphere(type, camera, light);
+	m_Drawer->PopMatrix();
+
+	m_Drawer->RotateZ(-20);
+	m_Drawer->Translate(Eigen::Vector3f(0.5*m_tail_l2,0,0));
+	m_Drawer->PushMatrix();
+	m_Drawer->RotateY(-90);
+	m_Drawer->Scale(Eigen::Vector3f(0.2,0.2,m_tail_l2));
+	m_Drawer->DrawCone(type, camera, light);
+	m_Drawer->PopMatrix();
 }
 
 void Millipede::UpdateTipSphere(){
@@ -570,8 +745,7 @@ else if(type == 1){
             break;
     }
 
-	m_tail_cl->Output2File(filestream);
-	m_tail_cr->Output2File(filestream);
+	m_tail_rigid->Output2File(filestream);
     // rigid part end
     (*filestream)<<"}\n"<<std::endl;
 
@@ -581,8 +755,83 @@ else if(type == 1){
     (*filestream)<<"}\n"<<std::endl;
 
     (*filestream)<<"#declare MillipedeTailPart = union { \n"<<std::endl; 
-	m_tail_sl->Output2File(filestream);
-	m_tail_sr->Output2File(filestream);
+	Eigen::Vector3f point_a, point_b, center; double radius;
+	(*filestream)<<"//BEGIN Tail Left "<<std::endl;
+
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_tail_rigid->m_Center);
+	m_Drawer->Rotate(m_tail_rigid->m_rotation);
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_rigid->m_Size[0]/2, 0, m_tail_rigid->m_Size[2]/2));
+
+	center = m_Drawer->CurrentOrigin();
+	radius = 0.2;
+	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
+	point_a = center;
+
+	m_Drawer->RotateY(-15);
+	m_Drawer->RotateZ(m_tail_alpha_l);
+
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l0,0,0));
+	center = m_Drawer->CurrentOrigin();
+	point_b = center;
+	radius = 0.2;
+	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
+	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
+	
+	point_a = point_b;
+	m_Drawer->RotateZ(-15);
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l1,0,0));
+	center = m_Drawer->CurrentOrigin();
+	point_b = center;
+	radius = 0.15;
+	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
+	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
+	
+	point_a = point_b;
+	m_Drawer->RotateZ(-20);
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l2,0,0));
+	point_b = m_Drawer->CurrentOrigin();
+	(*filestream)<<"cone{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,"<<radius<<std::endl;
+	(*filestream)<<"<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,0}"<<std::endl;
+
+	(*filestream)<<"//BEGIN Tail Right "<<std::endl;
+
+	m_Drawer->SetIdentity();
+	m_Drawer->Translate(m_tail_rigid->m_Center);
+	m_Drawer->Rotate(m_tail_rigid->m_rotation);
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_rigid->m_Size[0]/2, 0,-m_tail_rigid->m_Size[2]/2));
+
+	center = m_Drawer->CurrentOrigin();
+	radius = 0.2;
+	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
+	point_a = center;
+
+	m_Drawer->RotateY(15);
+	m_Drawer->RotateZ(m_tail_alpha_r);
+
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l0,0,0));
+	center = m_Drawer->CurrentOrigin();
+	point_b = center;
+	radius = 0.2;
+	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
+	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
+	
+	point_a = point_b;
+	m_Drawer->RotateZ(-15);
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l1,0,0));
+	center = m_Drawer->CurrentOrigin();
+	point_b = center;
+	radius = 0.15;
+	(*filestream)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
+	(*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
+	
+	point_a = point_b;
+	m_Drawer->RotateZ(-20);
+	m_Drawer->Translate(Eigen::Vector3f(m_tail_l2,0,0));
+	point_b = m_Drawer->CurrentOrigin();
+	(*filestream)<<"cone{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,"<<radius<<std::endl;
+	(*filestream)<<"<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,0}"<<std::endl;
+
 	(*filestream)<<"}\n"<<std::endl;
 
     (*filestream)<<"#declare LegForward = union { \n"<<std::endl; 
@@ -672,6 +921,7 @@ else if(type == 1){
             break;
     }
 
+	m_tail_soft->Output2File(filestream);
     // soft part end
     (*filestream)<<"}\n"<<std::endl;
 	
@@ -702,7 +952,7 @@ else if(type == 2){
 			  copy_history_state.pop();
 			  ratio_a = ratio_b;
 			  ratio_b = (cur_trans.m_time_stamp - start_time)/(end_time - start_time);
-			  assert(ratio_b>=0);
+			  //assert(ratio_b>=0);
 			  //Output a box based on ratio_a and ratio_b;
 			  temp_box.l_x = shift_x + bar_width*ratio_a;
 			  temp_box.l_y = shift_y;
@@ -731,7 +981,7 @@ else if(type == 2){
 			  copy_history_state.pop();
 			  ratio_a = ratio_b;
 			  ratio_b = (cur_trans.m_time_stamp - start_time)/(end_time - start_time);
-			  assert(ratio_b>=0);
+			  //assert(ratio_b>=0);
 			  //Output a box based on ratio_a and ratio_b;
 			  temp_box.l_x = shift_x + bar_width*ratio_a;
 			  temp_box.l_y = shift_y;

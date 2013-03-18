@@ -48,10 +48,25 @@ public:
 	std::vector<Sphere*> m_tip_spheres;//For interacting with water;
 	Drawer* m_Drawer;
 
-	Deformable3D* m_tail_sl;
-	Deformable3D* m_tail_sr;
-	RigidCube* m_tail_cl;
-	RigidCube* m_tail_cr;
+	//tail hacking
+	Deformable3D* m_tail_soft;
+	RigidCube* m_tail_rigid;
+	double m_tail_omega;
+	double m_tail_target_l;
+	double m_tail_target_r;
+	double m_tail_alpha_l;
+	double m_tail_alpha_r;
+	double m_tail_l0;
+	double m_tail_l1;
+	double m_tail_l2;
+	double m_timer;
+	void DrawTail(int type, const Camera& camera, const Light& light);
+	void UpdateTailTipRootPos();
+	Eigen::Vector3f m_tail_l_tip;
+	Eigen::Vector3f m_tail_r_tip;
+	Eigen::Vector3f m_tail_l_root;
+	Eigen::Vector3f m_tail_r_root;
+
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
