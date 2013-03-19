@@ -28,7 +28,7 @@ void initScene(){
 	//set up the world
 	myWorld = new World(51000);
     std::cout<<"Setting up the World..."<<std::endl;
-	myTerrainType = TERRAIN_WATER;
+	myTerrainType = TERRAIN_FLAT;
 	myTerrain = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
 		, OBSTACLE_ON, FOOD_ON);
 
@@ -269,7 +269,7 @@ void reinitScene(){
 		}
 */
 	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(0,3,0);
+	START_POSITION = Eigen::Vector3f(25,3,0);
 	myMillipedes->Init(START_POSITION, 18,Eigen::Vector3f(0.2,1.39,2.422),0.707895, myTerrain);
 	//myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.4,1.0,2.0),0.8, myTerrain);
 	//myMillipedes->FixHead();
@@ -477,7 +477,7 @@ void HackAnimation(double dt){
 		return;
 	double physics_time_step = 1/3000.0;
 	int num_division = int (dt/physics_time_step);
-	
+	//#pragma omp parallel for
 	for(int j =0 ;j<num_division; j++)
 	{
 		for (int i = 0; i<myWorld->List_of_Object.size(); i++)
@@ -559,16 +559,16 @@ void OUTPUT_ONE_FRAME(){
 	//Water
 	if(myTerrainType == TERRAIN_WATER){
 		//millipede
-		std::string filename = "FRAME_";
+		std::string filename = "WATER_";
 		filename += std::to_string(FRAME_COUNT);
-		filename += "Water.inc";
+		filename += ".inc";
 		(*WaterOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
 		myTerrain->m_water->Output2File(WaterOutput);
 		WaterOutput->close();
 	}
 	//millipede
 	//Physics Model for Pov
-	
+	/*
 	std::string filename = "BUG_";
 	filename += std::to_string(FRAME_COUNT);
 	filename += ".inc";
@@ -584,77 +584,50 @@ void OUTPUT_ONE_FRAME(){
 		(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<myTerrain->m_foods[i]->m_Size[0]/2<<"}"<<std::endl;
 		(*BugOutputPov)<<"//END SPHERE "<<std::endl;
 		
-	}/*
-	a = 2,d = a;
-	for(int i = 0; i < myTerrain->m_foods.size(); i++){
-		tmp_center = myTerrain->m_foods[i]->m_Center;
-		(*BugOutputPov)<<"mesh2{"<<std::endl;
-
-		(*BugOutputPov)<<"vertex_vectors{"<<std::endl;
-		(*BugOutputPov)<<"6,"<<std::endl;
-		(*BugOutputPov)<<"<"<< tmp_center[0] - a/2.0 <<","<< tmp_center[1] <<","<< tmp_center[2] + a/2 <<">,"<<std::endl;
-		(*BugOutputPov)<<"<"<< tmp_center[0] + a/2.0 <<","<< tmp_center[1] <<","<< tmp_center[2] + a/2 <<">,"<<std::endl;
-		(*BugOutputPov)<<"<"<< tmp_center[0] + a/2.0 <<","<< tmp_center[1] <<","<< tmp_center[2] - a/2 <<">,"<<std::endl;
-		(*BugOutputPov)<<"<"<< tmp_center[0] - a/2.0 <<","<< tmp_center[1] <<","<< tmp_center[2] - a/2 <<">,"<<std::endl;
-		(*BugOutputPov)<<"<"<< tmp_center[0]<<","<< tmp_center[1] + d <<","<< tmp_center[2]<<">"<<std::endl;
-		(*BugOutputPov)<<"<"<< tmp_center[0]<<","<< tmp_center[1] - d <<","<< tmp_center[2]<<">"<<std::endl;
-		(*BugOutputPov)<<"}"<<std::endl; // end vertex_vectors
-
-		(*BugOutputPov)<<"face_indices{"<<std::endl;
-		(*BugOutputPov)<<"8,"<<std::endl;
-        (*BugOutputPov)<<"<0,4,1>,<1,4,2>,<2,4,3>,<3,4,0>,<5,0,1>,<5,1,2>,<5,2,3>,<5,3,0>"<<std::endl;
-		(*BugOutputPov)<<"}"<<std::endl; // end face indices 
-
-		(*BugOutputPov)<<"}"<<std::endl<<std::endl; // end mesh2
-
 	}
-	*/
 	(*BugOutputPov)<<"}\n"<<std::endl;
 
 	(*BugOutputPov)<<"//End Food"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputPov,1);//0 is for maya model, 1 is for physics
 	myMillipedes[0].Output2File(BugOutputPov,2);//0 is for maya model, 1 is for physics, 2 diagram of leg state
-
+	*/
 		//Surface Obstacles
-	(*BugOutputPov)<<"//Begin Surface Obstacles\n"<<std::endl;
-	(*BugOutputPov)<<"#declare SurfaceObstacle = merge {\n"<<std::endl;
-	Eigen::Vector3f point_a, point_b;
-	Cylinder* temp_cylinder;
-	double radius;
-	for(int i = 0; i < myTerrain->m_surface_objects.size(); i ++){
-		switch (myTerrain->m_surface_objects[i]->m_type)
-		{
-		case TypeCube:
-			(*BugOutputPov)<<"//Cube\n"<<std::endl;
-			break;
-		case TypeSphere:
-			(*BugOutputPov)<<"//Sphere\n"<<std::endl;
-			break;
-		case TypeCylinder:
-			(*BugOutputPov)<<"//Cylinder\n"<<std::endl;
-			temp_cylinder = dynamic_cast<Cylinder*>(myTerrain->m_surface_objects[i]);
-			point_a = temp_cylinder->m_Center;
-			point_a[2] += 0.5*temp_cylinder->m_Size[2];
-			point_b = temp_cylinder->m_Center;
-			point_b[2] -= 0.5*temp_cylinder->m_Size[2];
-			radius = temp_cylinder->m_Size[0]/2;
-			(*BugOutputPov)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
-			break;
-		default:
-			break;
-		}
-	}
-	(*BugOutputPov)<<"}\n"<<std::endl;
+	//(*BugOutputPov)<<"//Begin Surface Obstacles\n"<<std::endl;
+	//(*BugOutputPov)<<"#declare SurfaceObstacle = merge {\n"<<std::endl;
+	//Eigen::Vector3f point_a, point_b;
+	//Cylinder* temp_cylinder;
+	//double radius;
+	//for(int i = 0; i < myTerrain->m_surface_objects.size(); i ++){
+	//	switch (myTerrain->m_surface_objects[i]->m_type)
+	//	{
+	//	case TypeCube:
+	//		(*BugOutputPov)<<"//Cube\n"<<std::endl;
+	//		break;
+	//	case TypeSphere:
+	//		(*BugOutputPov)<<"//Sphere\n"<<std::endl;
+	//		break;
+	//	case TypeCylinder:
+	//		(*BugOutputPov)<<"//Cylinder\n"<<std::endl;
+	//		temp_cylinder = dynamic_cast<Cylinder*>(myTerrain->m_surface_objects[i]);
+	//		point_a = temp_cylinder->m_Center;
+	//		point_a[2] += 0.5*temp_cylinder->m_Size[2];
+	//		point_b = temp_cylinder->m_Center;
+	//		point_b[2] -= 0.5*temp_cylinder->m_Size[2];
+	//		radius = temp_cylinder->m_Size[0]/2;
+	//		(*BugOutputPov)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+	//(*BugOutputPov)<<"}\n"<<std::endl;
 
-	(*BugOutputPov)<<"//End Surface Obstacles\n"<<std::endl;
-
-	BugOutputPov->close();
 
 	//mel script file
-/*	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
+	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
 	(*BugOutputMaya) <<"//End Frame"<<FRAME_COUNT<<";"<<std::endl;
-	*/
+
 	FRAME_COUNT++;
 }
 

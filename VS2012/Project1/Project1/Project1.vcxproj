@@ -89,7 +89,7 @@
     <ClCompile Include="..\..\..\Source\MeshQuery\mesh_query.cpp" />
     <ClCompile Include="..\..\..\Source\MeshQuery\predicates.cpp" />
     <ClCompile Include="..\..\..\Source\Millipede.cpp" />
-    <ClCompile Include="..\..\..\Source\MillipedeHead.cpp" />
+    <ClCompile Include="..\..\..\Source\MillipedeHeadTail.cpp" />
     <ClCompile Include="..\..\..\Source\MillipedeLeg.cpp" />
     <ClCompile Include="..\..\..\Source\MillipedeSection.cpp" />
     <ClCompile Include="..\..\..\Source\Object.cpp" />
@@ -124,7 +124,7 @@
     <ClInclude Include="..\..\..\Source\MeshQuery\util.h" />
     <ClInclude Include="..\..\..\Source\MeshQuery\vec.h" />
     <ClInclude Include="..\..\..\Source\Millipede.h" />
-    <ClInclude Include="..\..\..\Source\MillipedeHead.h" />
+    <ClInclude Include="..\..\..\Source\MillipedeHeadTail.h" />
     <ClInclude Include="..\..\..\Source\MillipedeLeg.h" />
     <ClInclude Include="..\..\..\Source\MillipedeSection.h" />
     <ClInclude Include="..\..\..\Source\Object.h" />

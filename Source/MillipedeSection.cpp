@@ -1,5 +1,5 @@
 #include "Millipede.h"
-#include "MillipedeHead.h"
+#include "MillipedeHeadTail.h"
 #include "MillipedeSection.h"
 #include "Millipede.h"
 #include "MillipedeLeg.h"
@@ -8,9 +8,11 @@
 
 extern Drawer* m_Drawer;
 
-void MillipedeRigidSection::InitPhysics(double density, Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f color){
+void MillipedeRigidSection::InitPhysics(double density, Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f color, double prev_link_length){
 	
 	RigidCube::Init(density, center, size, color);
+
+	m_prev_dis_obj = prev_link_length;
 
 	m_left_leg = new MillipedeLeg(1);//left
 	m_left_leg->InitPhysics(size);
@@ -37,7 +39,6 @@ void MillipedeRigidSection::InitNeuroNet(Millipede* a_root, int a_id){
 	m_left_leg->InitNeuroNet(this);
 	m_right_leg->InitNeuroNet(this);
 	
-	m_prev_dis_obj = m_master->m_link_length;
 	m_linear_speed *= 0;
 	m_height_obj = m_Size[1]*0.5 + m_left_leg->GetBalanceHeight();
 	m_orient_obj = Eigen::Vector3f(0,1,0);

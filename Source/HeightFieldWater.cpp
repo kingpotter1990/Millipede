@@ -272,7 +272,7 @@ void HFWater::InitInsideBorderMap(){
 	for(int ix= 0; ix< m_res_x; ix++)
 		for(int iz = 0; iz< m_res_z; iz++){
 			Eigen::Vector3f point(m_dx*ix - 0.5*m_size_x,0.02,m_dx*iz - 0.5*m_size_z);
-			if(m_terrain->TestInsideObstacle(point)){
+			if(m_terrain->TestInsideObstacle2(point)){
 				m_obstacle_data[ix*m_res_z + iz] = true;
 				count ++;
 			}

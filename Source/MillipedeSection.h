@@ -21,7 +21,7 @@ class MillipedeRigidSection:public RigidCube{
 public:
 	MillipedeRigidSection(){};
 	~MillipedeRigidSection(){};
-	virtual void InitPhysics(double density, Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f color);
+	virtual void InitPhysics(double density, Eigen::Vector3f center,Eigen::Vector3f size, Eigen::Vector3f color, double prev_link_length);
 	virtual void InitNeuroNet(Millipede* a_root, int a_id);
 	virtual void SetWorld(World* a_world);
 	virtual void Draw(int type, const Camera& camera, const Light& light);

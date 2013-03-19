@@ -28,9 +28,6 @@
     <ClCompile Include="..\..\..\Source\Millipede.cpp">
       <Filter>Millipede</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Source\MillipedeHead.cpp">
-      <Filter>Millipede</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Source\MillipedeLeg.cpp">
       <Filter>Millipede</Filter>
     </ClCompile>
@@ -110,12 +107,12 @@
     <ClCompile Include="..\..\..\Source\HeightFieldWater.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Source\MillipedeHeadTail.cpp">
+      <Filter>Millipede</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Source\Millipede.h">
-      <Filter>Millipede</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Source\MillipedeHead.h">
       <Filter>Millipede</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Source\MillipedeLeg.h">
@@ -208,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Source\HeightFieldWater.h">
       <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\MillipedeHeadTail.h">
+      <Filter>Millipede</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

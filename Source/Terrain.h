@@ -26,6 +26,7 @@ public:
 	double GetHeight(const Eigen::Vector3f& xyz) const;
 	bool TestInside(const Eigen::Vector3f& point);
 	bool TestInsideObstacle(const Eigen::Vector3f& point);
+	bool TestInsideObstacle2(const Eigen::Vector3f& point);
 	Eigen::Vector3f GetNormal(const Eigen::Vector3f& xyz);
 	~Terrain(){delete[] m_height_data; delete[] m_normal_data;};
 	void Draw(int type, const Camera& camera, const Light& light);

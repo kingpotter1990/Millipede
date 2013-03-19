@@ -7,7 +7,7 @@
 #include "Cylinder.h"
 #include "RigidCube.h"
 #include "Sphere.h"
-#include "MillipedeHead.h"
+#include "MillipedeHeadTail.h"
 #include "Millipede.h"
 #include "HeightFieldWater.h"
 #include "Terrain.h"

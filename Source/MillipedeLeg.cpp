@@ -1,6 +1,6 @@
 #include "MillipedeLeg.h"
 #include "MillipedeSection.h"
-#include "MillipedeHead.h"
+#include "MillipedeHeadTail.h"
 #include "Millipede.h"
 #include "Drawer.h"
 #include "Terrain.h"
@@ -276,7 +276,7 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 			else if(dif.norm() < 2*m_leg_rotation_velocity*a_dt)
 					EnterSwayBackward1();
 			if(m_prev){
-				if(m_phi - m_prev->m_phi > 30)
+				if(m_phi - m_prev->m_phi > 60)
 				EnterSwayForward1();//stay in the midpoint until bigger then 30 diff
 			}
 			break;
