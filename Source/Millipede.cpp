@@ -29,23 +29,24 @@ void ReadSectionDataFromModel(double *readin){
 
  readin[0] = 0.705102;//section 1 to head distance
  readin[1] = 1.374068;
- readin[2] = 0.986392;
+ readin[2] = 1.086392;
  readin[3] = 1.228905;
- readin[4] = 0.986392;
+ readin[4] = 1.086392;
  readin[5] = 1.229232;
  readin[6] = 1.002572;
  readin[7] = 1.224139;
- readin[8] = 0.987384;
+ readin[8] = 1.087384;
  readin[9] = 1.231778;
- readin[10] = 0.989603;
+ readin[10] = 1.089603;
  readin[11] = 1.234731;
- readin[12] = 0.985085;
+ readin[12] = 1.085085;
  readin[13] = 1.234732;
- readin[14] = 0.992328;
+ readin[14] = 1.092328;
  readin[15] = 1.219581;
- readin[16] = 0.999235;
+ readin[16] = 1.099235;
  readin[17] = 1.220029;//section 18 to 17 distance
- readin[18] = 0.838355;//tail to section 18 distance
+ readin[18] = 1.099657;//section 19 to 18 distance
+ readin[19] = 0.838355;//tail to section 19 distance
 
 }
 
@@ -176,13 +177,13 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 void Millipede::InitPhysicsFromModel(Eigen::Vector3f a_position){
 
 	double* sectiondata;
-	sectiondata = new double[19];
+	sectiondata = new double[20];
 	ReadSectionDataFromModel(sectiondata);
 
 	Eigen::Vector3i soft_resolution(3,3,3);
     double youngs_modulus = 1500;
 
-	m_num_section = 18;
+	m_num_section = 19;
 
 	MillipedeRigidSection* previous_rigid_section, *current_rigid_section;
 	MillipedeSoftSection* previous_soft_section, *current_soft_section;
@@ -651,7 +652,6 @@ void Millipede::Output2File(std::ofstream* filestream, int type){
 	(*filestream)<<"//Begin Millipede\n"<<std::endl;
 if(type == 0){
 	//output for the python script in maya
-	 // rigid part start
     //output head
 
     m_head->Output2File(filestream, 0);
@@ -684,6 +684,8 @@ if(type == 0){
 	m_tail_left->Output2File(filestream, 0);
 	m_tail_right->Output2File(filestream, 0);
 	
+	(*filestream)<<"//END TAIL "<<std::endl;
+
 	(*filestream)<<"//set one key frame"<<std::endl;
 	(*filestream)<<"select -r "
 		"s1 s1l1 s1l2 s1r1 s1r2 s2 s2l1 s2l2 s2r1 s2r2 s3 s3l1 s3l2 s3r1 s3r2 s4 s4l1 s4l2 s4r1 s4r2 "
