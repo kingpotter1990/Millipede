@@ -166,7 +166,7 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream, int type){
 	if(type == 0){
 	//output for maya script
 
-	double alpha1 = 22.7721822, alpha2 = 42.6333898;
+	double alpha1 = 11.0285366, alpha2 = 54.377035;
 	(*filestream)<<"//BEGIN SECTION "<< m_section_id <<std::endl;
 	
 	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2)/DegreesToRadians;

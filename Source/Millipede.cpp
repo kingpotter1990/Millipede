@@ -188,7 +188,7 @@ void Millipede::InitPhysicsFromModel(Eigen::Vector3f a_position){
 	MillipedeRigidSection* previous_rigid_section, *current_rigid_section;
 	MillipedeSoftSection* previous_soft_section, *current_soft_section;
 	Eigen::Vector3f temp_position;
-	Eigen::Vector3f a_rigid_size = Eigen::Vector3f(0.2,1.39,2.422);
+	Eigen::Vector3f a_rigid_size = Eigen::Vector3f(0.2,2*0.539,2.422);
 	double a_link_length;
 	//create head section
 	m_head = new MillipedeHead;
