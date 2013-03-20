@@ -127,7 +127,7 @@ void MillipedeRigidSection::UpdatePBD(double dt){
 	else
 		prev_link_vector = m_prev->m_prev->m_Center - m_Center;
 
-	m_Center += 10*dt*(m_height_obj - m_current_height)*m_orient_obj;//balance of height	
+	m_Center += 20*dt*(m_height_obj - m_current_height)*m_orient_obj;//balance of height	
 	//Minimize the distance to previous section to minimum;
 	m_linear_speed = 150*prev_link_vector.normalized()*(prev_link_vector.norm() - m_prev_dis_obj);
 	m_Center += dt*m_linear_speed;
@@ -166,7 +166,7 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream, int type){
 	if(type == 0){
 	//output for maya script
 
-	double alpha1 = 11.0285366, alpha2 = 54.377035;
+	double alpha= 12.5713435;
 	(*filestream)<<"//BEGIN SECTION "<< m_section_id <<std::endl;
 	
 	Eigen::Vector3f ea = m_rotation.eulerAngles(0,1,2)/DegreesToRadians;
@@ -177,22 +177,22 @@ void MillipedeRigidSection::Output2File(std::ofstream* filestream, int type){
 	//left
 	(*filestream)<<"setAttr \"s"<<m_section_id<<"l1"<<".rotate\" 0 0 0;"<<std::endl;
 	(*filestream)<<"select -r s"<<m_section_id<<"l1 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 "<<m_left_leg->GetPhi()<<" 0 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 0 "<<m_left_leg->GetAlpha() + alpha1 <<";"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 "<<-m_left_leg->GetPhi()<<" 0 ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<-m_left_leg->GetAlpha() <<";"<<std::endl;
 
 	(*filestream)<<"setAttr \"s"<<m_section_id<<"l2"<<".rotate\" 0 0 0;"<<std::endl;
 	(*filestream)<<"select -r s"<<m_section_id<<"l2 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 0 "<<-m_left_leg->GetBeta() + alpha2<<" ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<m_left_leg->GetBeta() - alpha<<" ;"<<std::endl;
 
 	//right
-	(*filestream)<<"setAttr \"s"<<m_section_id<<"r1"<<".rotate\" 0 0 0;"<<std::endl;
+	(*filestream)<<"setAttr \"s"<<m_section_id<<"r1"<<".rotate\" 0 180 0;"<<std::endl;
 	(*filestream)<<"select -r s"<<m_section_id<<"r1 ;"<<std::endl;
 	(*filestream)<<"rotate -r -os 0 "<<m_right_leg->GetPhi()<<" 0 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 0 "<<m_right_leg->GetAlpha()  + alpha1 <<";"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<-m_right_leg->GetAlpha() <<";"<<std::endl;
 
 	(*filestream)<<"setAttr \"s"<<m_section_id<<"r2"<<".rotate\" 0 0 0;"<<std::endl;
 	(*filestream)<<"select -r s"<<m_section_id<<"r2 ;"<<std::endl;
-	(*filestream)<<"rotate -r -os 0 0 "<<-m_right_leg->GetBeta() + alpha2<<" ;"<<std::endl;
+	(*filestream)<<"rotate -r -os 0 0 "<<m_right_leg->GetBeta() - alpha<<" ;"<<std::endl;
 
 	(*filestream)<<"//END SECTION "<< m_section_id <<std::endl;
 	}

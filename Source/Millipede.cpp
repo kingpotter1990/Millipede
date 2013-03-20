@@ -706,11 +706,9 @@ if(type == 0){
 		"\"al0\",\"al1\",\"al2\",\"al3\",\"al4\",\"al5\",\"al6\",\"al7\",\"al8\",\"al9\",\"al10\",\"al11\",\"al12\",\"al13\",\"al14\",\"al15\",\"al16\",\"al17\",\"al18\",\"al19\",\"al20\",\"al21\",\"al22\",\"al23\",\"al24\",\"al25\",\"al26\",\"al27\"," 
 		"\"ar0\",\"ar1\",\"ar2\",\"ar3\",\"ar4\",\"ar5\",\"ar6\",\"ar7\",\"ar8\",\"ar9\",\"ar10\",\"ar11\",\"ar12\",\"ar13\",\"ar14\",\"ar15\",\"ar16\",\"ar17\",\"ar18\",\"ar19\",\"ar20\",\"ar21\",\"ar22\",\"ar23\",\"ar24\",\"ar25\",\"ar26\",\"ar27\"," 
 		"\"head\",\"headl\",\"headr\",\"mouthl\",\"mouthr\",\"tail\",\"tail_l0\",\"tail_r0\"};"<<std::endl;
-/*	
-	(*BugOutput)<<"//save to obj"<<std::endl;
-	(*BugOutput)<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
-		"-ea \"D:/TEMP/MillipedeFrame"<<FRAME_COUNT<<".obj\";"<<std::endl;
-		*/
+	
+
+		
 }
 else if(type == 1){
 // output for povray

@@ -269,7 +269,7 @@ void reinitScene(){
 		}
 */
 	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(25,3,0);
+	START_POSITION = Eigen::Vector3f(25,5,0);
 	myMillipedes->Init(START_POSITION, 19,Eigen::Vector3f(0.2,1.39,2.422),0.707895, myTerrain);
 	//myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.4,1.0,2.0),0.8, myTerrain);
 	//myMillipedes->FixHead();
@@ -546,7 +546,7 @@ void idleCallback(){
 	*/
 	if(STOP == -1){
 	//only update physics
-		HackAnimation(0.01);
+		HackAnimation(0.04);
 		//myWorld->Update(0.02);//The real physics time step is much smaller
 
 		glutPostRedisplay() ; //draw new frame, the display is not real physics time
@@ -626,6 +626,11 @@ void OUTPUT_ONE_FRAME(){
 	//mel script file
 	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
+/*	
+	(*BugOutputMaya)<<"//save to obj"<<std::endl;
+	(*BugOutputMaya)<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
+		"-ea \"D:/TEMP/Frame"<<FRAME_COUNT<<".obj\";"<<std::endl;
+*/
 	(*BugOutputMaya) <<"//End Frame"<<FRAME_COUNT<<";"<<std::endl;
 
 	FRAME_COUNT++;

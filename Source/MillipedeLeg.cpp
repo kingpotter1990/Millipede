@@ -13,8 +13,8 @@ MillipedeLeg::MillipedeLeg(int a_l_r):m_l_r(a_l_r){
 
 void MillipedeLeg::InitPhysics(Eigen::Vector3f a_body_size){
 	
-	double l0 = 0.000;double l1 = Eigen::Vector2f(1.411,0.275).norm();
-	double l2 = 0.5*Eigen::Vector2f(1.49,0.682).norm(); double l3 = l2;
+	double l0 = 0.000;double l1 = 0.95; 
+	double l2 = Eigen::Vector2f(1.426,0.318).norm(); double l3 = Eigen::Vector2f(0.771,0.786).norm();
 	m_segment_0_size = Eigen::Vector3f(0.3,0.3,l0);
 	m_segment_1_size = Eigen::Vector3f(0.3,0.3,l1);
 	m_segment_2_size = Eigen::Vector3f(0.25,0.25,l2);
@@ -38,7 +38,7 @@ void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
     m_alpha = m_extreme_alpha * sin(DegreesToRadians*m_root->m_section_id*dif_phase);
 	m_beta = m_extreme_beta/2;
 
-	m_gamma = 0;//fixed
+	m_gamma = 32.98062;//fixed
 
 	m_leg_rotation_velocity = 100;
 	
@@ -104,8 +104,8 @@ void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){
 
 double MillipedeLeg::GetBalanceHeight(){
 //the height root when at balanced static position;
-	return m_segment_0_size[2] + m_segment_2_size[2]*sin(m_extreme_beta*0.5) 
-		+ m_segment_3_size[2]*sin(m_extreme_beta*0.5 + m_gamma);
+	return m_segment_0_size[2] + m_segment_2_size[2]*sin(m_extreme_beta*DegreesToRadians*0.5)
+	+ m_segment_3_size[2]*sin(m_extreme_beta*DegreesToRadians*0.5 + m_gamma*DegreesToRadians);
 }
 
 void MillipedeLeg::UpdateTipPosition(){
