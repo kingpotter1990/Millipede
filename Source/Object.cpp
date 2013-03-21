@@ -437,7 +437,7 @@ bool SurfaceMesh::LoadObjFile(char * filename){
     double *positions=new double[3*num_vertices];Node* temp_node;
 	
 	//apply scale and translation to the model
-	double scale(2); Eigen::Vector3f translation(0,0,0);
+	double scale(2000); Eigen::Vector3f translation(0,0,0);
 
    	for(std::size_t v=0;v<num_vertices;v++){
         positions[3*v] = scale*(translation[0] + m_objdata->vertexList[v]->e[0]);
@@ -586,7 +586,14 @@ bool SurfaceMesh::LoadObjFile(char * filename){
 bool SurfaceMesh::PointInsideMesh(Eigen::Vector3f point){
 		double* p = new double[3];
 		p[0] = point[0];p[1] = point[1];p[2] = point[2];
-		return point_inside_mesh(p,m_mesh_obj);
+		if(point_inside_mesh(p,m_mesh_obj)){
+			delete[] p;
+			return true;
+		}
+		else{
+			delete[] p;
+			return false;
+		}
 	}
 
 bool SurfaceMesh::ClosestTriangle(const Eigen::Vector3f& xyz, Triangle& triangle){

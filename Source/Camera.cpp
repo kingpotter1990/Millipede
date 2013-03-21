@@ -52,7 +52,7 @@ void Camera::MouseDrag(double a_x, double a_y){
 void Camera::Update(){
 	//recompute the world to camera matrix in the camera
 	m_cMw.setIdentity();
-	m_cMw.translate(Eigen::Vector3f(0.0f, 0.0f, -25.0f));
+	m_cMw.translate(Eigen::Vector3f(0.0f, 0.0f, -250.0f));
 	HMatrix r;
     Ball_Value(m_arcball,r);
 

@@ -37,6 +37,7 @@ public:
 	void ClearMillipedes();
 	void InitSurfaceObjects();
 	void Output2File(std::ofstream* file);
+	void SetFoodKey(unsigned int key);
 public:
 	double m_frictness;
 	TerrainType m_terrain_type;
