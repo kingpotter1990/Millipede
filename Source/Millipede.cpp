@@ -20,8 +20,8 @@ Millipede::~Millipede(){
 
 void Millipede::Init(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length, Terrain* a_terrain){
 
-	InitPhysics(a_position,a_num_section,a_rigid_size,a_soft_length);
-	//InitPhysicsFromModel(a_position);
+	//InitPhysics(a_position,a_num_section,a_rigid_size,a_soft_length);
+	InitPhysicsFromModel(a_position);
 	InitNeuroNet(a_terrain);
 }
 
@@ -410,14 +410,14 @@ void Millipede::Draw(int type, const Camera& camera, const Light& light){
 	m_tail_left->Draw(type, camera, light);
 	m_tail_right->Draw(type, camera, light);
 	//draw the bounding box
-	/*
+	
 	m_Drawer->SetIdentity();
 	m_Drawer->SetColor(Eigen::Vector3f(1.0,1.0,0.0));
 	m_Drawer->Translate(Eigen::Vector3f((m_bounding_box[0] + m_bounding_box[1])/2.0, 0,
 		(m_bounding_box[2] + m_bounding_box[3])/2.0));
 	m_Drawer->Scale(Eigen::Vector3f(m_bounding_box[1] - m_bounding_box[0],1,m_bounding_box[3] - m_bounding_box[2]));
 	m_Drawer->DrawCube(type, camera, light);
-	*/
+	
 }
 
 void Millipede::UpdateAll(double dt){

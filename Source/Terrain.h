@@ -25,7 +25,7 @@ public:
 	Eigen::Vector2i GetRes() const{return Eigen::Vector2i(m_res_x, m_res_z);};
 	double GetHeight(const Eigen::Vector3f& xyz) const;
 	bool TestInside(const Eigen::Vector3f& point);
-	bool TestInsideObstacle(const Eigen::Vector3f& point);
+	bool TestInsideObstacle(const Eigen::Vector3f& point, Millipede* current_bug);
 	bool TestInsideObstacle2(const Eigen::Vector3f& point);
 	Eigen::Vector3f GetNormal(const Eigen::Vector3f& xyz);
 	~Terrain(){delete[] m_height_data; delete[] m_normal_data;};

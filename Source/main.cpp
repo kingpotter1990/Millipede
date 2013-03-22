@@ -30,7 +30,7 @@ void initScene(){
     std::cout<<"Setting up the World..."<<std::endl;
 	myTerrainType = TERRAIN_RANDOM;
 	myTerrain = new Terrain(Eigen::Vector2f(2000,2000), Eigen::Vector2i(500,500), 50, myTerrainType
-		, OBSTACLE_OFF, FOOD_OFF);
+		, OBSTACLE_ON, FOOD_OFF);
 
 	TerrainOutput = new std::ofstream;
 	BugOutputPov = new std::ofstream;
@@ -74,12 +74,12 @@ void reinitScene(){
 	if(myMillipedes)
 		delete[] myMillipedes;
 
-	myMillipedes = new Millipede[5];
+	myMillipedes = new Millipede[8];
 	
-	START_POSITION = Eigen::Vector3f(-80,15,0);
-	for(int i = 0; i < 5; i++){
+	START_POSITION = Eigen::Vector3f(10,20,0);
+	for(int i = 0; i < 8; i++){
 		myMillipedes[i].Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain);
-		START_POSITION[0] += 30;	
+		START_POSITION[0] += 40;	
 		myWorld->Add_Object(myMillipedes + i);
 	}
 
