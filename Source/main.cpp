@@ -28,9 +28,9 @@ void initScene(){
 	//set up the world
 	myWorld = new World(51000);
     std::cout<<"Setting up the World..."<<std::endl;
-	myTerrainType = TERRAIN_SPHERICAL;
-	myTerrain = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
-		, OBSTACLE_OFF, FOOD_ON);
+	myTerrainType = TERRAIN_RANDOM;
+	myTerrain = new Terrain(Eigen::Vector2f(2000,2000), Eigen::Vector2i(500,500), 50, myTerrainType
+		, OBSTACLE_OFF, FOOD_OFF);
 
 	TerrainOutput = new std::ofstream;
 	BugOutputPov = new std::ofstream;
@@ -73,20 +73,16 @@ void reinitScene(){
 
 	if(myMillipedes)
 		delete[] myMillipedes;
-/*
-	int m = 4, n = 4;
-	myMillipedes = new Millipede[m*n];
-	for(int i = 0; i < m; i++)
-		for(int j = 0; j < n; j++)
-		{
-			myMillipedes[i*n +j].Init(Eigen::Vector3f(30*i,15,-20*j),6,Eigen::Vector3f(1,1,2),1, myTerrain);
-			myWorld->Add_Object(&myMillipedes[i*n + j]);
-		}
-*/
-	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(-10,65,0);
-	myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain);
-	myWorld->Add_Object(myMillipedes);
+
+	myMillipedes = new Millipede[5];
+	
+	START_POSITION = Eigen::Vector3f(-80,15,0);
+	for(int i = 0; i < 5; i++){
+		myMillipedes[i].Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain);
+		START_POSITION[0] += 30;	
+		myWorld->Add_Object(myMillipedes + i);
+	}
+
 
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime();
@@ -151,14 +147,14 @@ void keyboardCallback(unsigned char key, int x, int y){
 		myTerrain->SetFoodKey(7);
 	if( key == 'p')
 		myTerrain->SetFoodKey(8);
-	/*
+	
 	if( key == EscKey || key == 'q' || key == 'Q' ) 
     {
 		(*BugOutputMaya)<<"playbackOptions -min 1 -max "<< FRAME_COUNT - 1<<";"<<std::endl;
 		BugOutputMaya->close();
         exit(0);
     }
-	*/
+	
     if( key == 'o'|| key == 'O')
     {
 		OUTPUT *= -1;
@@ -276,21 +272,20 @@ void HackAnimation(double dt){
 		return;
 	double physics_time_step = 1/3000.0;
 	int num_division = int (dt/physics_time_step);
-	//#pragma omp parallel for
-	for(int j =0 ;j<num_division; j++)
-	{
-		for (int i = 0; i<myWorld->List_of_Object.size(); i++)
+	#pragma omp parallel for
+	for (int i = 0; i<myWorld->List_of_Object.size(); i++)
+		for(int j =0 ;j<num_division; j++)
+		{
 	      myWorld->List_of_Object[i]->UpdateAll(physics_time_step);
 
-		SIM_TIME += physics_time_step;
-	
-	}
+		}
 
+	SIM_TIME += dt;
 	if(OUTPUT == 1){
 		OUTPUT_ONE_FRAME();//output one frame data
 	}
 	
-	if(SIM_TIME > 195.0)
+	if(SIM_TIME > 295.0)
 		exit(1);
 }
 
