@@ -84,8 +84,8 @@ void reinitScene(){
 		}
 */
 	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(-10,70,0);
-	myMillipedes->Init(START_POSITION, 19,Eigen::Vector3f(0.2,1.39,2.422),0.707895, myTerrain);
+	START_POSITION = Eigen::Vector3f(-10,65,0);
+	myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain);
 	myWorld->Add_Object(myMillipedes);
 
 	//set up the clock

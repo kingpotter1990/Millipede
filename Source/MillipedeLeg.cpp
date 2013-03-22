@@ -464,7 +464,7 @@ void MillipedeLeg::EnterSwayForward1(){
 	
 	//Lifting Up
 	m_target_phi = m_phi;
-	m_target_alpha = m_extreme_alpha*0.5;
+	m_target_alpha = m_extreme_alpha*0.8;
 	m_target_beta = m_extreme_beta/2;
 
 	m_prev_leg_state = m_leg_state;
