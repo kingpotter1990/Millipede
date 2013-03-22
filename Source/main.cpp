@@ -84,7 +84,7 @@ void reinitScene(){
 		}
 */
 	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(-10,65,0);
+	START_POSITION = Eigen::Vector3f(-10,63,0);
 	myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain);
 	myWorld->Add_Object(myMillipedes);
 
@@ -151,14 +151,14 @@ void keyboardCallback(unsigned char key, int x, int y){
 		myTerrain->SetFoodKey(7);
 	if( key == 'p')
 		myTerrain->SetFoodKey(8);
-	/*
+	
 	if( key == EscKey || key == 'q' || key == 'Q' ) 
     {
 		(*BugOutputMaya)<<"playbackOptions -min 1 -max "<< FRAME_COUNT - 1<<";"<<std::endl;
 		BugOutputMaya->close();
         exit(0);
     }
-	*/
+	
     if( key == 'o'|| key == 'O')
     {
 		OUTPUT *= -1;
@@ -323,7 +323,7 @@ void OUTPUT_ONE_FRAME(){
 	}
 	//millipede
 	//Physics Model for Pov
-	
+	/*
 	std::string filename = "BUG_";
 	filename += std::to_string(FRAME_COUNT);
 	filename += ".inc";
@@ -341,11 +341,11 @@ void OUTPUT_ONE_FRAME(){
 		
 	}
 	(*BugOutputPov)<<"}\n"<<std::endl;
-
+	
 	(*BugOutputPov)<<"//End Food"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputPov,1);//0 is for maya model, 1 is for physics
 	myMillipedes[0].Output2File(BugOutputPov,2);//0 is for maya model, 1 is for physics, 2 diagram of leg state
-	
+	*/
 		//Surface Obstacles
 	//(*BugOutputPov)<<"//Begin Surface Obstacles\n"<<std::endl;
 	//(*BugOutputPov)<<"#declare SurfaceObstacle = merge {\n"<<std::endl;
@@ -377,7 +377,7 @@ void OUTPUT_ONE_FRAME(){
 	//}
 	//(*BugOutputPov)<<"}\n"<<std::endl;
 
-/*
+
 	//mel script file
 	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
@@ -385,7 +385,7 @@ void OUTPUT_ONE_FRAME(){
 	(*BugOutputMaya)<<"//save to obj"<<std::endl;
 	(*BugOutputMaya)<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
 		"-ea \"D:/TEMP/Frame"<<FRAME_COUNT<<".obj\";"<<std::endl;
-*/
+
 	(*BugOutputMaya) <<"//End Frame"<<FRAME_COUNT<<";"<<std::endl;
 
 	FRAME_COUNT++;
