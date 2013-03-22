@@ -734,7 +734,7 @@ else if(type == 1){
             break;
     }
 
-	m_tail_rigid->Output2File(filestream);
+
     // rigid part end
     (*filestream)<<"}\n"<<std::endl;
 
@@ -744,7 +744,7 @@ else if(type == 1){
     (*filestream)<<"}\n"<<std::endl;
 
     (*filestream)<<"#declare MillipedeTailPart = union { \n"<<std::endl; 
-
+	m_tail_rigid->Output2File(filestream);
 	m_tail_left->Output2File(filestream,1);
 	m_tail_right->Output2File(filestream,1);
 
@@ -930,6 +930,7 @@ else if(type == 2){
 	}//end looping all rigid section
 
 	//output the statetable;
+
 	(*filestream)<<"//Output Diagram"<<std::endl;
 	(*filestream)<<"#declare SWF = object{" <<std::endl<<"union{"<<std::endl;
 	for(int i = 0;i < statetable.swf.size();i++){

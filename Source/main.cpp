@@ -323,7 +323,7 @@ void OUTPUT_ONE_FRAME(){
 	}
 	//millipede
 	//Physics Model for Pov
-	/*
+	
 	std::string filename = "BUG_";
 	filename += std::to_string(FRAME_COUNT);
 	filename += ".inc";
@@ -336,7 +336,7 @@ void OUTPUT_ONE_FRAME(){
 	for(int i = 0; i < myTerrain->m_foods.size(); i++){
 		center = myTerrain->m_foods[i]->m_Center;
 		(*BugOutputPov)<<"//BEGIN SPHERE "<<std::endl;
-		(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<myTerrain->m_foods[i]->m_Size[0]/2<<"}"<<std::endl;
+		(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<myTerrain->m_foods[i]->m_Size[0]*2<<"}"<<std::endl;
 		(*BugOutputPov)<<"//END SPHERE "<<std::endl;
 		
 	}
@@ -345,7 +345,7 @@ void OUTPUT_ONE_FRAME(){
 	(*BugOutputPov)<<"//End Food"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputPov,1);//0 is for maya model, 1 is for physics
 	myMillipedes[0].Output2File(BugOutputPov,2);//0 is for maya model, 1 is for physics, 2 diagram of leg state
-	*/
+	
 		//Surface Obstacles
 	//(*BugOutputPov)<<"//Begin Surface Obstacles\n"<<std::endl;
 	//(*BugOutputPov)<<"#declare SurfaceObstacle = merge {\n"<<std::endl;
@@ -377,11 +377,11 @@ void OUTPUT_ONE_FRAME(){
 	//}
 	//(*BugOutputPov)<<"}\n"<<std::endl;
 
-
+/*
 	//mel script file
 	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
-/*	
+	
 	(*BugOutputMaya)<<"//save to obj"<<std::endl;
 	(*BugOutputMaya)<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
 		"-ea \"D:/TEMP/Frame"<<FRAME_COUNT<<".obj\";"<<std::endl;
