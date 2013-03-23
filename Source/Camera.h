@@ -41,7 +41,7 @@ public:
 	void MouseLeftDown(double a_x, double a_y);
 	void MouseLeftUp(double a_x, double a_y);
 	void MouseDrag(double a_x, double a_y);
-	void Update();//update the m_cMw;
+	void Update(Eigen::Vector3f pos = Eigen::Vector3f(0,0,-250));//update the m_cMw;
 };
 
 

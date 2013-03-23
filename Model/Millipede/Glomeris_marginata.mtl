@@ -1,0 +1,26 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001
+#
+# Multi/Sub Material__10 (2) to come 
+#
+newmtl Archispirostreptus_gigas_body
+Ka  0.6 0.6 0.6
+Kd  0.6 0.6 0.6
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  6.7
+illum 2
+map_Kd diff_1.tga
+#
+newmtl Archispirostreptus_gigas_legs_2
+Ka  0.0 0.0 0.0
+Kd  0.0 0.0 0.0
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  6.0
+illum 2
+map_Ks h_alpha.tga
+map_d h_alpha.tga
+#
+# Multi/Sub Material__10 done 
+#
+# EOF

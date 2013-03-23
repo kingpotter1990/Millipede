@@ -7,7 +7,6 @@
 //
 
 #include "main.h"
-
 void initScene(){
 
 	std::cout<<"Initiallizing The System...."<<std::endl;
@@ -305,7 +304,7 @@ void idleCallback(){
 	*/
 	if(STOP == -1){
 	//only update physics
-		HackAnimation(0.01);
+		HackAnimation(0.02);
 	}
 	glutPostRedisplay() ; //draw new frame, the display is not real physics time
 }

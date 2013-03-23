@@ -497,9 +497,9 @@ bool SurfaceMesh::LoadObjFile(char * filename){
 	obj_bounding_y += Eigen::Vector2f(-20,20);
 	obj_bounding_z += Eigen::Vector2f(-20,20);
 
-	m_space_grid.m_res_x = 30;
-	m_space_grid.m_res_y = 30;
-	m_space_grid.m_res_z = 30;
+	m_space_grid.m_res_x = 50;
+	m_space_grid.m_res_y = 50;
+	m_space_grid.m_res_z = 50;
 	m_space_grid.m_dx = (obj_bounding_x[1] - obj_bounding_x[0])/m_space_grid.m_res_x;
 	m_space_grid.m_dy = (obj_bounding_y[1] - obj_bounding_y[0])/m_space_grid.m_res_y;
 	m_space_grid.m_dz = (obj_bounding_z[1] - obj_bounding_z[0])/m_space_grid.m_res_z;
