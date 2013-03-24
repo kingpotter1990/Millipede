@@ -29,7 +29,7 @@ local.properties
 # PDT-specific
 .buildpath
 
-
+.dropbox
 #################
 ## Visual Studio
 #################
