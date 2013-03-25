@@ -268,37 +268,32 @@ void HFWater::Draw(int type, const Camera& camera, const Light& light){
 }
 
 void HFWater::InitInsideBorderMap(){
-	int count = 0;
 	for(int ix= 0; ix< m_res_x; ix++)
 		for(int iz = 0; iz< m_res_z; iz++){
 			Eigen::Vector3f point(m_dx*ix - 0.5*m_size_x,0.02,m_dx*iz - 0.5*m_size_z);
 			if(m_terrain->TestInsideObstacle2(point)){
 				m_obstacle_data[ix*m_res_z + iz] = true;
-				count ++;
 			}
 			else
 				m_obstacle_data[ix*m_res_z + iz] = false;
 		}
-	std::cout<<"Init Water Inside Border Map Done "<<count<<std::endl;
 }
 
 bool HFWater::IsOutBorder(int idx, int idz){
 	//test agains rectangle borders;
 	if(idx < 0 || idx > m_res_x - 1||idz < 0||idz > m_res_z - 1)
 		return true;
-	
+	return false;
 	return m_obstacle_data[idx*m_res_z + idz];
 
 }
 void HFWater::UpdateAll(double dt){
-
 	double up, down, left, right, center, force;
-	double c_2 = 100;
+	double c_2 = 50;
 	int index; double m_dx_2 = m_dx*m_dx;
 
-//#pragma omp parallel for
-	for(int ix= 0; ix< m_res_x; ix++)
-		for(int iz = 0; iz< m_res_z; iz++){
+	for(int iz= 0; iz< m_res_z; iz++)
+		for(int ix = 0; ix< m_res_x; ix++){
 			if(IsOutBorder(ix, iz))
 				continue; //no update for out border, inside obstacle points 
 			index = ix*m_res_z + iz;
@@ -331,8 +326,8 @@ void HFWater::UpdateAll(double dt){
 
 		}//udpate velocity
 	//update height map
-	for(int ix= 0; ix< m_res_x; ix++)
-		for(int iz = 0; iz< m_res_z; iz++){
+	for(int iz= 0; iz< m_res_z; iz++)
+		for(int ix = 0; ix< m_res_x; ix++){
 			index = ix*m_res_z + iz;
 			m_height_data[index] += m_velocity_data[index]*dt;
 		}
