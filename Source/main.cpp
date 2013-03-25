@@ -74,7 +74,7 @@ void reinitScene(){
 		delete[] myMillipedes;
 
 	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(140,5,0);
+	START_POSITION = Eigen::Vector3f(80,5,0);
 	myMillipedes->Init(START_POSITION, 19,Eigen::Vector3f(0.2,1.39,2.422),0.707895, myTerrain);
 	//myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.4,1.0,2.0),0.8, myTerrain);
 	//myMillipedes->FixHead();
@@ -318,14 +318,17 @@ void OUTPUT_ONE_FRAME(){
 	//Water
 	
 	//millipede
+	
+	if(myTerrain->m_terrain_type == TERRAIN_WATER){
 	std::string filename = "WATER_";
 	filename += std::to_string(FRAME_COUNT);
-	filename += ".inc";
+	filename += ".inc";	
+	WaterOutput->open(filename);
 	(*WaterOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
 	myTerrain->m_water->Output2File(WaterOutput);
 	WaterOutput->close();
+	}
 	
-
 	//mel script file
 	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
