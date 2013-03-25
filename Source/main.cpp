@@ -293,6 +293,8 @@ void HackAnimation(double dt){
 
 	
 	OUTPUT_ONE_FRAME();//output one frame data
+	if(FRAME_COUNT > 2000)
+		exit(0);
 }
 
 void idleCallback(){
@@ -317,8 +319,6 @@ void idleCallback(){
 void OUTPUT_ONE_FRAME(){
 	//Water
 	
-	//millipede
-	
 	if(myTerrain->m_terrain_type == TERRAIN_WATER){
 	std::string filename = "WATER_";
 	filename += std::to_string(FRAME_COUNT);
@@ -329,6 +329,29 @@ void OUTPUT_ONE_FRAME(){
 	WaterOutput->close();
 	}
 	
+	
+	std::string filename = "FOOD_";
+	filename += std::to_string(FRAME_COUNT);
+	filename += ".inc";
+	BugOutputPov->open(filename);
+	(*BugOutputPov)<<"//Frame "<<FRAME_COUNT<<std::endl;
+	(*BugOutputPov)<<"//Begin Food"<<std::endl;
+	(*BugOutputPov)<<"#declare Food = union {\n"<<std::endl;
+	Eigen::Vector3f center;double a,d;
+	
+	for(int i = 0; i < myTerrain->m_foods.size(); i++){
+		center = myTerrain->m_foods[i]->m_Center;
+		(*BugOutputPov)<<"//BEGIN SPHERE "<<std::endl;
+		(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<myTerrain->m_foods[i]->m_Size[0]*2<<"}"<<std::endl;
+		(*BugOutputPov)<<"//END SPHERE "<<std::endl;
+		
+	}
+	(*BugOutputPov)<<"}\n"<<std::endl;
+	
+	(*BugOutputPov)<<"//End Food"<<std::endl;
+	
+	BugOutputPov->close();
+
 	//mel script file
 	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
