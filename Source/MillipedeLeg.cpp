@@ -313,10 +313,6 @@ void MillipedeLeg::UpdateSwitchNet(double a_dt){
 			break;
 	}
 
-	//recording leg status	
-	if(m_history_state.size() > 0)
-		if(m_history_state.front().m_time_stamp + m_history_length < m_root->m_timer)
-			m_history_state.pop();
 }
 
 void MillipedeLeg::UpdateSwingNet(double a_dt){
@@ -415,8 +411,7 @@ void MillipedeLeg::EnterStance(){
 	//ground contact on the left leg
 	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_STANCE;
-	if(m_prev_leg_state != LEG_STANCE)
-		RecordSwitch();
+
 	if(m_next){
 		m_next->EnterAdjust();
 	}
@@ -434,8 +429,7 @@ void MillipedeLeg::EnterAdjust(){
 
 	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_ADJUST;
-	if(m_prev_leg_state != LEG_ADJUST)
-		RecordSwitch();
+	
 	UpdateSpeedNet();
 
 
@@ -451,8 +445,7 @@ void MillipedeLeg::EnterSwayBackward1(){
 
 	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_SWAY_BACKWARD_1;
-	if(m_prev_leg_state != LEG_SWAY_BACKWARD_1 && m_prev_leg_state != LEG_SWAY_BACKWARD_2)
-		RecordSwitch();
+
 	UpdateSpeedNet();
 }
 
@@ -469,8 +462,7 @@ void MillipedeLeg::EnterSwayForward1(){
 
 	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_SWAY_FORWARD_1;
-	if(m_prev_leg_state != LEG_SWAY_FORWARD_1 && m_prev_leg_state != LEG_SWAY_FORWARD_2)
-		RecordSwitch();
+
 	UpdateSpeedNet();
 } 
 
@@ -484,8 +476,6 @@ void MillipedeLeg::EnterSwayBackward2(){
 
 	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_SWAY_BACKWARD_2;
-	if(m_prev_leg_state != LEG_SWAY_BACKWARD_1 && m_prev_leg_state != LEG_SWAY_BACKWARD_2)
-		RecordSwitch();
 	UpdateSpeedNet();
 }
 
@@ -502,8 +492,7 @@ void MillipedeLeg::EnterSwayForward2(){
 	
 	m_prev_leg_state = m_leg_state;
 	m_leg_state = LEG_SWAY_FORWARD_2;
-	if(m_prev_leg_state != LEG_SWAY_FORWARD_1 && m_prev_leg_state != LEG_SWAY_FORWARD_2)
-		RecordSwitch();
+	
 	UpdateSpeedNet();
 } 
 

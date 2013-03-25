@@ -27,21 +27,11 @@ void initScene(){
 	//set up the world
 	myWorld = new World(51000);
     std::cout<<"Setting up the World..."<<std::endl;
-	myTerrainType = TERRAIN_SPHERICAL;
-	myTerrain = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
-		, OBSTACLE_OFF, FOOD_ON);
 
-	TerrainOutput = new std::ofstream;
 	BugOutputPov = new std::ofstream;
-	BugOutputGraph = new std::ofstream;
 	BugOutputMaya = new std::ofstream;
-	WaterOutput = new std::ofstream;
-	RideOutput = new std::ofstream;
-	//output static terrain mesh
-	TerrainOutput->open("Terrain.inc");
-	myTerrain->Output2File(TerrainOutput);
-	TerrainOutput->close();
 
+	/*
 	BugOutputMaya->open("Bug.mel");
 	RideOutput->open("Ride.inc");
 	
@@ -49,6 +39,7 @@ void initScene(){
 	"string $filelist[] = `getFileList -folder $path -filespec \"*.obj\"`;"<<std::endl<<
 	"for($i=0; $i <= (`size $filelist` - 1); $i++)"<<std::endl
 		<<"sysFile -delete ($path+$filelist[$i]);"<<std::endl<<std::endl;
+	*/
 
 	reinitScene();
 
@@ -67,25 +58,36 @@ void reinitScene(){
 
 	myWorld->Clear();
 
-	myWorld->Add_Object(myTerrain);
-	myTerrain->ClearMillipedes();	
+	myTerrainType = TERRAIN_TEST1;
+	myTerrain1 = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
+		, OBSTACLE_OFF, FOOD_ON);
+	myTerrainType = TERRAIN_TEST2;
+	myTerrain2 = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
+		, OBSTACLE_OFF, FOOD_ON);
+	myTerrainType = TERRAIN_TEST3;
+	myTerrain3 = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
+		, OBSTACLE_OFF, FOOD_ON);
+
+	myWorld->Add_Object(myTerrain1);
+	myWorld->Add_Object(myTerrain2);
+	myWorld->Add_Object(myTerrain3);
+	myTerrain1->ClearMillipedes();	
+	myTerrain2->ClearMillipedes();	
+	myTerrain3->ClearMillipedes();	
 
 	if(myMillipedes)
 		delete[] myMillipedes;
-/*
-	int m = 4, n = 4;
-	myMillipedes = new Millipede[m*n];
-	for(int i = 0; i < m; i++)
-		for(int j = 0; j < n; j++)
-		{
-			myMillipedes[i*n +j].Init(Eigen::Vector3f(30*i,15,-20*j),6,Eigen::Vector3f(1,1,2),1, myTerrain);
-			myWorld->Add_Object(&myMillipedes[i*n + j]);
-		}
-*/
-	myMillipedes = new Millipede;
-	START_POSITION = Eigen::Vector3f(-10,63,0);
-	myMillipedes->Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain);
-	myWorld->Add_Object(myMillipedes);
+
+	myMillipedes = new Millipede[3];
+	START_POSITION = Eigen::Vector3f(10,5,-30);
+	myMillipedes[0].Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain1);
+	START_POSITION = Eigen::Vector3f(-10,5,0);
+	myMillipedes[1].Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain2);
+	START_POSITION = Eigen::Vector3f(10,5,30);
+	myMillipedes[2].Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain3);
+	myWorld->Add_Object(&myMillipedes[0]);
+	myWorld->Add_Object(&myMillipedes[1]);
+	myWorld->Add_Object(&myMillipedes[2]);
 
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime();
@@ -135,21 +137,21 @@ void specialCallback(int key, int x, int y){
 void keyboardCallback(unsigned char key, int x, int y){
 
 	if( key == '4')
-		myTerrain->SetFoodKey(1);
+		myTerrain1->SetFoodKey(1);
 	if( key == '5')
-		myTerrain->SetFoodKey(2);
+		myTerrain1->SetFoodKey(2);
 	if( key == '6')
-		myTerrain->SetFoodKey(3);
+		myTerrain1->SetFoodKey(3);
 	if( key == '7')
-		myTerrain->SetFoodKey(4);
+		myTerrain1->SetFoodKey(4);
 	if( key == '8')
-		myTerrain->SetFoodKey(5);
+		myTerrain1->SetFoodKey(5);
 	if( key == '9')
-		myTerrain->SetFoodKey(6);
+		myTerrain1->SetFoodKey(6);
 	if( key == 'n')
-		myTerrain->SetFoodKey(7);
+		myTerrain1->SetFoodKey(7);
 	if( key == 'p')
-		myTerrain->SetFoodKey(8);
+		myTerrain1->SetFoodKey(8);
 	
 	if( key == EscKey || key == 'q' || key == 'Q' ) 
     {
@@ -271,26 +273,22 @@ void cursorCallback(int x, int y){
 }
 
 void HackAnimation(double dt){
-	if(myMillipedes == NULL)
-		return;
-	double physics_time_step = 1/3000.0;
+
+	double physics_time_step = 1/5000.0;
 	int num_division = int (dt/physics_time_step);
-	//#pragma omp parallel for
-	for(int j =0 ;j<num_division; j++)
-	{
-		for (int i = 0; i<myWorld->List_of_Object.size(); i++)
+
+#pragma omp parallel for
+	for (int i = 0; i<myWorld->List_of_Object.size(); i++)
+		for(int j =0 ;j<num_division; j++)
 	      myWorld->List_of_Object[i]->UpdateAll(physics_time_step);
 
-		SIM_TIME += physics_time_step;
+	SIM_TIME += dt;
 	
-	}
-
 	if(OUTPUT == 1){
 		OUTPUT_ONE_FRAME();//output one frame data
 	}
 	
-	if(SIM_TIME > 195.0)
-		exit(1);
+
 }
 
 void idleCallback(){
@@ -310,16 +308,7 @@ void idleCallback(){
 }
 
 void OUTPUT_ONE_FRAME(){
-	//Water
-	if(myTerrainType == TERRAIN_WATER){
-		//millipede
-		std::string filename = "WATER_";
-		filename += std::to_string(FRAME_COUNT);
-		filename += ".inc";
-		(*WaterOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
-		myTerrain->m_water->Output2File(WaterOutput);
-		WaterOutput->close();
-	}
+
 	//millipede
 	//Physics Model for Pov
 	/*

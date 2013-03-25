@@ -118,7 +118,7 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 	Eigen::Vector3f tail_s_size = Eigen::Vector3f(a_rigid_size[0],a_rigid_size[1]*0.7,a_rigid_size[2]*0.7);
 	temp_position[0] += 0.5*a_rigid_size[0];
 	temp_position[1] -= 0.5*tail_s_size[1]; 
-	temp_position[2] = -0.5*tail_s_size[2];
+	temp_position[2] -= 0.5*tail_s_size[2];
 	m_tail_soft->Init(Eigen::Vector3i(3,3,3),1.0,2000,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
 	
 	m_last->AttachNodes(m_tail_soft->m_Mesh->GetLeftNodes());
@@ -127,7 +127,7 @@ void Millipede::InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen
 	tail_c_size[0] = 0.5*tail_c_size[1];
 	temp_position[0] += tail_s_size[0] + tail_c_size[0]*0.5;
 	temp_position[1] += tail_s_size[1]*0.5;
-	temp_position[2] = 0;
+	temp_position[2] += 0.5*tail_s_size[2];
 	m_tail_rigid = new RigidCube;
 	m_tail_rigid->Init(2,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
 	
@@ -249,7 +249,7 @@ void Millipede::InitPhysicsFromModel(Eigen::Vector3f a_position){
 	Eigen::Vector3f tail_s_size = Eigen::Vector3f(a_link_length - a_rigid_size[0]*0.8,a_rigid_size[1]*0.8,a_rigid_size[2]*0.8);
 	temp_position[0] += 0.5*a_rigid_size[0];
 	temp_position[1] -= 0.5*tail_s_size[1]; 
-	temp_position[2] = -0.5*tail_s_size[2];
+	temp_position[2] -= 0.5*tail_s_size[2];
 	m_tail_soft->Init(Eigen::Vector3i(3,3,3),1.0,2000,0.4,80,temp_position,tail_s_size,Eigen::Vector3f(1,0,0));
 	
 	m_last->AttachNodes(m_tail_soft->m_Mesh->GetLeftNodes());
@@ -258,7 +258,7 @@ void Millipede::InitPhysicsFromModel(Eigen::Vector3f a_position){
 	tail_c_size[0] = 0.8*a_rigid_size[0];
 	temp_position[0] += tail_s_size[0] + tail_c_size[0]*0.5;
 	temp_position[1] += tail_s_size[1]*0.5;
-	temp_position[2] = 0;
+	temp_position[2] += 0.5*tail_s_size[2];
 	m_tail_rigid = new RigidCube;
 	m_tail_rigid->Init(2,temp_position,tail_c_size,Eigen::Vector3f(0,0,1));
 	
@@ -455,7 +455,6 @@ void Millipede::UpdateAll(double dt){
 			break;
 	}
 
-#pragma omp parallel for
 	for(int i = 0; i< temp_sections.size(); i++)
 		temp_sections[i]->UpdateAll(dt);
 

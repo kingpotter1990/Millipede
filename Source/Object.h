@@ -21,7 +21,7 @@
 #include <windows.h>
 #endif
 
-#define GRAVITY_CONSTANT 0.2
+#define GRAVITY_CONSTANT 9.8
 
 #ifndef M_PI
 #  define M_PI  3.14159265358979323846

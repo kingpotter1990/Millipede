@@ -12,7 +12,7 @@ class Millipede;
 class objLoader;
 class MeshObject;
 class HFWater;
-enum TerrainType{TERRAIN_RANDOM, TERRAIN_FLAT, TERRAIN_TEST, TERRAIN_SPHERICAL, TERRAIN_WATER};
+enum TerrainType{TERRAIN_RANDOM, TERRAIN_FLAT,TERRAIN_SPHERICAL, TERRAIN_WATER, TERRAIN_TEST1, TERRAIN_TEST2, TERRAIN_TEST3};
 class Terrain:public Object{
 
 public:
