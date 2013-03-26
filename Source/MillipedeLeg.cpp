@@ -12,15 +12,37 @@ MillipedeLeg::MillipedeLeg(int a_l_r):m_l_r(a_l_r){
 }
 
 void MillipedeLeg::InitPhysics(Eigen::Vector3f a_body_size){
+	
+	double ratio, l0,l1,l2,l3;
 
-	double ratio = a_body_size[0];
-	double l0 = 3;double l1 = 0.95; 
-	double l2 = Eigen::Vector2f(1.426,0.318).norm(); double l3 = Eigen::Vector2f(0.771,0.786).norm();
-	m_segment_0_size = Eigen::Vector3f(0.6,0.6,l0)*ratio;
-	m_segment_1_size = Eigen::Vector3f(0.6,0.6,l1)*ratio;
-	m_segment_2_size = Eigen::Vector3f(0.5,0.5,l2)*ratio;
-	m_segment_3_size = Eigen::Vector3f(0.4,0.4,l3)*ratio;
+	if(m_root->m_master->m_hack_type == 2){//2
+		ratio = 1.0;	
+		l0 = 0;l1 = 0.95; 
+		l2 = Eigen::Vector2f(1.426,0.318).norm();l3 = Eigen::Vector2f(0.771,0.786).norm();
 
+		m_segment_0_size = Eigen::Vector3f(0.3,0.3,l0)*ratio;
+		m_segment_1_size = Eigen::Vector3f(0.3,0.3,l1)*ratio;
+		m_segment_2_size = Eigen::Vector3f(0.2,0.2,l2)*ratio;
+		m_segment_3_size = Eigen::Vector3f(0.2,0.2,l3)*ratio;
+	}
+	else if(m_root->m_master->m_hack_type == 1){//1
+		ratio = a_body_size[0];
+		l0 = 3;l1 = 0.95; 
+		l2 = Eigen::Vector2f(1.426,0.318).norm();l3 = Eigen::Vector2f(0.771,0.786).norm();
+		m_segment_0_size = Eigen::Vector3f(0.6,0.6,l0)*ratio;
+		m_segment_1_size = Eigen::Vector3f(0.6,0.6,l1)*ratio;
+		m_segment_2_size = Eigen::Vector3f(0.5,0.5,l2)*ratio;
+		m_segment_3_size = Eigen::Vector3f(0.4,0.4,l3)*ratio;
+	}
+	else{//3
+		ratio = 1.0;
+		l0 = 0;l1 = 0.95; 
+		l2 = Eigen::Vector2f(1.426,0.318).norm();l3 = Eigen::Vector2f(0.771,0.786).norm();
+		m_segment_0_size = Eigen::Vector3f(0.6,0.6,l0)*ratio;
+		m_segment_1_size = Eigen::Vector3f(0.6,0.6,l1)*ratio;
+		m_segment_2_size = Eigen::Vector3f(0.5,0.5,l2)*ratio;
+		m_segment_3_size = Eigen::Vector3f(0.4,0.4,l3)*ratio;
+	}
 }
 
 void MillipedeLeg::InitNeuroNet(MillipedeRigidSection* a_root){

@@ -19,7 +19,7 @@ class Millipede:public Object{
 public:
 	Millipede();
 	virtual ~Millipede();
-	void Init(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length, Terrain* a_terrain);
+	void Init(int m_hack_type,Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length, Terrain* a_terrain);
 	void Draw(int type, const Camera& camera, const Light& light);
     void SetWorld(World* a_world);
     void UpdateAll(double dt);
@@ -56,7 +56,7 @@ public:
 	Deformable3D* m_tail_soft;
 	RigidCube* m_tail_rigid;
 
-
+	int m_hack_type;
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

@@ -67,27 +67,35 @@ void reinitScene(){
 	myTerrainType = TERRAIN_TEST3;
 	myTerrain3 = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
 		, OBSTACLE_OFF, FOOD_ON);
-
+	myTerrainType = TERRAIN_TEST4;
+	myTerrain4 = new Terrain(Eigen::Vector2f(900,900), Eigen::Vector2i(20,20), 50, myTerrainType
+		, OBSTACLE_OFF, FOOD_ON);
+	
 	myWorld->Add_Object(myTerrain1);
 	myWorld->Add_Object(myTerrain2);
 	myWorld->Add_Object(myTerrain3);
+	myWorld->Add_Object(myTerrain4);
 	myTerrain1->ClearMillipedes();	
 	myTerrain2->ClearMillipedes();	
 	myTerrain3->ClearMillipedes();	
+	myTerrain4->ClearMillipedes();	
 
 	if(myMillipedes)
 		delete[] myMillipedes;
 
-	myMillipedes = new Millipede[3];
+	myMillipedes = new Millipede[4];
 	START_POSITION = Eigen::Vector3f(18,5,100);
-	myMillipedes[0].Init(START_POSITION,56,Eigen::Vector3f(0.4,1.2,1.2),0.4, myTerrain1);
+	myMillipedes[0].Init(1,START_POSITION,56,Eigen::Vector3f(0.4,1.2,1.2),0.4, myTerrain1);
 	START_POSITION = Eigen::Vector3f(-10,5,0);
-	myMillipedes[1].Init(START_POSITION, 6,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain2);
+	myMillipedes[1].Init(2,START_POSITION, 6,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain2);
+	START_POSITION = Eigen::Vector3f(30,5,-46);
+	myMillipedes[2].Init(3,START_POSITION, 18,Eigen::Vector3f(0.5,1.2,2.0),1.2, myTerrain3);
 	START_POSITION = Eigen::Vector3f(10,5,-30);
-	myMillipedes[2].Init(START_POSITION, 6,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain3);
-	myWorld->Add_Object(&myMillipedes[0]);
+	myMillipedes[3].Init(4,START_POSITION, 6,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain4);
+	//myWorld->Add_Object(&myMillipedes[0]);
 	//myWorld->Add_Object(&myMillipedes[1]);
-	//myWorld->Add_Object(&myMillipedes[2]);
+	myWorld->Add_Object(&myMillipedes[2]);
+	//myWorld->Add_Object(&myMillipedes[3]);
 
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime();

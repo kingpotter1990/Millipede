@@ -38,6 +38,7 @@ World * myWorld = NULL;
 Terrain* myTerrain1 = NULL;
 Terrain* myTerrain2 = NULL;
 Terrain* myTerrain3 = NULL;
+Terrain* myTerrain4 = NULL;
 Millipede* myMillipedes;
 Drawer* g_Drawer;
 Sphere* mySphere = NULL;

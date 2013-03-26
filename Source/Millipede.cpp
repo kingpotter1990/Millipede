@@ -18,10 +18,13 @@ Millipede::~Millipede(){
 
 }
 
-void Millipede::Init(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length, Terrain* a_terrain){
+void Millipede::Init(int hack_type,Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length, Terrain* a_terrain){
 	
-	
-	InitPhysics(a_position,a_num_section,a_rigid_size,a_soft_length);
+	m_hack_type = hack_type;
+	if(m_hack_type!=2)
+		InitPhysics(a_position,a_num_section,a_rigid_size,a_soft_length);
+	else
+		InitPhysicsFromModel(a_position);
 	InitNeuroNet(a_terrain);
 }
 

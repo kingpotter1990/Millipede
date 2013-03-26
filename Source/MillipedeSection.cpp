@@ -15,11 +15,8 @@ void MillipedeRigidSection::InitPhysics(double density, Eigen::Vector3f center,E
 	m_prev_dis_obj = prev_link_length;
 
 	m_left_leg = new MillipedeLeg(1);//left
-	m_left_leg->InitPhysics(size);
-
 	m_right_leg = new MillipedeLeg(-1);//right
-	m_right_leg->InitPhysics(size);
-
+	
 	m_next = NULL;
 	m_prev = NULL;
 	
@@ -35,6 +32,10 @@ void MillipedeRigidSection::InitNeuroNet(Millipede* a_root, int a_id){
 	m_section_id = a_id;
 	m_body_state = NOT_SUPPORTED;
 
+	m_left_leg->m_root = this;
+	m_left_leg->InitPhysics(m_Size);
+	m_right_leg->m_root = this;
+	m_right_leg->InitPhysics(m_Size);
 
 	m_left_leg->InitNeuroNet(this);
 	m_right_leg->InitNeuroNet(this);
@@ -55,12 +56,13 @@ void MillipedeRigidSection::SetWorld(World* a_world){
 
 void MillipedeRigidSection::Draw(int type, const Camera& camera, const Light& light){
 	
+	if(m_master->m_hack_type == 1){
 	m_Drawer->SetIdentity();
 	m_Drawer->Translate(this->m_Center);
 	m_Drawer->Scale(1.8);
 	m_Drawer->SetColor(Eigen::Vector3f(1,1,1));
 	m_Drawer->DrawSphere(type,camera,light);
-	
+	}
 	Cube::Draw(type, camera, light);
 	
 	m_left_leg->Draw(type, camera, light);
