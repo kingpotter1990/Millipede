@@ -49,10 +49,10 @@ void Camera::MouseDrag(double a_x, double a_y){
     Ball_Update(m_arcball);
 }
 
-void Camera::Update(){
+void Camera::Update(Eigen::Vector3f pos){
 	//recompute the world to camera matrix in the camera
 	m_cMw.setIdentity();
-	m_cMw.translate(Eigen::Vector3f(0.0f, 0.0f, -150.0f));
+	m_cMw.translate(pos);
 	HMatrix r;
     Ball_Value(m_arcball,r);
 
