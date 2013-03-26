@@ -99,10 +99,10 @@ void Sphere::GenerateSphere(){
     v[2] = Eigen::Vector4f(-0.816497, -0.471405, -0.333333, 1.0);
     v[3] = Eigen::Vector4f(0.816497, -0.471405, -0.333333, 1.0);
 	
-	DividTriangle(v[0], v[1], v[2], 3);
-    DividTriangle(v[3], v[2], v[1], 3);
-    DividTriangle(v[0], v[3], v[1], 3);
-    DividTriangle(v[0], v[3], v[2], 3);
+	DividTriangle(v[0], v[1], v[2], 4);
+    DividTriangle(v[3], v[2], v[1], 4);
+    DividTriangle(v[0], v[3], v[1], 4);
+    DividTriangle(v[0], v[3], v[2], 4);
 
 }
 

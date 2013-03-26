@@ -79,15 +79,15 @@ void reinitScene(){
 		delete[] myMillipedes;
 
 	myMillipedes = new Millipede[3];
-	START_POSITION = Eigen::Vector3f(10,5,-30);
-	myMillipedes[0].Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain1);
+	START_POSITION = Eigen::Vector3f(18,5,100);
+	myMillipedes[0].Init(START_POSITION,56,Eigen::Vector3f(0.4,1.2,1.2),0.4, myTerrain1);
 	START_POSITION = Eigen::Vector3f(-10,5,0);
-	myMillipedes[1].Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain2);
-	START_POSITION = Eigen::Vector3f(10,5,30);
-	myMillipedes[2].Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain3);
+	myMillipedes[1].Init(START_POSITION, 6,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain2);
+	START_POSITION = Eigen::Vector3f(10,5,-30);
+	myMillipedes[2].Init(START_POSITION, 6,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain3);
 	myWorld->Add_Object(&myMillipedes[0]);
-	myWorld->Add_Object(&myMillipedes[1]);
-	myWorld->Add_Object(&myMillipedes[2]);
+	//myWorld->Add_Object(&myMillipedes[1]);
+	//myWorld->Add_Object(&myMillipedes[2]);
 
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime();
@@ -274,7 +274,7 @@ void cursorCallback(int x, int y){
 
 void HackAnimation(double dt){
 
-	double physics_time_step = 1/5000.0;
+	double physics_time_step = 1/3000.0;
 	int num_division = int (dt/physics_time_step);
 
 #pragma omp parallel for

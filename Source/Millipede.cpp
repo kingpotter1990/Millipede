@@ -19,9 +19,9 @@ Millipede::~Millipede(){
 }
 
 void Millipede::Init(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length, Terrain* a_terrain){
-
-	//InitPhysics(a_position,a_num_section,a_rigid_size,a_soft_length);
-	InitPhysicsFromModel(a_position);
+	
+	
+	InitPhysics(a_position,a_num_section,a_rigid_size,a_soft_length);
 	InitNeuroNet(a_terrain);
 }
 

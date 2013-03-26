@@ -54,13 +54,13 @@ void MillipedeRigidSection::SetWorld(World* a_world){
 }
 
 void MillipedeRigidSection::Draw(int type, const Camera& camera, const Light& light){
-	/*
+	
 	m_Drawer->SetIdentity();
 	m_Drawer->Translate(this->m_Center);
-	m_Drawer->Scale(4);
+	m_Drawer->Scale(1.8);
 	m_Drawer->SetColor(Eigen::Vector3f(1,1,1));
 	m_Drawer->DrawSphere(type,camera,light);
-	*/
+	
 	Cube::Draw(type, camera, light);
 	
 	m_left_leg->Draw(type, camera, light);
