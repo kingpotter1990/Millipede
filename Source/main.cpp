@@ -84,18 +84,18 @@ void reinitScene(){
 		delete[] myMillipedes;
 
 	myMillipedes = new Millipede[4];
-	START_POSITION = Eigen::Vector3f(18,5,100);
+	START_POSITION = Eigen::Vector3f(18,5,135);
 	myMillipedes[0].Init(1,START_POSITION,56,Eigen::Vector3f(0.4,1.2,1.2),0.4, myTerrain1);
-	START_POSITION = Eigen::Vector3f(-10,5,0);
+	START_POSITION = Eigen::Vector3f(15,5,-100);
 	myMillipedes[1].Init(2,START_POSITION, 6,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain2);
-	START_POSITION = Eigen::Vector3f(30,5,-46);
+	START_POSITION = Eigen::Vector3f(15,5,-150);
 	myMillipedes[2].Init(3,START_POSITION, 18,Eigen::Vector3f(0.5,1.2,2.0),1.2, myTerrain3);
-	START_POSITION = Eigen::Vector3f(10,5,-30);
-	myMillipedes[3].Init(4,START_POSITION, 6,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain4);
-	//myWorld->Add_Object(&myMillipedes[0]);
-	//myWorld->Add_Object(&myMillipedes[1]);
+	START_POSITION = Eigen::Vector3f(0,5,-44);
+	myMillipedes[3].Init(4,START_POSITION, 8,Eigen::Vector3f(1.5,1.0,2.0),1.5, myTerrain4);
+	myWorld->Add_Object(&myMillipedes[0]);
+	myWorld->Add_Object(&myMillipedes[1]);
 	myWorld->Add_Object(&myMillipedes[2]);
-	//myWorld->Add_Object(&myMillipedes[3]);
+	myWorld->Add_Object(&myMillipedes[3]);
 
 	//set up the clock
 	TIME_LAST = TM.GetElapsedTime();
@@ -292,6 +292,17 @@ void HackAnimation(double dt){
 
 	SIM_TIME += dt;
 	
+	std::cout<<SIM_TIME<<"\r";
+
+	if(SIM_TIME > 24.0)
+		myMillipedes[3].m_stopped = true;
+	if(SIM_TIME > 20.0)
+		myMillipedes[2].m_stopped = true;
+	if(SIM_TIME > 17.5)
+		myMillipedes[1].m_stopped = true;
+	if(SIM_TIME > 20.0)
+		myMillipedes[0].m_stopped = true;
+
 	if(OUTPUT == 1){
 		OUTPUT_ONE_FRAME();//output one frame data
 	}

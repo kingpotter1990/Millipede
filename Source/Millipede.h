@@ -43,7 +43,7 @@ public:
 	Eigen::Vector3f m_size;
 	Eigen::Vector4f m_bounding_box;//x_min, x_max, z_min, z_max
 	Terrain* m_terrain;
-
+	
 	MillipedeHead* m_head;
 	MillipedeRigidSection* m_last;
 	MillipedeTail* m_tail_left;
@@ -56,6 +56,7 @@ public:
 	Deformable3D* m_tail_soft;
 	RigidCube* m_tail_rigid;
 
+	bool m_stopped;
 	int m_hack_type;
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW

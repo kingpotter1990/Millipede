@@ -10,6 +10,7 @@
 
 Millipede::Millipede(){
 	m_type = TypeMixed;
+	m_stopped = false;
 	m_Drawer = new Drawer;
 }
 
@@ -430,6 +431,12 @@ void Millipede::UpdateAll(double dt){
 	//update head
 	m_head->UpdateAll(dt);
 
+	m_tail_left->UpdateAll(dt);
+	m_tail_right->UpdateAll(dt);
+
+	if(m_stopped)
+		return;
+
 	//update each body section
 	MillipedeRigidSection *temp_rigid_section;
 	MillipedeSoftSection *temp_soft_section;
@@ -460,12 +467,11 @@ void Millipede::UpdateAll(double dt){
 
 	for(int i = 0; i< temp_sections.size(); i++)
 		temp_sections[i]->UpdateAll(dt);
-
+	
 	m_tail_soft->UpdateAll(dt);
 	m_tail_rigid->UpdateAll(dt);
 
-	m_tail_left->UpdateAll(dt);
-	m_tail_right->UpdateAll(dt);
+
 }
 
 
