@@ -421,6 +421,8 @@ void Millipede::Draw(int type, const Camera& camera, const Light& light){
 }
 
 void Millipede::UpdateAll(double dt){
+	if(m_stopped)
+		return;
 
 	UpdateBoundingBox();
 

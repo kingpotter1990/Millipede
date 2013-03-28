@@ -7,7 +7,7 @@
 //
 
 #include "main.h"
-
+int NUM_MILLIPEDE = 8;
 void initScene(){
 
 	std::cout<<"Initiallizing The System...."<<std::endl;
@@ -29,27 +29,23 @@ void initScene(){
 	myWorld = new World(51000);
     std::cout<<"Setting up the World..."<<std::endl;
 	myTerrainType = TERRAIN_RANDOM;
-	myTerrain = new Terrain(Eigen::Vector2f(2000,2000), Eigen::Vector2i(500,500), 50, myTerrainType
+	myTerrain = new Terrain(Eigen::Vector2f(2000,2000), Eigen::Vector2i(500,500), 90, myTerrainType
 		, OBSTACLE_ON, FOOD_OFF);
 
 	TerrainOutput = new std::ofstream;
-	BugOutputPov = new std::ofstream;
-	BugOutputGraph = new std::ofstream;
-	BugOutputMaya = new std::ofstream;
-	WaterOutput = new std::ofstream;
-	RideOutput = new std::ofstream;
+
+	BugOutputMaya = new std::ofstream[NUM_MILLIPEDE];
+
 	//output static terrain mesh
 	TerrainOutput->open("Terrain.inc");
 	myTerrain->Output2File(TerrainOutput);
 	TerrainOutput->close();
 
-	BugOutputMaya->open("Bug.mel");
-	RideOutput->open("Ride.inc");
-	
-	(*BugOutputMaya)<<"string $path = \"D:/TEMP/\";"<<std::endl<<
-	"string $filelist[] = `getFileList -folder $path -filespec \"*.obj\"`;"<<std::endl<<
-	"for($i=0; $i <= (`size $filelist` - 1); $i++)"<<std::endl
-		<<"sysFile -delete ($path+$filelist[$i]);"<<std::endl<<std::endl;
+	std::string filename;
+	for(int i = 0; i < NUM_MILLIPEDE; i++){
+		filename = "Bug" + std::to_string(i) + ".mel";
+		BugOutputMaya[i].open(filename);
+	}
 
 	reinitScene();
 
@@ -74,12 +70,12 @@ void reinitScene(){
 	if(myMillipedes)
 		delete[] myMillipedes;
 
-	myMillipedes = new Millipede[8];
+	myMillipedes = new Millipede[NUM_MILLIPEDE];
 	
-	START_POSITION = Eigen::Vector3f(10,20,0);
-	for(int i = 0; i < 8; i++){
+	START_POSITION = Eigen::Vector3f(-82,14,0);
+	for(int i = 0; i < NUM_MILLIPEDE; i++){
 		myMillipedes[i].Init(START_POSITION, 12,Eigen::Vector3f(0.5,1.39,2.422),0.707895, myTerrain);
-		START_POSITION[0] += 40;	
+		myMillipedes[i].Stop();
 		myWorld->Add_Object(myMillipedes + i);
 	}
 
@@ -281,6 +277,10 @@ void HackAnimation(double dt){
 		}
 
 	SIM_TIME += dt;
+	int num_release = SIM_TIME/7.5 + 1;
+	for(int i = 0; i < min(num_release,NUM_MILLIPEDE);i++){
+		myMillipedes[i].Start();
+	}
 	if(OUTPUT == 1){
 		OUTPUT_ONE_FRAME();//output one frame data
 	}
@@ -306,83 +306,18 @@ void idleCallback(){
 }
 
 void OUTPUT_ONE_FRAME(){
-	//Water
-	if(myTerrainType == TERRAIN_WATER){
-		//millipede
-		std::string filename = "WATER_";
-		filename += std::to_string(FRAME_COUNT);
-		filename += ".inc";
-		(*WaterOutput)<<"//Frame "<<FRAME_COUNT<<std::endl;
-		myTerrain->m_water->Output2File(WaterOutput);
-		WaterOutput->close();
-	}
-	//millipede
-	//Physics Model for Pov
 	
-	std::string filename = "BUG_";
-	filename += std::to_string(FRAME_COUNT);
-	filename += ".inc";
-	BugOutputPov->open(filename);
-	(*BugOutputPov)<<"//Frame "<<FRAME_COUNT<<std::endl;
-	(*BugOutputPov)<<"//Begin Food"<<std::endl;
-	(*BugOutputPov)<<"#declare Food = union {\n"<<std::endl;
-	Eigen::Vector3f center;double a,d;
-	
-	for(int i = 0; i < myTerrain->m_foods.size(); i++){
-		center = myTerrain->m_foods[i]->m_Center;
-		(*BugOutputPov)<<"//BEGIN SPHERE "<<std::endl;
-		(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<myTerrain->m_foods[i]->m_Size[0]*2<<"}"<<std::endl;
-		(*BugOutputPov)<<"//END SPHERE "<<std::endl;
-		
-	}
-	(*BugOutputPov)<<"}\n"<<std::endl;
-
-	(*BugOutputPov)<<"//End Food"<<std::endl;
-	myMillipedes[0].Output2File(BugOutputPov,1);//0 is for maya model, 1 is for physics
-	myMillipedes[0].Output2File(BugOutputPov,2);//0 is for maya model, 1 is for physics, 2 diagram of leg state
-	
-		//Surface Obstacles
-	//(*BugOutputPov)<<"//Begin Surface Obstacles\n"<<std::endl;
-	//(*BugOutputPov)<<"#declare SurfaceObstacle = merge {\n"<<std::endl;
-	//Eigen::Vector3f point_a, point_b;
-	//Cylinder* temp_cylinder;
-	//double radius;
-	//for(int i = 0; i < myTerrain->m_surface_objects.size(); i ++){
-	//	switch (myTerrain->m_surface_objects[i]->m_type)
-	//	{
-	//	case TypeCube:
-	//		(*BugOutputPov)<<"//Cube\n"<<std::endl;
-	//		break;
-	//	case TypeSphere:
-	//		(*BugOutputPov)<<"//Sphere\n"<<std::endl;
-	//		break;
-	//	case TypeCylinder:
-	//		(*BugOutputPov)<<"//Cylinder\n"<<std::endl;
-	//		temp_cylinder = dynamic_cast<Cylinder*>(myTerrain->m_surface_objects[i]);
-	//		point_a = temp_cylinder->m_Center;
-	//		point_a[2] += 0.5*temp_cylinder->m_Size[2];
-	//		point_b = temp_cylinder->m_Center;
-	//		point_b[2] -= 0.5*temp_cylinder->m_Size[2];
-	//		radius = temp_cylinder->m_Size[0]/2;
-	//		(*BugOutputPov)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//}
-	//(*BugOutputPov)<<"}\n"<<std::endl;
-
-/*
+	for(int i = 0; i < NUM_MILLIPEDE; i++){
 	//mel script file
-	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
-	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
+	(BugOutputMaya[i])<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
+	myMillipedes[i].Output2File(BugOutputMaya + i,0);//0 is for maya model, 1 is for physics
 	
-	(*BugOutputMaya)<<"//save to obj"<<std::endl;
-	(*BugOutputMaya)<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
+	(BugOutputMaya[i])<<"//save to obj"<<std::endl;
+	(BugOutputMaya[i])<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
 		"-ea \"D:/TEMP/Frame"<<FRAME_COUNT<<".obj\";"<<std::endl;
-*/
-	(*BugOutputMaya) <<"//End Frame"<<FRAME_COUNT<<";"<<std::endl;
+	(BugOutputMaya[i]) <<"//End Frame"<<FRAME_COUNT<<";"<<std::endl;
 
+	}
 	FRAME_COUNT++;
 }
 

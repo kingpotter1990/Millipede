@@ -32,6 +32,8 @@ public:
 	void ReleaseHead();
 	void ReleaseTail();
 	void Output2File(std::ofstream* filestream, int type);
+	void Stop(){m_stopped = true;};
+	void Start(){m_stopped = false;};
 protected:
 	void InitPhysics(Eigen::Vector3f a_position, int a_num_section, Eigen::Vector3f a_rigid_size, double a_soft_length);
 	void InitPhysicsFromModel(Eigen::Vector3f a_position);
@@ -55,7 +57,7 @@ public:
 	//tail section padding
 	Deformable3D* m_tail_soft;
 	RigidCube* m_tail_rigid;
-
+	bool m_stopped;
 
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
