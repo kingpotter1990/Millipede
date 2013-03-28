@@ -55,11 +55,21 @@ void MillipedeRigidSection::SetWorld(World* a_world){
 }
 
 void MillipedeRigidSection::Draw(int type, const Camera& camera, const Light& light){
-	
+	Eigen::Vector3f center;
 	if(m_master->m_hack_type == 1){
+		double radius;
+	
+		if(m_section_id < 3)
+			radius = m_section_id*0.3/3.0 + 1.5;
+		else if(m_master->m_num_section - m_section_id < 3)
+			radius = (m_master->m_num_section - m_section_id)*0.3/3.0 + 1.5;
+		else
+			radius = 1.8;
+	center = m_Center;
+	center[1] -= 1.8 - radius;
 	m_Drawer->SetIdentity();
-	m_Drawer->Translate(this->m_Center);
-	m_Drawer->Scale(1.8);
+	m_Drawer->Translate(center);
+	m_Drawer->Scale(radius);
 	m_Drawer->SetColor(Eigen::Vector3f(1,1,1));
 	m_Drawer->DrawSphere(type,camera,light);
 	}

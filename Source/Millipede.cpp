@@ -659,7 +659,7 @@ void Millipede::Output2File(std::ofstream* filestream, int type){
 
 	(*filestream)<<"//Begin Millipede\n"<<std::endl;
 if(type == 0){
-	//output for the python script in maya
+	//output for the script in maya
     //output head
 
     m_head->Output2File(filestream, 0);
@@ -719,9 +719,10 @@ if(type == 0){
 		
 }
 else if(type == 1){
-// output for povray
+	// output for povray
     // rigid part start
-    (*filestream)<<"#declare MillipedeRigidPart = union {\n"<<std::endl;
+	if(m_hack_type == 2){
+    (*filestream)<<"#declare CentipedeRigidPart = union {\n"<<std::endl;
 
     //output head
     m_head->Output2File(filestream, 1);
@@ -746,19 +747,19 @@ else if(type == 1){
     // rigid part end
     (*filestream)<<"}\n"<<std::endl;
 
-    (*filestream)<<"#declare MillipedeAntenneaPart = union { \n"<<std::endl; 
+    (*filestream)<<"#declare CentipedeAntenneaPart = union { \n"<<std::endl; 
 	m_head->m_left_antenna->Output2File(filestream,1);
 	m_head->m_right_antenna->Output2File(filestream,1);
     (*filestream)<<"}\n"<<std::endl;
 
-    (*filestream)<<"#declare MillipedeTailPart = union { \n"<<std::endl; 
+    (*filestream)<<"#declare CentipedeTailPart = union { \n"<<std::endl; 
 	m_tail_rigid->Output2File(filestream);
 	m_tail_left->Output2File(filestream,1);
 	m_tail_right->Output2File(filestream,1);
 
 	(*filestream)<<"}\n"<<std::endl;
 
-    (*filestream)<<"#declare LegForward = union { \n"<<std::endl; 
+    (*filestream)<<"#declare CentiLegForward = union { \n"<<std::endl; 
 	 temp_rigid_section = m_head->m_next->m_next;
     //rigid phase
     while(1){
@@ -775,7 +776,7 @@ else if(type == 1){
     }
     (*filestream)<<"}\n"<<std::endl;
 
-    (*filestream)<<"#declare LegBackward = union { \n"<<std::endl; 
+    (*filestream)<<"#declare CentiLegBackward = union { \n"<<std::endl; 
 	temp_rigid_section = m_head->m_next->m_next;
     //rigid phase
     while(1){
@@ -792,7 +793,7 @@ else if(type == 1){
     }
     (*filestream)<<"}\n"<<std::endl;
 
-    (*filestream)<<"#declare LegStance = union { \n"<<std::endl; 
+    (*filestream)<<"#declare CentiLegStance = union { \n"<<std::endl; 
     temp_rigid_section = m_head->m_next->m_next;
 	  //rigid phase
     while(1){
@@ -809,7 +810,7 @@ else if(type == 1){
     }
     (*filestream)<<"}\n"<<std::endl;
 
-    (*filestream)<<"#declare LegAdjust = union { \n"<<std::endl;
+    (*filestream)<<"#declare CentiLegAdjust = union { \n"<<std::endl;
     temp_rigid_section = m_head->m_next->m_next;
 	  //rigid phase
      while(1){
@@ -830,7 +831,7 @@ else if(type == 1){
 //	m_right_leg->Output2File(filestream);
 
     // soft part start
-    (*filestream)<<"#declare MillipedeSoftPart = union { \n"<<std::endl;
+    (*filestream)<<"#declare CentiSoftPart = union { \n"<<std::endl;
     //soft phase
 	m_head->m_next->Output2File(filestream);//first soft
 	//two antenna
@@ -847,7 +848,114 @@ else if(type == 1){
 
 	m_tail_soft->Output2File(filestream);
     // soft part end
+	(*filestream)<<"}\n"<<std::endl;}
+	else if(m_hack_type == 1){
+		
+		(*filestream)<<"#declare MillipedeAntenneaPart = union { \n"<<std::endl; 
+		m_head->m_left_antenna->Output2File(filestream,1);
+		m_head->m_right_antenna->Output2File(filestream,1);
+		(*filestream)<<"}\n"<<std::endl;
+		
+		//output each body section
+    MillipedeRigidSection *temp_rigid_section;
+    MillipedeSoftSection *temp_soft_section;
+
+	    (*filestream)<<"#declare MilliLegForward = union { \n"<<std::endl; 
+	 temp_rigid_section = m_head->m_next->m_next;
+    //rigid phase
+    while(1){
+		if(temp_rigid_section->m_left_leg->m_leg_state == LEG_SWAY_FORWARD_1 || temp_rigid_section->m_left_leg->m_leg_state == LEG_SWAY_FORWARD_2)
+			temp_rigid_section->m_left_leg->Output2File(filestream);
+		if(temp_rigid_section->m_right_leg->m_leg_state == LEG_SWAY_FORWARD_1 || temp_rigid_section->m_right_leg->m_leg_state == LEG_SWAY_FORWARD_2)
+			temp_rigid_section->m_right_leg->Output2File(filestream);
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
     (*filestream)<<"}\n"<<std::endl;
+
+    (*filestream)<<"#declare MilliLegBackward = union { \n"<<std::endl; 
+	temp_rigid_section = m_head->m_next->m_next;
+    //rigid phase
+    while(1){
+		if(temp_rigid_section->m_left_leg->m_leg_state == LEG_SWAY_BACKWARD_1 || temp_rigid_section->m_left_leg->m_leg_state == LEG_SWAY_BACKWARD_2)
+			temp_rigid_section->m_left_leg->Output2File(filestream);
+		if(temp_rigid_section->m_right_leg->m_leg_state == LEG_SWAY_BACKWARD_1 || temp_rigid_section->m_right_leg->m_leg_state == LEG_SWAY_BACKWARD_2)
+			temp_rigid_section->m_right_leg->Output2File(filestream);
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+    (*filestream)<<"}\n"<<std::endl;
+
+    (*filestream)<<"#declare MilliLegStance = union { \n"<<std::endl; 
+    temp_rigid_section = m_head->m_next->m_next;
+	  //rigid phase
+    while(1){
+		if(temp_rigid_section->m_left_leg->m_leg_state == LEG_STANCE)
+			temp_rigid_section->m_left_leg->Output2File(filestream);
+		if(temp_rigid_section->m_right_leg->m_leg_state == LEG_STANCE)
+			temp_rigid_section->m_right_leg->Output2File(filestream);
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+    (*filestream)<<"}\n"<<std::endl;
+
+    (*filestream)<<"#declare MilliLegAdjust = union { \n"<<std::endl;
+    temp_rigid_section = m_head->m_next->m_next;
+	  //rigid phase
+     while(1){
+		if(temp_rigid_section->m_left_leg->m_leg_state == LEG_ADJUST)
+			temp_rigid_section->m_left_leg->Output2File(filestream);
+		if(temp_rigid_section->m_right_leg->m_leg_state == LEG_ADJUST)
+			temp_rigid_section->m_right_leg->Output2File(filestream);
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+    (*filestream)<<"}\n"<<std::endl;
+
+	Eigen::Vector3f center;double radius;
+
+	 (*filestream)<<"#declare MilliBodySphere = union { \n"<<std::endl;
+	 temp_rigid_section = m_head->m_next->m_next;
+		
+	  //rigid phase
+    while(1){
+		center = temp_rigid_section->m_Center;
+		if(temp_rigid_section->m_section_id < 3)
+			radius = temp_rigid_section->m_section_id*0.3/3.0 + 1.5;
+		else if(m_num_section - temp_rigid_section->m_section_id < 3)
+			radius = (m_num_section - temp_rigid_section->m_section_id)*0.3/3.0 + 1.5;
+		else
+			radius = 1.8;
+	 center[1] -= 1.8 - radius;
+
+	 (*filestream)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<radius<<"}"<<std::endl;
+        temp_soft_section = temp_rigid_section->m_next;
+        if(temp_soft_section){
+            temp_rigid_section = temp_soft_section->m_next;
+        }
+        else
+            break;
+    }
+
+    (*filestream)<<"}\n"<<std::endl;
+	
+	}
 	
 }
 else if(type == 2){

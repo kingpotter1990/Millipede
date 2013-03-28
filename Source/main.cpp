@@ -28,19 +28,14 @@ void initScene(){
 	myWorld = new World(51000);
     std::cout<<"Setting up the World..."<<std::endl;
 
-	BugOutputPov = new std::ofstream;
-	BugOutputMaya = new std::ofstream;
+	BugOutputPov = new std::ofstream[2];//for letter S and C
+	BugOutputMaya = new std::ofstream[2];//for letter A
 
-	/*
-	BugOutputMaya->open("Bug.mel");
-	RideOutput->open("Ride.inc");
 	
-	(*BugOutputMaya)<<"string $path = \"D:/TEMP/\";"<<std::endl<<
-	"string $filelist[] = `getFileList -folder $path -filespec \"*.obj\"`;"<<std::endl<<
-	"for($i=0; $i <= (`size $filelist` - 1); $i++)"<<std::endl
-		<<"sysFile -delete ($path+$filelist[$i]);"<<std::endl<<std::endl;
-	*/
-
+	BugOutputMaya[0].open("Bug3.mel");
+	BugOutputMaya[1].open("Bug4.mel");
+	
+	
 	reinitScene();
 
 	std::cout<<"Starting Animation..."<<std::endl;
@@ -313,15 +308,10 @@ void HackAnimation(double dt){
 void idleCallback(){
     
 	TIME = TM.GetElapsedTime() ;
-        /*
-	DTIME = TIME - TIME_LAST;
-	TIME_LAST = TIME;
-
-	FRAME_TIME += DTIME;
-	*/
+  
 	if(STOP == -1){
 	//only update physics
-		HackAnimation(0.02);
+		HackAnimation(0.04);
 	}
 	glutPostRedisplay() ; //draw new frame, the display is not real physics time
 }
@@ -330,70 +320,33 @@ void OUTPUT_ONE_FRAME(){
 
 	//millipede
 	//Physics Model for Pov
-	/*
-	std::string filename = "BUG_";
+	
+	std::string filename = "BUG1_";
 	filename += std::to_string(FRAME_COUNT);
 	filename += ".inc";
-	BugOutputPov->open(filename);
-	(*BugOutputPov)<<"//Frame "<<FRAME_COUNT<<std::endl;
-	(*BugOutputPov)<<"//Begin Food"<<std::endl;
-	(*BugOutputPov)<<"#declare Food = union {\n"<<std::endl;
-	Eigen::Vector3f center;double a,d;
-	
-	for(int i = 0; i < myTerrain->m_foods.size(); i++){
-		center = myTerrain->m_foods[i]->m_Center;
-		(*BugOutputPov)<<"//BEGIN SPHERE "<<std::endl;
-		(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<myTerrain->m_foods[i]->m_Size[0]*2<<"}"<<std::endl;
-		(*BugOutputPov)<<"//END SPHERE "<<std::endl;
-		
-	}
-	(*BugOutputPov)<<"}\n"<<std::endl;
-	
-	(*BugOutputPov)<<"//End Food"<<std::endl;
+	BugOutputPov[0].open(filename);
 	myMillipedes[0].Output2File(BugOutputPov,1);//0 is for maya model, 1 is for physics
-	myMillipedes[0].Output2File(BugOutputPov,2);//0 is for maya model, 1 is for physics, 2 diagram of leg state
-	*/
-		//Surface Obstacles
-	//(*BugOutputPov)<<"//Begin Surface Obstacles\n"<<std::endl;
-	//(*BugOutputPov)<<"#declare SurfaceObstacle = merge {\n"<<std::endl;
-	//Eigen::Vector3f point_a, point_b;
-	//Cylinder* temp_cylinder;
-	//double radius;
-	//for(int i = 0; i < myTerrain->m_surface_objects.size(); i ++){
-	//	switch (myTerrain->m_surface_objects[i]->m_type)
-	//	{
-	//	case TypeCube:
-	//		(*BugOutputPov)<<"//Cube\n"<<std::endl;
-	//		break;
-	//	case TypeSphere:
-	//		(*BugOutputPov)<<"//Sphere\n"<<std::endl;
-	//		break;
-	//	case TypeCylinder:
-	//		(*BugOutputPov)<<"//Cylinder\n"<<std::endl;
-	//		temp_cylinder = dynamic_cast<Cylinder*>(myTerrain->m_surface_objects[i]);
-	//		point_a = temp_cylinder->m_Center;
-	//		point_a[2] += 0.5*temp_cylinder->m_Size[2];
-	//		point_b = temp_cylinder->m_Center;
-	//		point_b[2] -= 0.5*temp_cylinder->m_Size[2];
-	//		radius = temp_cylinder->m_Size[0]/2;
-	//		(*BugOutputPov)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//}
-	//(*BugOutputPov)<<"}\n"<<std::endl;
-
-
-	//mel script file
-	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
-	myMillipedes[0].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
+	BugOutputPov[0].close();
 	
-	(*BugOutputMaya)<<"//save to obj"<<std::endl;
-	(*BugOutputMaya)<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
-		"-ea \"D:/TEMP/Frame"<<FRAME_COUNT<<".obj\";"<<std::endl;
+	filename = "BUG2_";
+	filename += std::to_string(FRAME_COUNT);
+	filename += ".inc";
+	BugOutputPov[1].open(filename);
+	myMillipedes[1].Output2File(BugOutputPov + 1,1);//0 is for maya model, 1 is for physics
+	BugOutputPov[1].close();
+	
+	//mel script file
+	myMillipedes[2].Output2File(BugOutputMaya,0);//0 is for maya model, 1 is for physics
+	
+	(BugOutputMaya[0])<<"//save to obj"<<std::endl;
+	(BugOutputMaya[0])<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
+		"-ea \"D:/TEMP/Bug_1_Frame"<<FRAME_COUNT<<".obj\";"<<std::endl;
 
-	(*BugOutputMaya) <<"//End Frame"<<FRAME_COUNT<<";"<<std::endl;
+	myMillipedes[3].Output2File(BugOutputMaya + 1,0);//0 is for maya model, 1 is for physics
+	
+	(BugOutputMaya[1])<<"//save to obj"<<std::endl;
+	(BugOutputMaya[1])<<"file -force -options \"groups=1;ptgroups=1;materials=1;smoothing=1;normals=1\" -type \"OBJexport\" -pr" 
+		"-ea \"D:/TEMP/Bug_2_Frame"<<FRAME_COUNT<<".obj\";"<<std::endl;
 
 	FRAME_COUNT++;
 }
