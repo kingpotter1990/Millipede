@@ -1,0 +1,273 @@
+%%% template.tex
+%%%
+%%% This LaTeX source document can be used as the basis for your technical
+%%% paper or abstract. Intentionally stripped of annotation, the parameters
+%%% and commands should be adjusted for your particular paper - title,
+%%% author, article DOI, etc.
+%%% The accompanying ``template.annotated.tex'' provides copious annotation
+%%% for the commands and parameters found in the source document. (The code
+%%% is identical in ``template.tex'' and ``template.annotated.tex.'')
+
+\documentclass[annual]{acmsiggraph}
+
+\TOGonlineid{45678}
+\TOGvolume{0}
+\TOGnumber{0}
+\TOGarticleDOI{1111111.2222222}
+\TOGprojectURL{}
+\TOGvideoURL{}
+\TOGdataURL{}
+\TOGcodeURL{}
+
+\title{Procedural Animation of Myriapoda}
+
+\author{Jingyi Fang\thanks{e-mail:ffang@cs.ucla.edu}
+\and Chenfanfu Jiang\thanks{e-mail:cffjiang@cs.ucla.edu}\\University of California, Los Angeles \and Demetri Terzopoulos\thanks{e-mail:dt@cs.ucla.edu}}
+\pdfauthor{}
+
+\keywords{myriapoda, centipede, procedural animation, adaptive behavior, emergent behavior,
+physics based modeling, elasticity, rigid deformable coupling}
+
+\begin{document}
+
+ \teaser{
+   \includegraphics[width=500px]{images/teaser.jpg}
+   \caption{Centipede Moon-Walk on Crystal Cranium. Our system support arbitrary closed mesh for the simulated myriapoda creature to walk on.
+   \label{fig:teaser}}
+ }
+
+\maketitle
+
+\begin{abstract}
+ Unlike bipedal figures(humans), quadrupeds(dogs), hexapods(fly) and arachnids(spiders), myriapoda(centipedes, millipedes) has been largely overlooked in the computer graphics literature. In this paper we present a framework for animating the locomotive behavior of such creatures in real-time. Our simulation can generate vivid leg wave patterns while doing autonomous traversal across irregular terrains. We propose a simple decentralized leg control system and combine it with state-of-the-art physics simulation to generate animation of myriapoda creatures of different morphologies(Figure \ref{fig:sca}) with compelling physical and biological realism. The distinctive wave pattern of myriapoda leg locomotion is generated implicitly as an emergent behavior of our proposed local leg controller. Locomotion path for a creature can be scripted in advance by placing foods and obstacles inside the virtual environment, which will be sensed by the creatures' antenna component to guide adaptive behaviors.
+\end{abstract}
+
+\begin{CRcatlist}
+  \CRcat{I.3.3}{Computer Graphics}{Three-Dimensional Graphics and Realism}{Display Algorithms}
+  \CRcat{I.3.7}{Computer Graphics}{Three-Dimensional Graphics and Realism}{Radiosity};
+\end{CRcatlist}
+
+\keywordlist
+
+%%\TOGlinkslist
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = 3.2in]{images/sca.png}
+  \caption{Different types of myriapoda creature forming SCA letters.
+    \label{fig:sca}}
+\end{figure}
+%%\copyrightspace
+
+\section{Introduction}
+Games(eg:Diablo 3) and movies(eg: Harry Potter Series; Silent Hill; The Mummy; Indiana Jones) can always use scary creatures such as spiders and centipedes to accelerate a viewer's heart beat. Motion capture techniques are very difficult to perform on multi-legged creatures such as spiders and centipedes. Their small size and high speed movement make it challenging to set up the experiment and captured data may not achieve satisfied resolution and could be prone to noise\cite{moca}. Besides that it's always very unfavorable to place a centipede on an actor's face, advanced simulation techniques are needed for the generation of realistic locomotion pattern of such creatures. It will be a daunting task for artists to manually rig a model of centipede that moves over an irregular terrain since at least two requirements need to be meet. First is the physical realism of the deformable body and leg-surface contact: the leg need to land precisely where the ground level is. Second is the natural looking of the distinctive leg wave pattern.
+
+In biology, centipede is just one of the $13,000$ identified species that form the myriapoda subphylum of arthropods. Their primary characteristic
+is that they have tens or even hundreds of legs spread over a linear segmented body
+structure, plus a pair of antennas for sensing obstacles\cite{invertebrate}. During its locomotion, the wave pattern of a
+myriapoda creature’ legs can steadily move the entire body over very irregular terrains. If we
+compare four-legged animals to cars, myriapoda insects are like trains in the legged animal kingdom. The unusual structure of myriapoda makes it a very interesting
+subject for both graphics and robotics [cite{mrobot}] research, especially its inspiring locomotion system.
+
+To deal with this task of generating realistic myriapoda animation as well as understanding its secret of coordinating hundreds of legs, we take a bottom-up approach to build an autonomous agent of a myriapoda creature. There are three major contributions in our approach:
+\begin{itemize}
+\item First: we come up with a novel body structure for myriapoda composed of both rigid and deformable sections to ensure easy of control through the rigid skeletons while maintaining the deformable nature of the myriapoda body through application of a fast and robust elasticity simulation method\cite{Stomakhin}.
+\item Second: A biologically plausible leg control system is conceived and implemented for arbitrary shaped myriapoda creatures(Figure \ref{fig:sca}) to walk on arbitrary terrains(Figure \ref{fig:teaser} \ref{fig:cylinder}). A natural looking wave ambulation of the legs can formed automatically as an emergent behavior of our very decentralized leg control system.
+\item Third: A hybrid method is developed for our simulation: apply both kinematics and Newton dynamics in different body states. This hybrid approach allows the leg control to be simplified to robotic joint rotations and still preserve dynamical realism of the body.
+\end{itemize}
+
+ Figure \ref{fig:overview} shows the overview of our design, we emphasize the interplay of our leg control system and the physics simulation. The locomotion control system we build is composed of identical modular local leg controllers and a central brain in the head section for high level locomotion activities such as speed control and turning. The decentralized system is easy to understand and cheap in computation, yet robust enough to allow the simulated robot walk over very irregular surfaces (Figure \ref{fig:cylinder}). A pair of vividly moving antenna not only boost the realism of our animated myriapoda creature, but also work as sensors in our simulation for adaptive behaviors. A simple Braitenberg vehicle\cite{vehicle} like mechanism proves to work very well for food approaching and obstacle avoidance. By placing the foods and obstacles, animators can easily achieve the desired locomotion path of a myriapoda creature in a complex scene with irregular terrains and arbitrary obstacles either for crawling over or avoidance.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 3.2in]{images/overview.pdf}
+  \caption{Overview of our simulation framework, the physical environment and controller network influence each other through antenna and contact sensors.
+    \label{fig:overview}}
+\end{figure}
+
+\section{Related Works}
+\textbf{Autonomous Creatures}: During the past decades, many interesting and important works have
+been done by graphics researchers on simulating autonomous creatures in a
+virtual physical environments. In \cite{snakeworm}, very simple mass-spring-damper system is used to generate animation of worms and snake.
+In the work by Tu and
+Terzopoulos on Artificial Fishes \cite{fish}, a framework using
+mass-spring-damper systems for biomechanics simulation is developed to
+represent the deformable fish body capable of producing muscle-based
+locomotion. Such biomechanics are limited to animals lacking legs,
+such as fish and snakes. Later work on salamander simulation
+\cite{salamander} used rigid-body dynamics to simulate legs,
+a global artificial neural network is built to work as a central pattern generator for controlling the 4 legs
+with 8 kinematic degrees-of-freedom. Randall Beer in his well know work\cite{randall} built a 2D cockroach with artificial neural network to demonstrate his philosophical thoughts in adaptive behaviors. The cockroach equipped with simple sensory feedback and strategy can do six-legged locomotion in a complex environment. Their results even lead to the building of a hexapod robot\cite{beer_robot}.
+
+\textbf{Bio-mechanics Setup}: Mass-spring-damper system used to be a popular method for bio-mechanics construction of artificial creatures\cite{fish,snakeworm}, it has the virtue of simplicity and computational efficiency. However, since 3D spring-damper systems have energy defined over uniaxial 1D element, its does not have global material properties(eg: youngs modulus) and cannot capture physical realism as continuum mechanics based methods. The biomechanics of the simulated animal body depends on how spring elements are assembled and how their parameters are tuned, which can be difficult. As physics simulation methods advances, robust real-time simulation of continuum mechanics based deformable objects is now possible\cite{Stomakhin,aleka}. In the work by Tamar \emph{et al.} \cite{craig}, realistic creatures are created by combining rigid and elastic body simulation. In their demos, elastic bodies are passive and the creature is actuated by internal rigid bones. In the paper \cite{deformalive}, deformable objects are animated by changing the rest-shape of the deformable mesh over time. State-of-the-art muscle models\cite{musclefem,fvm1} are also built from continuum mechanics based elasticity. Our work on myriapoda applied the newest results in elasticity research and combined it with rigid body dynamics to achieve a hybrid simulation of kinematics and dynamics.
+
+\textbf{Legged Locomotion}: Both graphics and robotics researcher have spent enormous effort on studying legged locomotion\cite{kangaroo}\cite{modular}. In computer graphics, an expansive body of literature is dedicated towards generating animation for bipedal figures\cite{athletics,petros,biped_animation}, quadrupeds\cite{quadruped_animation}\cite{dog} and hexapods\cite{Spider}\cite{earlysig}. Exceptional attention is paid to deriving legged locomotion control from entomological studies by building accurate biomechanics models of leg muscles\cite{jackwang}, the purpose is to accurately simulate ambulation for medical purposes. \cite{earlysig} proposed a forward dynamics algorithm for locomotion coordination of a simulated cockroach, capable of navigating irregular terrains. The existence of a specialized neural structure called Central Pattern Generator(CPG) is proven by both experiments\cite{cpgbiology} and simulations\cite{salamander}. Coupling simplified dynamics such as the Inverted pendulum Model with a learnt CPG has been a popular way to do multi-legged locomotion\cite{dog,ipm}. \cite{leg_review} provided an excellent survey on the modeling, analysis and challenges associated with insect locomotion dynamics.
+
+
+ In robotics, there has been a vast amount of research into insect-inspired four, six and eight-legged robots\cite{quadruped,bigdog,hexapod}, predominantly based on etiologic and neurophysiologic knowledge on cockroaches and stick insects\cite{biology}. Although no prior work is done specifically for myriapoda animation, robotics researchers already started building centipede robots \cite{japan,japan2,fcp}. The WalkNet system outlined by Cruse \emph{et al.} in \cite{walknet1,walknet2} was initially intended to be used as a simulation tool for studying insect walking physiology. WalkNet successfully reproduced the behavioral properties of hexapod locomotion by using an extremely decentralized organization of the control system. In the WalkNet, neither the movement of a single leg or gait coordination is centrally pre-programmed, the adaptivity and flexibility emerges from each leg controller obeying only a few simple, localized rules regarding the states of neighboring legs. As will be discussed in the later section, this decentralized controller paradigm also form the foundation of our system design.
+
+%In physics simulation field, refer to spring-damper, refer to elasticity, refer to coupling by craig;
+%In biped, arthropod, quadruped simulation, walknet, refer to arthropod simulation chapter in Spider paper.
+%In adaptive behavior and procedural animation, refer to fish, salamander, rand beer
+%In robotics refer to bigdog, centiped robot, etc
+%%Phase Automata: A Programming Model of Locomotion Gaits for Scalable Chain-type Modular Robots
+%Robotic works for myriapoda
+%The dynamics of legged locomotion: models, analyses,
+%and challenges.
+%Dynamic Simulation Methods for Animation of Legged Locomotion
+%Dynamic simulation of autonomous legged locomotion
+%ethology: The control of walking in the scorpion.
+%I. Leg movements during normal walking.
+%Arachnid locomotion. In Locomotion and Energetics in Arthropods,
+%Delcomyn F. Motor activity during walking in the
+%cockroach Periplaneta Americana II. Tethered walking.
+%Journal of Experimental Biology
+%The stick insect Obrimus
+%asperrimus (Phasmida, Bacillidae) walking on different
+%surfaces
+%A physiological analysis of walking
+%in the American lobster
+\section{Physical Model}
+\begin{figure*}[ht]
+  \centering
+  \includegraphics[width = 500px]{images/ride.jpg}
+  \caption{A two-way coupled rigid-deformable object falling from the air and hit slippery ground.
+    \label{fig:ride}}
+\end{figure*}
+Current works on animating arthropods is limited to insects with only one major abodomen, such as a stick insect or a spider. The unique linear and deformable body structure of myriapoda insects require special attention to the construction of bio-mechanics. Initially we used only deformable object to represent the body of a centipede. However, coupling the slim legs to the deformable segments significantly increased the difficulty of control, since the leg roots have only a point effect
+on the deformable body. On the other hand, having the leg connect to a rigid segment simulates the natural exoskeleton of millipedes and enables the leg to easily control the whole segments’ orientation and position. Figure \ref{fig:body_structure} shows the overview of the finalized physical body structure we developed for our simulation. In this model, rigid legs exert power on the exoskeletons that are connected with deformable fleshes. When hanged in the air, there will be a natural deformation of the body under gravity(Figure(\ref{fig:drop})). No active control is done by the deformable sections, they only deform passively under physics. However, in our model, deformable sections play an important role for the leg control, that is to provide sensory information of the deformation into the neighboring leg controllers' target net(Figure \ref{fig:target}). Minimizing the deformation force is the governing goal for the legs when they are in the stance mode. More details about locomotion system is discussed in the next section.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 3.2in]{images/body_structure.pdf}
+  \caption{Overview of the body structure: rigid sections with rigid legs; deformable sections; deformable antennas; tail.
+    \label{fig:body_structure}}
+\end{figure}
+
+
+We implemented rigid body dynamics for the rigid section\cite{rigid} with collision and friction. State-of-the-art energetically consistent invertible elasticity is used\cite{Stomakhin} for the simulation of deformable sections. Many works have been done to achieve two-way coupling of rigid-deformable objects\cite{craig,eftychios,partition}. Here we come up with a very simple method to achieve two-way coupling results. The algorithm goes as follows:
+\begin{itemize}
+\item Based on the connection geometry, a set of boundary nodes on the deformable mesh that connect directly with the rigid section will be registered with the rigid body. 
+\item Every time step, the elasticity force will be calculated for this node from tetrahedra mesh deformation, but without updating the node's position and velocity. 
+\item When calculating the rigid body's dynamics, the force from all the registered nodes will exert on the rigid body as external forces, updating its orientation and position together with the gravity. 
+\item In the end, the position of the registered nodes will be updated accordingly as if they are fixed on the rigid body.
+\end{itemize}     
+Figure \ref{fig:ride} shows the simulation result of a rigid-deformable coupled object. Our coupling method is not a full two-way coupling method as proposed in \cite{craig}, however, since we used the very robust invertible elasticity from \cite{Stomakhin}, stability is not an issue for our method.
+
+Legs of the myriapoda creature is simulated as rigid links that rotate around joints. We use tip and root positions as input and output for our locomotion control system and joint angles can determined by a IK solver. This motor controller method can not meet the fidelity requirements of biomechanical models and the mechanical limitations of robotic systems, but has been proven to meet visual realism requirements for graphics simulations\cite{petros,dog}\cite{arthropod}. Furthermore, for myriapoda, its many legs will prevent a viewers from falling into the uncanny valley of a single leg motion. For the above reasons, our focus would be to develop a locomotion control system that can generate the collective wave motion pattern of the legs, instead of improving realism of a single leg movement by building complex leg bio-mechanics.
+
+As far as physical realism and simplicity is concerned, our set up of myriapoda bio-mechanics using rigid-body dynamics and invertible elasticity have the potential to gain popularity over the traditional mass-spring-damper system \cite{fish,salamander} as a preferred way for simulating artificial animals. There are different ways for such set-upped models to actuate, one way could use the rigid skeleton as active parts to drive deformable body parts, this method is more suitable for inspiration-oriented designed controllers since mathematical model for controlling rigid body using motors is simpler than controlling a deformable mesh. Another way would be to apply learning based methods such as simulated annealing and genetic evolution to actuate the deformable sections as muscles and have the rigid skeleton move passively. \cite{deformalive} is an example of activating deformable objects by changing its rest-shape.
+
+\section{Locomotion Control}
+\subsection{Overview of the System}
+First, consider the following thought experiment: Imagine a line of
+students standing on a playground. One can imagine them forming a human millipede. The
+first person (head) of the human millipede is the teacher and decides where he wants to
+go and asks his subsequent student to follow him. The subsequent
+student does the same thing by asking the student behind him to follow
+his steps. This same rule propagates to the last student. When they
+start to move, we can easily observe from above that the entire line
+of students walk as if they were a whole. Three key observations
+result from this thought experiment: First, the head student makes all
+the locomotion decisions and implements these decisions with his own
+two legs; second, the other students have only one locomotion
+target---that is, to minimize the distance between the student in
+front of them; third, the previous two simple local rules will result
+in a global behavior, probably a wave pattern of all the legs since each student want to have maximum stride of his leg.
+
+
+In the above thought experiment, balance is not an issue since the
+students are not connected together physically. Now imagine that they
+are connected together and that their separation is always 0. The head
+student still does whatever he wants to do, but the task for the
+trailing students now becomes the minimization of the dragging force
+(so that they feel more comfortable). At the beginning, the human
+millipede might not be able to correctly behave since the students do
+not respond correctly or quickly to the frontal dragging force.
+However, after some training, we can expect that each student to be
+able to response immediately and minimize the dragging force on the
+fly.
+
+
+The model designed for the virtual millipede follows this idea of head
+leading and subsequent following. At any moment, the head segment
+synthesizes information sensed from the antennas to make a decision in
+locomotion, then this decision is processed by the target network of
+the first rigid segment. The target net will output a desired future
+configuration of this rigid segment---namely, the orientation and
+position of the rigid segment in the next moment. Then the desired
+target is handed over to the local leg controllers. The local leg
+controllers will solve the desired leg rotations of the left and right
+legs through inverse kinematics and inform the motor to make
+the change. For the subsequent segments, sensing and minimizing the
+deformation force of the frontal soft segment is its target net's
+(Figure~\ref{fig:target}) task. The target net thus can be understood as
+being able to interpret the physics of the deformable object. Such a
+target net takes the deformation force and current configuration of
+the rigid segment as input and will output a future configuration of
+the rigid segment such that the deformation in the soft section is minimized.
+\cite{emulate}describes the neural net approach of emulating physics through
+supervised learning. Figure~\ref{fig:target} shows the diagram of a possible
+neural net set up. A balance net is also needed to balance the rigid
+segment in terms of its height and orientation. The target is to keep
+the height close to an objective height and minimize the unbalanced
+rotation of the rigid segment. The design of balance net can be a
+negative feedback network.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 3.5in]{images/target.pdf}
+  \caption{Target net for the local leg controller.
+    \label{fig:target}}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 3.2in]{images/locomotion.pdf}
+  \caption{Overview of the locomotion controller and its interplay with physics simulation.
+    \label{fig:locomotion}}
+\end{figure}
+
+%emergent behavior, leg wave
+\subsection{Leg State Machine}
+%need a good diagram
+%use the diagram output from phys sim
+%kinematic-Dynamic Switching
+\subsection{Irregular Terrains}
+\section{Interaction with Environment}
+%adaptive behavior, behavioral animation
+%Antenna Sensor,Food path planning, Obstacle Avoidance, Leave a Trail}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 3.5in]{images/water.jpg}
+  \caption{Centipede walking on shallow water, tracing food and avoiding obstacles.
+    \label{fig:water}}
+\end{figure}
+\section{Update in one simulation step}
+The simulation step for dynamics are as follows:
+\begin{itemize}
+  \item
+\end{itemize}
+\section{Rendering}
+
+\section{Results}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 3.2in]{images/drop.pdf}
+  \caption{A centipede dropped from air.
+    \label{fig:drop}}
+\end{figure}
+
+\section{Discussion and Conclusion}
+Talk about enabling activation of the deformable sections by changing rest shape, mention paper "Deformable objects alive"
+In conjunction with simulated
+annealing or evolutionary algorithms, parameters could be
+finely tuned for navigating extreme changes in orientation.
+There are a large number of manually defined parameters
+in our simulation,
+\section*{Acknowledgements}
+We are grateful to the anonymous reviewers for their constructive
+comments. The centipede model is purchased from the Turbosquid website, we want to thank the creator of this beautiful model. Special thanks to Xinli Cai for sketching the centipede in Figure \ref{fig:overview}. Thanks to Wenjia Huang for help of rigging the centipede model in maya. Thanks to Matt Wang for narrating our demonstration video.
+
+\bibliographystyle{acmsiggraph}
+\bibliography{template}
+\end{document}

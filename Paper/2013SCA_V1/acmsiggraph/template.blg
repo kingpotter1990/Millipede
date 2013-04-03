@@ -1,0 +1,56 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: template.aux
+The style file: acmsiggraph.bst
+Database file #1: template.bib
+I was expecting a `,' or a `}'---line 142 of file template.bib
+ :     
+ :     publisher = {Pittsburgh, PA: Carnegie Mellon University, The Robotics Institute}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--entry type for "quadruped_animation" isn't style-file defined
+--line 209 of file template.bib
+Warning--string name "scholarpedia" is undefined
+--line 242 of file template.bib
+I was expecting a `,' or a `}'---line 261 of file template.bib
+ : 
+ : year={2013},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Illegal end of database file---line 979 of file template.bib
+ : }
+ :  
+I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "Spider"
+Warning--I didn't find a database entry for "emulate"
+Name 1 in "Ruppert, Edward E., and Robert D. Barnes" has a comma at the end for entry invertebrate
+while executing---line 1276 of file acmsiggraph.bst
+Name 1 in "Ruppert, Edward E., and Robert D. Barnes" has a comma at the end for entry invertebrate
+while executing---line 1276 of file acmsiggraph.bst
+Too many commas in name 1 of "Full, R.J., Tu, M.S." for entry biology
+while executing---line 1276 of file acmsiggraph.bst
+Too many commas in name 1 of "Full, R.J., Tu, M.S." for entry biology
+while executing---line 1276 of file acmsiggraph.bst
+Name 1 in "Baraff, David, and Andrew Paul. Witkin" has a comma at the end for entry partition
+while executing---line 1276 of file acmsiggraph.bst
+Name 1 in "Baraff, David, and Andrew Paul. Witkin" has a comma at the end for entry partition
+while executing---line 1276 of file acmsiggraph.bst
+Name 1 in "Baraff, David, and Andrew Paul. Witkin" has a comma at the end for entry partition
+while executing---line 1341 of file acmsiggraph.bst
+Warning--empty publisher in partition
+Warning--empty journal in randall
+Warning--empty organization in dog
+Warning--empty organization in walknet1
+Warning--empty organization in petros
+Too many commas in name 1 of "Full, R.J., Tu, M.S." for entry biology
+while executing---line 1341 of file acmsiggraph.bst
+Warning--empty organization in athletics
+Warning--empty organization in aleka
+Warning--empty year in bigdog
+Warning--can't use both volume and number fields in bigdog
+Warning--empty organization in bigdog
+Name 1 in "Ruppert, Edward E., and Robert D. Barnes" has a comma at the end for entry invertebrate
+while executing---line 1341 of file acmsiggraph.bst
+Warning--empty organization in craig
+Warning--empty organization in eftychios
+Warning--empty organization in Stomakhin
+Warning--empty organization in fvm1
+(There were 12 error messages)

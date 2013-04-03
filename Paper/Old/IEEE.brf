@@ -1,0 +1,52 @@
+\backcite {von}{{1}{I}{section.1}}
+\backcite {wikiALife}{{1}{I}{section.1}}
+\backcite {vehicle}{{1}{I}{section.1}}
+\backcite {fish}{{1}{I}{section.1}}
+\backcite {salamander}{{1}{I}{section.1}}
+\backcite {hexapod}{{1}{I}{section.1}}
+\backcite {quadruped}{{1}{I}{section.1}}
+\backcite {bigdog}{{1}{I}{section.1}}
+\backcite {fvm1,fvm2}{{2}{\unhbox \voidb@x \hbox {II-A}}{figure.1}}
+\backcite {randall}{{2}{\unhbox \voidb@x \hbox {II-A}}{figure.1}}
+\backcite {ann}{{2}{\unhbox \voidb@x \hbox {II-A}}{figure.1}}
+\backcite {fish}{{2}{\unhbox \voidb@x \hbox {II-A}}{figure.1}}
+\backcite {japan2}{{2}{\unhbox \voidb@x \hbox {II-A}}{figure.1}}
+\backcite {walknet1,walknet2}{{2}{\unhbox \voidb@x \hbox {II-A}}{figure.1}}
+\backcite {japan,japan2,fcp}{{3}{\unhbox \voidb@x \hbox {II-A}}{figure.1}}
+\backcite {rigid1}{{3}{\unhbox \voidb@x \hbox {II-B}}{figure.2}}
+\backcite {rigid2}{{3}{\unhbox \voidb@x \hbox {II-B}}{figure.2}}
+\backcite {fvm1}{{3}{\unhbox \voidb@x \hbox {II-B}}{figure.2}}
+\backcite {collision,collision2}{{3}{\unhbox \voidb@x \hbox {II-B}}{figure.2}}
+\backcite {glsl}{{3}{\unhbox \voidb@x \hbox {II-B}}{figure.2}}
+\backcite {opengl}{{3}{\unhbox \voidb@x \hbox {II-B}}{figure.2}}
+\backcite {eigen}{{3}{\unhbox \voidb@x \hbox {II-B}}{figure.2}}
+\backcite {fish}{{3}{\unhbox \voidb@x \hbox {III-A}}{figure.3}}
+\backcite {fish,salamander}{{3}{\unhbox \voidb@x \hbox {III-A}}{figure.3}}
+\backcite {skinfem}{{3}{\unhbox \voidb@x \hbox {III-A}}{figure.3}}
+\backcite {fleshfem}{{3}{\unhbox \voidb@x \hbox {III-A}}{figure.3}}
+\backcite {bonefem}{{3}{\unhbox \voidb@x \hbox {III-A}}{figure.3}}
+\backcite {musclefem}{{3}{\unhbox \voidb@x \hbox {III-A}}{figure.3}}
+\backcite {nofem1,nofem2}{{3}{\unhbox \voidb@x \hbox {III-A}}{figure.3}}
+\backcite {fvm1}{{3}{\unhbox \voidb@x \hbox {III-A}}{figure.3}}
+\backcite {fvm1}{{3}{\unhbox \voidb@x \hbox {III-A}}{figure.3}}
+\backcite {fvm3}{{3}{\unhbox \voidb@x \hbox {III-A}}{figure.3}}
+\backcite {rigid}{{4}{\unhbox \voidb@x \hbox {III-B}}{subsection.3.2}}
+\backcite {rigid1,rigid2}{{4}{\unhbox \voidb@x \hbox {III-B}}{subsection.3.2}}
+\backcite {fvm1}{{4}{\unhbox \voidb@x \hbox {III-C}}{figure.5}}
+\backcite {nonlinear}{{4}{\unhbox \voidb@x \hbox {III-C}}{figure.5}}
+\backcite {mesh1,mesh2}{{4}{\unhbox \voidb@x \hbox {III-C}}{equation.3.3}}
+\backcite {semi}{{5}{\unhbox \voidb@x \hbox {III-C}}{equation.3.15}}
+\backcite {collision}{{5}{\unhbox \voidb@x \hbox {III-C}}{equation.3.17}}
+\backcite {collision2}{{5}{\unhbox \voidb@x \hbox {III-C}}{equation.3.17}}
+\backcite {fvm1}{{5}{\unhbox \voidb@x \hbox {III-C}}{equation.3.17}}
+\backcite {coupling}{{5}{\unhbox \voidb@x \hbox {III-D}}{figure.6}}
+\backcite {leg,centralized}{{6}{\unhbox \voidb@x \hbox {IV-A}}{subsection.4.1}}
+\backcite {walknet1}{{6}{\unhbox \voidb@x \hbox {IV-A}}{subsection.4.1}}
+\backcite {walknet1,walknet2}{{6}{\unhbox \voidb@x \hbox {IV-A}}{subsection.4.1}}
+\backcite {quadruped,bigdog}{{6}{\unhbox \voidb@x \hbox {IV-A}}{subsection.4.1}}
+\backcite {quadruped}{{6}{\unhbox \voidb@x \hbox {IV-A}}{subsection.4.1}}
+\backcite {japan,japan2,fcp}{{6}{\unhbox \voidb@x \hbox {IV-A}}{subsection.4.1}}
+\backcite {emulate}{{7}{\unhbox \voidb@x \hbox {IV-A}}{subsection.4.1}}
+\backcite {fcp}{{7}{\unhbox \voidb@x \hbox {IV-B}1}{subsubsection.4.2.1}}
+\backcite {fcp}{{8}{\unhbox \voidb@x \hbox {IV-B}5}{subsubsection.4.2.5}}
+\backcite {eyepaper,fish}{{8}{\unhbox \voidb@x \hbox {V-B}}{subsection.5.2}}

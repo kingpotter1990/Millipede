@@ -1,0 +1,272 @@
+\begin{thebibliography}{\protect\citename{Van~Welbergen et~al\mbox{.} }2010}
+
+\bibitem[\protect\citename{Baraff and Witkin }1997]{partition}
+{\sc Baraff, D., and Witkin, A.~P.}
+\newblock 1997.
+\newblock {\em Partitioned Dynamics}.
+
+\bibitem[\protect\citename{Beer et~al\mbox{.} }1992]{beer_robot}
+{\sc Beer, R., Chiel, H., Quinn, R., and Espenschied, K.}
+\newblock 1992.
+\newblock {A Distributed Neural Network Architecture for Hexapod Robot
+  Locomotion}.
+\newblock {\em Neural Computation\/} (Jan.).
+
+\bibitem[\protect\citename{Braitenberg }1986]{vehicle}
+{\sc Braitenberg, V.}
+\newblock 1986.
+\newblock {\em {Vehicles: Experiments in Synthetic Psychology}}.
+\newblock A Bradford Book, Feb.
+
+\bibitem[\protect\citename{Cenydd and Teahan }2013]{arthropod}
+{\sc Cenydd, L.~a., and Teahan, B.}
+\newblock 2013.
+\newblock An embodied approach to arthropod animation.
+\newblock {\em Computer Animation and Virtual Worlds 24}, 1, 65--83.
+
+\bibitem[\protect\citename{Chen and Zeltzer }1992]{musclefem}
+{\sc Chen, D.~T., and Zeltzer, D.}
+\newblock 1992.
+\newblock Pump it up: computer animation of a biomechanically based model of
+  muscle using the finite element method.
+\newblock {\em SIGGRAPH Comput. Graph. 26}, 2 (July), 89--98.
+
+\bibitem[\protect\citename{Chiel and Beer }2008]{randall}
+{\sc Chiel, H.~J., and Beer, R.~D.}
+\newblock 2008.
+\newblock Computational neuroethology.
+\newblock 5307.
+
+\bibitem[\protect\citename{Coros et~al\mbox{.} }2011]{dog}
+{\sc Coros, S., Karpathy, A., Jones, B., Reveret, L., and van~de Panne, M.}
+\newblock 2011.
+\newblock Locomotion skills for simulated quadrupeds.
+\newblock In {\em ACM SIGGRAPH 2011 papers}, ACM, New York, NY, USA, SIGGRAPH
+  '11, 59:1--59:12.
+
+\bibitem[\protect\citename{Coros et~al\mbox{.} }2012]{deformalive}
+{\sc Coros, S., Martin, S., Thomaszewski, B., Schumacher, C., Sumner, R., and
+  Gross, M.}
+\newblock 2012.
+\newblock Deformable objects alive!
+\newblock {\em ACM Trans. Graph. 31}, 4 (July), 69:1--69:9.
+
+\bibitem[\protect\citename{Cruse et~al\mbox{.} }1998]{walknet2}
+{\sc Cruse, H., Kindermann, T., Schumm, M., Dean, J., and Schmitz, J.}
+\newblock 1998.
+\newblock Walknet a biologically inspired network to control six-legged
+  walking.
+\newblock {\em Neural Networks 11}, 78, 1435 -- 1447.
+
+\bibitem[\protect\citename{Cruse et~al\mbox{.} }2001]{walknet1}
+{\sc Cruse, H., Dean, J., Drr, V., Kindermann, T., Schmitz, J., and Schumm, M.}
+\newblock 2001.
+\newblock Control of a hexapod walking c a decentralized solution based on
+  biological data.
+\newblock In {\em In Proc. 4th Int. Conf. on Climbing and Walking Robots
+  (CLAWAR}.
+
+\bibitem[\protect\citename{Faloutsos et~al\mbox{.} }2001]{petros}
+{\sc Faloutsos, P., van~de Panne, M., and Terzopoulos, D.}
+\newblock 2001.
+\newblock Composable controllers for physics-based character animation.
+\newblock In {\em Proceedings of the 28th annual conference on Computer
+  graphics and interactive techniques}, ACM, New York, NY, USA, SIGGRAPH '01,
+  251--260.
+
+\bibitem[\protect\citename{Full }1991]{biology}
+{\sc Full, R.J., T.~M.}
+\newblock 1991.
+\newblock Mechanics of a rapid running insect: two-, four- and six-legged
+  locomotion.
+\newblock {\em Journal of Experimental Biology 156}, 1, 215--231.
+
+\bibitem[\protect\citename{Gibson et~al\mbox{.} }2007]{moca}
+{\sc Gibson, D.~P., Oziem, D.~J., Dalton, C.~J., and Campbell, N.~W.}
+\newblock 2007.
+\newblock A system for the capture and synthesis of insect motion.
+\newblock {\em Graph. Models 69}, 5-6 (Sept.), 231--245.
+
+\bibitem[\protect\citename{Golubitsky et~al\mbox{.} }1998]{modular}
+{\sc Golubitsky, M., Stewart, I., Buono, P.-L., and Collins, J.}
+\newblock 1998.
+\newblock A modular network for legged locomotion.
+\newblock {\em Physica D: Nonlinear Phenomena 115}, 12, 56 -- 72.
+
+\bibitem[\protect\citename{Hahn }1988]{rigid}
+{\sc Hahn, J.~K.}
+\newblock 1988.
+\newblock Realistic animation of rigid bodies.
+\newblock {\em SIGGRAPH Comput. Graph. 22}, 4 (June), 299--308.
+
+\bibitem[\protect\citename{Hodgins et~al\mbox{.} }1995]{athletics}
+{\sc Hodgins, J.~K., Wooten, W.~L., Brogan, D.~C., and O'Brien, J.~F.}
+\newblock 1995.
+\newblock Animating human athletics.
+\newblock In {\em Proceedings of the 22nd annual conference on Computer
+  graphics and interactive techniques}, ACM, New York, NY, USA, SIGGRAPH '95,
+  71--78.
+
+\bibitem[\protect\citename{Holmes et~al\mbox{.} }2006]{leg_review}
+{\sc Holmes, P., Full, R.~J., Koditschek, D., and Guckenheimer, J.}
+\newblock 2006.
+\newblock The dynamics of legged locomotion: Models, analyses, and challenges.
+\newblock {\em SIAM Rev. 48}, 2 (Feb.), 207--304.
+
+\bibitem[\protect\citename{Ijspeert et~al\mbox{.} }2007]{salamander}
+{\sc Ijspeert, A.~J., Crespi, A., Ryczko, D., and Cabelguen, J.-M.}
+\newblock 2007.
+\newblock From swimming to walking with a salamander robot driven by a spinal
+  cord model.
+\newblock {\em Science 315}, 5817, 1416--1420.
+
+\bibitem[\protect\citename{Inagaki et~al\mbox{.} }2003]{japan2}
+{\sc Inagaki, S., Yuasa, H., and Arai, T.}
+\newblock 2003.
+\newblock Cpg model for autonomous decentralized multi-legged robot system
+  generation and transition of oscillation patterns and dynamics of
+  oscillators.
+\newblock {\em Robotics and Autonomous Systems 44}, 34, 171 -- 179.
+
+\bibitem[\protect\citename{{Inagaki} et~al\mbox{.} }2011]{fcp}
+{\sc {Inagaki}, S., {Niwa}, T., and {Suzuki}, T.}
+\newblock 2011.
+\newblock {Decentralized Control of Centipede-like Multi-legged Robots with
+  Passive Intersegment Joints Based on Follow-the-Contact-Point Gait Control}.
+\newblock {\em Transactions of the Society of Instrument and Control Engineers
+  47\/}, 282--290.
+
+\bibitem[\protect\citename{Kimura et~al\mbox{.} }2007]{quadruped}
+{\sc Kimura, H., Fukuoka, Y., and Cohen, A.~H.}
+\newblock 2007.
+\newblock Adaptive dynamic walking of a quadruped robot on natural ground based
+  on biological concepts.
+\newblock {\em Int. J. Rob. Res. 26}, 5 (May), 475--490.
+
+\bibitem[\protect\citename{McAdams et~al\mbox{.} }2011]{aleka}
+{\sc McAdams, A., Zhu, Y., Selle, A., Empey, M., Tamstorf, R., Teran, J., and
+  Sifakis, E.}
+\newblock 2011.
+\newblock Efficient elasticity for character skinning with contact and
+  collisions.
+\newblock In {\em ACM SIGGRAPH 2011 papers}, ACM, New York, NY, USA, SIGGRAPH
+  '11, 37:1--37:12.
+
+\bibitem[\protect\citename{McKenna and Zeltzer }1990]{earlysig}
+{\sc McKenna, M., and Zeltzer, D.}
+\newblock 1990.
+\newblock Dynamic simulation of autonomous legged locomotion.
+\newblock {\em SIGGRAPH Comput. Graph. 24}, 4 (Sept.), 29--38.
+
+\bibitem[\protect\citename{Mellen~N }1995]{cpgbiology}
+{\sc Mellen~N, Kiemel~T, C.~A.}
+\newblock 1995.
+\newblock Correlational analysis of fictive swimming in the lamprey reveals
+  strong functional intersegmental coupling.
+\newblock {\em Journal of Neurophysiology) 73}, 3, 100--1030.
+
+\bibitem[\protect\citename{Miller }1988]{snakeworm}
+{\sc Miller, G. S.~P.}
+\newblock 1988.
+\newblock The motion dynamics of snakes and worms.
+\newblock {\em SIGGRAPH Comput. Graph. 22}, 4 (June), 169--173.
+
+\bibitem[\protect\citename{Raibert }]{bigdog}
+{\sc Raibert, M.}
+\newblock {BigDog, the Rough-Terrain Quadruped Robot}.
+\newblock In {\em Proceedings of the 17th IFAC World Congress, 2008}, M.~J.
+  Chung, Ed., vol.~17.
+
+\bibitem[\protect\citename{Raibert and Hodgins }1991]{kangaroo}
+{\sc Raibert, M.~H., and Hodgins, J.~K.}
+\newblock 1991.
+\newblock Animation of dynamic legged locomotion.
+\newblock {\em SIGGRAPH Comput. Graph. 25}, 4 (July), 349--358.
+
+\bibitem[\protect\citename{Ruppert and Barnes }1994]{invertebrate}
+{\sc Ruppert, E.~E., and Barnes, R.~D.}
+\newblock 1994.
+\newblock {\em Invertebrate Zoology, Sixth Edition.}
+\newblock Saunders College Publishing, Fort Worth.
+
+\bibitem[\protect\citename{Saranli et~al\mbox{.} }2001]{hexapod}
+{\sc Saranli, U., Buehler, M., and Koditschek, D.~E.}
+\newblock 2001.
+\newblock Rhex: A simple and highly mobile hexapod robot.
+\newblock {\em International Journal of Robotics Research 20}, 7, 616--631.
+
+\bibitem[\protect\citename{Shinar et~al\mbox{.} }2008]{craig}
+{\sc Shinar, T., Schroeder, C., and Fedkiw, R.}
+\newblock 2008.
+\newblock Two-way coupling of rigid and deformable bodies.
+\newblock In {\em Proceedings of the 2008 ACM SIGGRAPH/Eurographics Symposium
+  on Computer Animation}, Eurographics Association, Aire-la-Ville, Switzerland,
+  Switzerland, SCA '08, 95--103.
+
+\bibitem[\protect\citename{Sifakis et~al\mbox{.} }2007]{eftychios}
+{\sc Sifakis, E., Shinar, T., Irving, G., and Fedkiw, R.}
+\newblock 2007.
+\newblock Hybrid simulation of deformable solids.
+\newblock In {\em Proceedings of the 2007 ACM SIGGRAPH/Eurographics symposium
+  on Computer animation}, Eurographics Association, Aire-la-Ville, Switzerland,
+  Switzerland, SCA '07, 81--90.
+
+\bibitem[\protect\citename{Skrba et~al\mbox{.} }2008]{quadruped_animation}
+{\sc Skrba, L., Reveret, L., Hetroy, F., Cani, M.-P., and O'Sullivan, C.},
+  2008.
+\newblock Quadruped animation.
+
+\bibitem[\protect\citename{Stomakhin et~al\mbox{.} }2012]{Stomakhin}
+{\sc Stomakhin, A., Howes, R., Schroeder, C., and Teran, J.~M.}
+\newblock 2012.
+\newblock Energetically consistent invertible elasticity.
+\newblock In {\em Proceedings of the ACM SIGGRAPH/Eurographics Symposium on
+  Computer Animation}, Eurographics Association, Aire-la-Ville, Switzerland,
+  Switzerland, SCA '12, 25--32.
+
+\bibitem[\protect\citename{Teran et~al\mbox{.} }2003]{fvm1}
+{\sc Teran, J., Blemker, S., Hing, V. N.~T., and Fedkiw, R.}
+\newblock 2003.
+\newblock Finite volume methods for the simulation of skeletal muscle.
+\newblock In {\em Proceedings of the 2003 ACM SIGGRAPH/Eurographics symposium
+  on Computer animation}, Eurographics Association, Aire-la-Ville, Switzerland,
+  Switzerland, SCA '03, 68--74.
+
+\bibitem[\protect\citename{T.Odashima }1998]{japan}
+{\sc T.Odashima, H.Yuasa, M.}
+\newblock 1998.
+\newblock The autonomous decentralized myriapod locomotion robot which is
+  consist of homogeneous subsystems.
+\newblock {\em JRSJ 16\/}.
+
+\bibitem[\protect\citename{Tsai et~al\mbox{.} }2010]{ipm}
+{\sc Tsai, Y.-Y., Lin, W.-C., Cheng, K.~B., Lee, J., and Lee, T.-Y.}
+\newblock 2010.
+\newblock Real-time physics-based 3d biped character animation using an
+  inverted pendulum model.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics 16}, 2,
+  325--337.
+
+\bibitem[\protect\citename{Tu }1999]{fish}
+{\sc Tu, X.}
+\newblock 1999.
+\newblock {\em Artificial animals for computer animation: biomechanics,
+  locomotion, perception, and behavior}.
+\newblock Springer-Verlag, Berlin, Heidelberg.
+
+\bibitem[\protect\citename{Van~Welbergen et~al\mbox{.} }2010]{biped_animation}
+{\sc Van~Welbergen, H., Van~Basten, B. J.~H., Egges, A., Ruttkay, Z.~M., and
+  Overmars, M.~H.}
+\newblock 2010.
+\newblock Real time animation of virtual humans: A trade-off between
+  naturalness and control.
+\newblock {\em Computer Graphics Forum 29}, 8, 2530--2554.
+
+\bibitem[\protect\citename{Wang et~al\mbox{.} }2012]{jackwang}
+{\sc Wang, J.~M., Hamner, S.~R., Delp, S.~L., and Koltun, V.}
+\newblock 2012.
+\newblock Optimizing locomotion controllers using biologically-based actuators
+  and objectives.
+\newblock {\em ACM Trans. Graph. 31}, 4 (July), 25:1--25:11.
+
+\end{thebibliography}
