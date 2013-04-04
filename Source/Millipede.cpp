@@ -736,7 +736,8 @@ else if(type == 1){
 
     //rigid phase
     while(1){
-        temp_rigid_section->Output2File(filestream, 1);
+		if(temp_rigid_section->m_section_id == 3)
+			temp_rigid_section->Output2File(filestream, 1);
         temp_soft_section = temp_rigid_section->m_next;
         if(temp_soft_section){
             temp_rigid_section = temp_soft_section->m_next;
@@ -748,7 +749,7 @@ else if(type == 1){
 	m_tail_rigid->Output2File(filestream);
     // rigid part end
     (*filestream)<<"}\n"<<std::endl;
-
+/*
     (*filestream)<<"#declare MillipedeAntenneaPart = union { \n"<<std::endl; 
 	m_head->m_left_antenna->Output2File(filestream,1);
 	m_head->m_right_antenna->Output2File(filestream,1);
@@ -833,7 +834,7 @@ else if(type == 1){
 	(*filestream)<<"<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,0}"<<std::endl;
 
 	(*filestream)<<"}\n"<<std::endl;
-
+*/
     (*filestream)<<"#declare LegForward = union { \n"<<std::endl; 
 	 temp_rigid_section = m_head->m_next->m_next;
     //rigid phase
@@ -904,7 +905,7 @@ else if(type == 1){
 
 //	m_left_leg->Output2File(filestream);
 //	m_right_leg->Output2File(filestream);
-
+/*
     // soft part start
     (*filestream)<<"#declare MillipedeSoftPart = union { \n"<<std::endl;
     //soft phase
@@ -924,7 +925,7 @@ else if(type == 1){
 	m_tail_soft->Output2File(filestream);
     // soft part end
     (*filestream)<<"}\n"<<std::endl;
-	
+*/	
 }
 else if(type == 2){
     MillipedeRigidSection *temp_rigid_section;

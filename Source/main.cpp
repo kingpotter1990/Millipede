@@ -587,17 +587,18 @@ void OUTPUT_ONE_FRAME(){
 	filename += ".inc";
 	BugOutputPov->open(filename);
 	(*BugOutputPov)<<"//Frame "<<FRAME_COUNT<<std::endl;
-	(*BugOutputPov)<<"//Begin Food"<<std::endl;
-	(*BugOutputPov)<<"#declare Food = union {\n"<<std::endl;
-	Eigen::Vector3f center;double a,d;
-	
-	for(int i = 0; i < myTerrain->m_foods.size(); i++){
-		center = myTerrain->m_foods[i]->m_Center;
-		(*BugOutputPov)<<"//BEGIN SPHERE "<<std::endl;
-		(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<myTerrain->m_foods[i]->m_Size[0]/2<<"}"<<std::endl;
-		(*BugOutputPov)<<"//END SPHERE "<<std::endl;
-		
-	}/*
+	//(*BugOutputPov)<<"//Begin Food"<<std::endl;
+	//(*BugOutputPov)<<"#declare Food = union {\n"<<std::endl;
+	//Eigen::Vector3f center;double a,d;
+	//
+	//for(int i = 0; i < myTerrain->m_foods.size(); i++){
+	//	center = myTerrain->m_foods[i]->m_Center;
+	//	(*BugOutputPov)<<"//BEGIN SPHERE "<<std::endl;
+	//	(*BugOutputPov)<<"sphere{<"<<center[0]<<","<<center[1]<<","<<center[2]<<">,"<<myTerrain->m_foods[i]->m_Size[0]/2<<"}"<<std::endl;
+	//	(*BugOutputPov)<<"//END SPHERE "<<std::endl;
+	//	
+	//}
+	/*
 	a = 2,d = a;
 	for(int i = 0; i < myTerrain->m_foods.size(); i++){
 		tmp_center = myTerrain->m_foods[i]->m_Center;
@@ -622,46 +623,46 @@ void OUTPUT_ONE_FRAME(){
 
 	}
 	*/
-	(*BugOutputPov)<<"}\n"<<std::endl;
+	//(*BugOutputPov)<<"}\n"<<std::endl;
 
 	(*BugOutputPov)<<"//End Food"<<std::endl;
 	myMillipedes[0].Output2File(BugOutputPov,1);//0 is for maya model, 1 is for physics
-	myMillipedes[0].Output2File(BugOutputPov,2);//0 is for maya model, 1 is for physics, 2 diagram of leg state
+	//myMillipedes[0].Output2File(BugOutputPov,2);//0 is for maya model, 1 is for physics, 2 diagram of leg state
 
-		//Surface Obstacles
-	(*BugOutputPov)<<"//Begin Surface Obstacles\n"<<std::endl;
-	(*BugOutputPov)<<"#declare SurfaceObstacle = merge {\n"<<std::endl;
-	Eigen::Vector3f point_a, point_b;
-	Cylinder* temp_cylinder;
-	double radius;
-	for(int i = 0; i < myTerrain->m_surface_objects.size(); i ++){
-		switch (myTerrain->m_surface_objects[i]->m_type)
-		{
-		case TypeCube:
-			(*BugOutputPov)<<"//Cube\n"<<std::endl;
-			break;
-		case TypeSphere:
-			(*BugOutputPov)<<"//Sphere\n"<<std::endl;
-			break;
-		case TypeCylinder:
-			(*BugOutputPov)<<"//Cylinder\n"<<std::endl;
-			temp_cylinder = dynamic_cast<Cylinder*>(myTerrain->m_surface_objects[i]);
-			point_a = temp_cylinder->m_Center;
-			point_a[2] += 0.5*temp_cylinder->m_Size[2];
-			point_b = temp_cylinder->m_Center;
-			point_b[2] -= 0.5*temp_cylinder->m_Size[2];
-			radius = temp_cylinder->m_Size[0]/2;
-			(*BugOutputPov)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
-			break;
-		default:
-			break;
-		}
-	}
-	(*BugOutputPov)<<"}\n"<<std::endl;
+	//	//Surface Obstacles
+	//(*BugOutputPov)<<"//Begin Surface Obstacles\n"<<std::endl;
+	//(*BugOutputPov)<<"#declare SurfaceObstacle = merge {\n"<<std::endl;
+	//Eigen::Vector3f point_a, point_b;
+	//Cylinder* temp_cylinder;
+	//double radius;
+	//for(int i = 0; i < myTerrain->m_surface_objects.size(); i ++){
+	//	switch (myTerrain->m_surface_objects[i]->m_type)
+	//	{
+	//	case TypeCube:
+	//		(*BugOutputPov)<<"//Cube\n"<<std::endl;
+	//		break;
+	//	case TypeSphere:
+	//		(*BugOutputPov)<<"//Sphere\n"<<std::endl;
+	//		break;
+	//	case TypeCylinder:
+	//		(*BugOutputPov)<<"//Cylinder\n"<<std::endl;
+	//		temp_cylinder = dynamic_cast<Cylinder*>(myTerrain->m_surface_objects[i]);
+	//		point_a = temp_cylinder->m_Center;
+	//		point_a[2] += 0.5*temp_cylinder->m_Size[2];
+	//		point_b = temp_cylinder->m_Center;
+	//		point_b[2] -= 0.5*temp_cylinder->m_Size[2];
+	//		radius = temp_cylinder->m_Size[0]/2;
+	//		(*BugOutputPov)<<"cylinder{"<<"<"<<point_a[0]<<","<<point_a[1]<<","<<point_a[2]<<">,<"<<point_b[0]<<","<<point_b[1]<<","<<point_b[2]<<">,"<<radius<<"}"<<std::endl;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+	//(*BugOutputPov)<<"}\n"<<std::endl;
 
-	(*BugOutputPov)<<"//End Surface Obstacles\n"<<std::endl;
+	//(*BugOutputPov)<<"//End Surface Obstacles\n"<<std::endl;
 
-	BugOutputPov->close();
+	//BugOutputPov->close();
 
 	//mel script file
 /*	(*BugOutputMaya)<<"currentTime "<<FRAME_COUNT<<";"<<std::endl;
